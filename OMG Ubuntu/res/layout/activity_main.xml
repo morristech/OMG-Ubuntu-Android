@@ -1,26 +1,46 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/activity_main_container" >
+    xmlns:android1="http://schemas.android.com/apk/res/android"
+    android:configChanges="orientation|screenSize"
+    android:id="@+id/activity_main_container"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
 
-    <TextView
-        android:id="@+id/textView1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:text="@string/hello_world"
-        tools:context=".MainActivity" />
+    <android.support.v4.view.ViewPager
+        android:id="@+id/activity_main_pager"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" />
+    <!-- <TabHost
+        android:id="@android:id/tabhost"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" >
 
- <!--    <fragment
-        android:id="@+id/sidebarfragment"
-        android:name="com.ohso.omgubuntu.SidebarFragment"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignRight="@+id/textView1" /> -->
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="vertical" >
+
+            <TabWidget
+                android:id="@android:id/tabs"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content" >
+            </TabWidget>
+
+            <FrameLayout
+                android:id="@android:id/tabcontent"
+                android:layout_width="0dp"
+                android:layout_height="0dp" >
+            </FrameLayout>
+            
+            <FrameLayout
+                android:id="@+android:id/realtabcontent"
+                android:layout_width="fill_parent"
+                android:layout_height="0dp"
+                android1:layout_weight="1" >
+
+            </FrameLayout>
+            
+        </LinearLayout>
+    </TabHost> -->
 
 </RelativeLayout>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="75dp"
+    android:orientation="horizontal" >
+
+    <LinearLayout
+        android:id="@+id/article_row_image_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true" >
+
+    <ImageView
+        android:id="@+id/article_row_image"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:contentDescription="@string/article_image_description"
+        android:src="@drawable/ic_launcher" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/article_row_text_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_margin="5dp"
+        android:layout_toRightOf="@id/article_row_image_container"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/article_row_text_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLines="3"
+            android:text="Ubuntu 12.10 Ditches ‘Messaging Menu’ Pips, Updates Icons but what happens with it goes on"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/article_row_text_author"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/article_row_text_title"
+            android:maxLines="1"
+            android:text="by Joey Sneddon"
+            android:textAppearance="?android:attr/textAppearance"
+            android:textColor="#808080"
+            android:textSize="11sp"
+            android:typeface="normal" />
+
+    </RelativeLayout>
+</RelativeLayout>

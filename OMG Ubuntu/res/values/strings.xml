@@ -1,20 +1,22 @@
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <string name="app_name">OMG Ubuntu</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="app_name">OMG! Ubuntu!</string>
     <string name="menu_settings">Settings</string>
+    <string name="menu_share">Share</string>
+    <string name="menu_star">Star</string>
+    <string name="menu_unstar">Unstar</string>
     <string name="title_activity_main">OMG! Ubuntu!</string>
+
+    <string name="article_image_description">Thumbnail image for an article</string>
+    
+    <string name="connection_error">Could not connect to feed.</string>
+    <string name="xml_error">Could not parse XML feed.</string>
+    
     <string-array name="actionbar_categories">
         <item>Latest News</item>
         <item>News</item>
         <item>App</item>
         <item>Gaming</item>
-    </string-array>
-    <string-array name="actionbar_categories_values">
-        <item>latest_news</item>
-        <item>news</item>
-        <item>app</item>
-        <item>gaming</item>
     </string-array>
     <string-array name="sidebar_fragment_items">
         <item>Home</item>
@@ -23,12 +25,7 @@
         <item>Reading List</item>
         <item>About</item>
     </string-array>
-    <string-array name="sidebar_fragment_items_values">
-        <item>home</item>
-        <item>authors</item>
-        <item>starred</item>
-        <item>reading_list</item>
-        <item>about</item>
-    </string-array>
+
+    <string name="title_activity_authors">Authors</string>
 
 </resources>

@@ -1,24 +1,25 @@
 package com.ohso.omgubuntu;
 
 import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 
 import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.MenuItem;
 
-public class MainActivity extends SherlockFragmentActivity implements ActionBar.OnNavigationListener {
-	private boolean sidebarFragmentActive = false;
-	private FragmentManager fragmentManager = getSupportFragmentManager();
-	private SidebarFragment sidebarFragment = new SidebarFragment();
-	
+public class MainActivity extends BaseActivity implements ActionBar.OnNavigationListener {	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        
+        MainPager pagerAdapter = new MainPager(getSupportFragmentManager());
+        ViewPager viewPager = (ViewPager) findViewById(R.id.activity_main_pager);
+        viewPager.setAdapter(pagerAdapter);
+        viewPager.setCurrentItem(0);
+        
+        //TODO This stuff should move to individual fragments
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setDisplayOptions(0, ActionBar.DISPLAY_SHOW_TITLE);
@@ -28,25 +29,12 @@ public class MainActivity extends SherlockFragmentActivity implements ActionBar.
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
         actionBar.setListNavigationCallbacks(list, this);
     }
-
+    
 	@Override
-	public boolean onCreateOptionsMenu(com.actionbarsherlock.view.Menu menu) {
-	    getSupportMenuInflater().inflate(R.menu.activity_main, menu);
-	    return true;
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		//Log.i("OMG!", "Got an option clicked! ");
-		switch(item.getItemId()) {
-			case android.R.id.home:
-				//Log.i("OMG!", "Requesting home!");
-				toggleSidebarFragment();
-				return true;
-			default:
-				//Log.i("OMG!", "Regular option caught.");
-				return super.onOptionsItemSelected(item);
-		}
+	protected boolean onActionBarItemSelected(MenuItem item) {
+		// TODO Auto-generated method stub
+		Log.i("OMG!", "Something pressed in home view!");
+		return true;
 	}
 
 	@Override
@@ -56,32 +44,19 @@ public class MainActivity extends SherlockFragmentActivity implements ActionBar.
 		
 		return true;
 	}
-	
+
 	@Override
-	public void onBackPressed() {
-		super.onBackPressed();
-		//Surely there's a better way to toggle this?
-		if(sidebarFragmentActive) {
-			sidebarFragmentActive = false;
-		}
+	protected int getLayoutResourceId() {
+		// TODO Auto-generated method stub
+		return R.layout.activity_main;
 	}
-	
-	private void toggleSidebarFragment() {
-		FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-		if(sidebarFragmentActive) {
-			Log.i("OMG!", "Hiding sidebar!");
-			sidebarFragmentActive = false;
-			//fragmentTransaction.detach(sidebarFragment);
-			fragmentManager.popBackStack();
-			fragmentTransaction.commit();
-		}
-		else {
-			Log.i("OMG!", "Showing sidebar!");
-			sidebarFragmentActive = true;
-			fragmentTransaction.add(R.id.activity_main_container, sidebarFragment);
-			fragmentTransaction.addToBackStack(null);
-			fragmentTransaction.commit();
-		}
+
+	@Override
+	protected int getMenuId() {
+		// TODO Auto-generated method stub
+		return R.menu.activity_main;
 	}
-    
+
+	@Override
+	protected int getLayoutResourceContainer() { return R.id.activity_main_container; }
 }

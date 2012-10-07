@@ -1,29 +1,29 @@
 package com.ohso.omgubuntu;
 
 import android.app.Activity;
-import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class ArticleAdapter extends BaseAdapter {
+public class ArticleAdapter extends BaseAdapter implements OnClickListener {
 	private Activity activity;
-	//private ArrayList<HashMap<String, String>> data;
 	private RSSItems data;
 	private static LayoutInflater inflater = null;
-	//public ImageLoader imageLoader
-	
+	//TODO public ImageLoader imageLoader
+
 	public ArticleAdapter(Activity a, RSSItems d) {
 		activity = a;
 		data = d;
 		// try .getLayoutInflater() ?
-		inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		inflater = activity.getLayoutInflater();
+		//inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		//imageLoader= new ImageLoader(activity.getApplicationContext());
 	}
-
 	@Override
 	public int getCount() { return data.size();	}
 
@@ -39,20 +39,23 @@ public class ArticleAdapter extends BaseAdapter {
 		if(convertView == null) {
 			view = inflater.inflate(R.layout.article_row, null);
 		}
-		
+		view.setOnClickListener(this);
+
 		ImageView thumb = (ImageView)view.findViewById(R.id.article_row_image);
 		TextView title = (TextView)view.findViewById(R.id.article_row_text_title);
 		TextView author = (TextView)view.findViewById(R.id.article_row_text_author);
-		
-		//HashMap<String, String> article = new HashMap<String, String>();
+
 		RSSItem article = new RSSItem();
 		article = data.get(position);
-		
-		thumb.setImageResource(R.drawable.ic_launcher);
-		//title.setText(article.get(ArticlesFragmentTab.KEY_TITLE));
-		//author.setText(article.get(ArticlesFragmentTab.KEY_AUTHOR));
+
+		thumb.setImageResource(R.drawable.ic_plain_launcher);
 		title.setText(article.getTitle());
 		author.setText("by " + article.getAuthor());
 		return view;
+	}
+	@Override
+	public void onClick(View v) {
+		Log.i("OMG!", "Got click in article list");
+
 	}
 }

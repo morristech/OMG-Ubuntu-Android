@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
+    <!-- Bottom color bar -->
+    <item android:drawable="@drawable/tab_indicator_unpressed_bar" />
+    <!-- Background -->
+    <item android:drawable="@drawable/tab_indicator_unpressed_background" android:bottom="6dp" />
+</layer-list>

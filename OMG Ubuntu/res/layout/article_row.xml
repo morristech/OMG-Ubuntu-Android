@@ -8,16 +8,15 @@
     <LinearLayout
         android:id="@+id/article_row_image_container"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_centerVertical="true" >
+        android:layout_height="wrap_content" >
 
-    <ImageView
-        android:id="@+id/article_row_image"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:contentDescription="@string/article_image_description"
-        android:src="@drawable/ic_launcher" />
+        <ImageView
+            android:id="@+id/article_row_image"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            android:background="#e0e0e0"
+            android:contentDescription="@string/article_image_description"
+            android:src="@drawable/ic_plain_launcher" />
     </LinearLayout>
 
     <RelativeLayout
@@ -25,7 +24,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_margin="5dp"
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="12dp"
+        android:layout_marginTop="5dp"
         android:layout_toRightOf="@id/article_row_image_container"
         android:orientation="vertical" >
 
@@ -48,6 +50,24 @@
             android:textColor="#808080"
             android:textSize="11sp"
             android:typeface="normal" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/article_row_pip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="5dp" >
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=">"
+            android:textColor="#a0a0a0"
+            android:textStyle="bold" />
 
     </RelativeLayout>
+
 </RelativeLayout>

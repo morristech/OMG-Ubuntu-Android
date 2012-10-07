@@ -6,10 +6,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class AuthorsFragmentTab extends BaseFragment {
-	public AuthorsFragmentTab() {
+public class StarredFragmentTab extends BaseFragment {
+	public StarredFragmentTab() {
 		// TODO Auto-generated constructor stub
-		setTitle("Authors");
+		setTitle("Starred");
 	}
 
 	@Override
@@ -23,8 +23,8 @@ public class AuthorsFragmentTab extends BaseFragment {
 		//return super.onCreateView(inflater, container, savedInstanceState);
 		return inflater.inflate(R.layout.tab_fragment_authors, container, false);
 	}
-//	public static AuthorsFragmentTab newInstance () {
-//		AuthorsFragmentTab fragmentPage = new AuthorsFragmentTab();
+//	public static StarredFragmentTab newInstance () {
+//		StarredFragmentTab fragmentPage = new StarredFragmentTab();
 ////		Bundle bundle = new Bundle();
 ////		bundle.putString("title", title);
 ////		fragmentPage.setArguments(bundle);

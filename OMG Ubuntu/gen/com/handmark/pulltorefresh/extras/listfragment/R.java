@@ -1246,16 +1246,16 @@ containing a value of this type.
         public static final int abs__title=0x7f060027;
         public static final int abs__titleDivider=0x7f060028;
         public static final int abs__up=0x7f060010;
-        public static final int activity_main_container=0x7f060034;
-        public static final int activity_main_pager=0x7f060036;
-        public static final int activity_main_super=0x7f060033;
-        public static final int activity_main_tabs=0x7f060035;
-        public static final int article_row_image=0x7f060038;
-        public static final int article_row_image_container=0x7f060037;
-        public static final int article_row_pip=0x7f06003c;
-        public static final int article_row_text_author=0x7f06003b;
-        public static final int article_row_text_container=0x7f060039;
-        public static final int article_row_text_title=0x7f06003a;
+        public static final int activity_main_container=0x7f060035;
+        public static final int activity_main_pager=0x7f060037;
+        public static final int activity_main_super=0x7f060034;
+        public static final int activity_main_tabs=0x7f060036;
+        public static final int article_row_image=0x7f060039;
+        public static final int article_row_image_container=0x7f060038;
+        public static final int article_row_pip=0x7f06003d;
+        public static final int article_row_text_author=0x7f06003c;
+        public static final int article_row_text_container=0x7f06003a;
+        public static final int article_row_text_title=0x7f06003b;
         public static final int both=0x7f060018;
         public static final int bottom=0x7f060003;
         public static final int disableHome=0x7f06000e;
@@ -1279,7 +1279,7 @@ containing a value of this type.
         public static final int tabMode=0x7f060008;
         public static final int tab_fragment_articles_container=0x7f060042;
         public static final int tab_fragment_authors_container=0x7f060043;
-        public static final int textView1=0x7f06003d;
+        public static final int textView1=0x7f060033;
         public static final int top=0x7f060004;
         public static final int triangle=0x7f060001;
         public static final int underline=0x7f060002;
@@ -1316,15 +1316,17 @@ containing a value of this type.
         public static final int abs__screen_action_bar_overlay=0x7f030011;
         public static final int abs__screen_simple=0x7f030012;
         public static final int abs__screen_simple_overlay_action_mode=0x7f030013;
-        public static final int activity_main=0x7f030014;
-        public static final int article_row=0x7f030015;
-        public static final int fragment_sidebar=0x7f030016;
-        public static final int need_this_for_maven=0x7f030017;
-        public static final int pull_to_refresh_header=0x7f030018;
-        public static final int sherlock_spinner_dropdown_item=0x7f030019;
-        public static final int sherlock_spinner_item=0x7f03001a;
-        public static final int tab_fragment_articles=0x7f03001b;
-        public static final int tab_fragment_authors=0x7f03001c;
+        public static final int activity_article_actionbar=0x7f030014;
+        public static final int activity_main=0x7f030015;
+        public static final int article_row=0x7f030016;
+        public static final int fragment_sidebar=0x7f030017;
+        public static final int need_this_for_maven=0x7f030018;
+        public static final int pull_to_refresh_header=0x7f030019;
+        public static final int sherlock_spinner_dropdown_item=0x7f03001a;
+        public static final int sherlock_spinner_item=0x7f03001b;
+        public static final int tab_fragment_articles=0x7f03001c;
+        public static final int tab_fragment_authors=0x7f03001d;
+        public static final int tab_fragment_categories=0x7f03001e;
     }
     public static final class menu {
         public static final int activity_authors=0x7f0e0000;
@@ -1361,13 +1363,13 @@ containing a value of this type.
         /**  Description of a share target (both in the list of such or the default share button) in a ShareActionProvider (share UI). [CHAR LIMIT=NONE] 
          */
         public static final int abs__shareactionprovider_share_with_application=0x7f0c0009;
-        public static final int app_name=0x7f0c0010;
-        public static final int article_image_description=0x7f0c0016;
-        public static final int connection_error=0x7f0c0017;
-        public static final int menu_settings=0x7f0c0011;
-        public static final int menu_share=0x7f0c0012;
-        public static final int menu_star=0x7f0c0013;
-        public static final int menu_unstar=0x7f0c0014;
+        public static final int app_name=0x7f0c0012;
+        public static final int article_image_description=0x7f0c0018;
+        public static final int connection_error=0x7f0c0019;
+        public static final int menu_settings=0x7f0c0013;
+        public static final int menu_share=0x7f0c0014;
+        public static final int menu_star=0x7f0c0015;
+        public static final int menu_unstar=0x7f0c0016;
         /**  Just use standard Pull Down String when pulling up. These can be set for languages which require it 
          */
         public static final int pull_to_refresh_from_bottom_pull_label=0x7f0c000d;
@@ -1376,9 +1378,11 @@ containing a value of this type.
         public static final int pull_to_refresh_pull_label=0x7f0c000a;
         public static final int pull_to_refresh_refreshing_label=0x7f0c000c;
         public static final int pull_to_refresh_release_label=0x7f0c000b;
-        public static final int title_activity_authors=0x7f0c0019;
-        public static final int title_activity_main=0x7f0c0015;
-        public static final int xml_error=0x7f0c0018;
+        public static final int rss_base_url=0x7f0c0010;
+        public static final int rss_user_agent=0x7f0c0011;
+        public static final int title_activity_authors=0x7f0c001b;
+        public static final int title_activity_main=0x7f0c0017;
+        public static final int xml_error=0x7f0c001a;
     }
     public static final class style {
         public static final int DialogWindowTitle_Sherlock=0x7f0b0037;

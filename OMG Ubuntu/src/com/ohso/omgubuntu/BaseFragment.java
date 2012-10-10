@@ -1,30 +1,35 @@
 package com.ohso.omgubuntu;
 
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
-import com.ohso.omgubuntu.BaseActivity.ActionBarListener;
-
+/**
+ * @author Sam Tran <samvtran@gmail.com>
+ */
 public class BaseFragment extends Fragment {
-	private String title;
-	public BaseFragment() {
-		Log.i("OMG!", "Geting BaseFragment() for "+ this.toString());
-		setTitle(null);
-	}
+    private String title;
 
-	public void setTitle(String title) { this.title = title; }
-	public String getTitle() { return title; }
+    public BaseFragment() { setTitle(null); }
 
-	public void getActionBar() {
-		try {
-			((ActionBarListener)getActivity()).onGetDefaultActionBar();
-		} catch (ClassCastException e) {
-			throw new ClassCastException(getActivity().toString() +
-					" must implement ActionBarListener");
-		}
-	}
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        // If the fragment frame doesn't exist, don't waste time inflating the view
+        if (container == null) return null;
+        return super.onCreateView(inflater, container, savedInstanceState);
+    }
 
-//	public BaseFragment newInstance() {
-//		return new BaseFragment();
-//	}
+    public void setTitle(String title) { this.title = title; }
+
+    public String getTitle() { return title; }
+
+    public void getActionBar() {
+        try {
+            ((BaseActivity)getActivity()).getDefaultActionBar();
+        } catch (ClassCastException e) {
+            throw new ClassCastException(getActivity().toString() + " must extend BaseActivity.");
+        }
+    }
 }

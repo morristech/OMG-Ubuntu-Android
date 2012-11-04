@@ -48,19 +48,24 @@ public class ArticleAdapter extends BaseAdapter implements OnClickListener {
         View view = convertView;
         if (convertView == null) {
             view = inflater.inflate(R.layout.article_row, null);
+            //view = inflater.inflate(R.layout.article_row, parent);
         }
         view.setOnClickListener(this);
-
         ImageView thumb = (ImageView) view.findViewById(R.id.article_row_image);
         TextView title = (TextView) view.findViewById(R.id.article_row_text_title);
         TextView author = (TextView) view.findViewById(R.id.article_row_text_author);
-
+        TextView time = (TextView) view.findViewById(R.id.article_row_text_time);
         RSSItem article = new RSSItem();
         article = data.get(position);
-        Log.i("OMG!", "Date "+ DateUtils.getRelativeDateTimeString(activity, article.getDate().getTime(), DateUtils.MINUTE_IN_MILLIS, DateUtils.YEAR_IN_MILLIS, DateUtils.FORMAT_ABBREV_ALL));
-        thumb.setImageResource(R.drawable.ic_plain_launcher);
+        CharSequence date = DateUtils.getRelativeDateTimeString(activity, article.getDate().getTime(), DateUtils.MINUTE_IN_MILLIS, DateUtils.YEAR_IN_MILLIS, DateUtils.FORMAT_ABBREV_ALL);
+        Log.i("OMG!", "Thumb: "+article.getThumb());
+        thumb.setImageResource(R.drawable.testthumb);
+        /*if(article.getThumb()) {
+            thumb.setImageBitmap(article.getThumbBitmap());
+        }*/
         title.setText(article.getTitle());
         author.setText("by " + article.getAuthor());
+        time.setText(date);
         return view;
     }
 

@@ -1,24 +1,21 @@
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/activity_main_super"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
-	<LinearLayout
-	    android:configChanges="orientation|screenSize"
-	    android:id="@+id/activity_main_container"
-	    android:layout_width="fill_parent"
-	    android:layout_height="fill_parent"
-	    android:orientation="vertical" >
-	
-	    <com.viewpagerindicator.TabPageIndicator
-	        android:id="@+id/activity_main_tabs"
-	        android:layout_height="wrap_content"
-	        android:layout_width="fill_parent" />
-	    <android.support.v4.view.ViewPager
-	        android:id="@+id/activity_main_pager"
-	        android:layout_width="fill_parent"
-	        android:layout_height="0dp"
-	        android:layout_weight="1"
-	         />
-	</LinearLayout>
-</FrameLayout>
+    android:layout_height="fill_parent"
+    android:gravity="left" >
+    <fragment
+        android:name="com.ohso.omgubuntu.SidebarFragment"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent" />
+	<RelativeLayout
+	    android:id="@+id/fragment_articles_container"
+	    android:layout_width="wrap_content"
+	    android:background="@android:color/background_light"
+	    android:layout_height="match_parent">
+		<fragment
+		    android:id="@+id/fragment_articles_fragment"
+		    android:name="com.ohso.omgubuntu.ArticlesFragmentTab"
+		    android:layout_width="fill_parent"
+		    android:layout_height="match_parent" />
+	</RelativeLayout>
+</RelativeLayout>

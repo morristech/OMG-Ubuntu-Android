@@ -6,12 +6,10 @@
     <string name="menu_star">Star</string>
     <string name="menu_unstar">Unstar</string>
     <string name="title_activity_main">OMG! Ubuntu!</string>
-
     <string name="article_image_description">Thumbnail image for an article</string>
-    
     <string name="connection_error">Could not connect to feed.</string>
     <string name="xml_error">Could not parse XML feed.</string>
-    
+
     <string-array name="actionbar_categories">
         <item>Latest News</item>
         <item>News</item>
@@ -25,7 +23,5 @@
         <item>Reading List</item>
         <item>About</item>
     </string-array>
-
-    <string name="title_activity_authors">Authors</string>
 
 </resources>

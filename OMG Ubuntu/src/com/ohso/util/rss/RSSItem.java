@@ -6,17 +6,13 @@ import java.util.HashMap;
 import java.util.List;
 
 public class RSSItem extends HashMap<String, String> {
-
-    /**
-	 *
-	 */
     private static final long serialVersionUID = 1L;
-    private String            title;
-    private String            author;
-    private String            link;
-    private String            thumb;
-    private Date              date;
-    private List<String> categories       = new ArrayList<String>();
+    private String title;
+    private String author;
+    private String link;
+    private String thumb;
+    private Date date;
+    private List<String> categories = new ArrayList<String>();
 
     public RSSItem() {
         setTitle(null);
@@ -37,6 +33,12 @@ public class RSSItem extends HashMap<String, String> {
 
     public void setThumb(String thumb) { this.thumb = thumb; }
     public String getThumb() { return thumb; }
+
+    /*public Bitmap getThumbBitmap() {
+        //Unless thumbnail has a cache entry, fetchThumbBitmap, then cache and return bitmap (async it all)
+        sqlite.getThumb(thumb); //gets from cache or d/ls and caches on the fly, then returns
+
+    }*/
 
     public void addCategory(String category) { this.categories.add(category); }
     public List<String> getCategories() { return categories; }

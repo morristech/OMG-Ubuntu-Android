@@ -22,17 +22,14 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.ActionBar.OnNavigationListener;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 import com.ohso.util.rss.RSSItems;
 
-public class ArticlesFragmentTab extends BaseFragment implements OnRefreshListener<ListView>, OnNavigationListener,
+public class ArticlesFragmentTab extends BaseFragment implements OnRefreshListener<ListView>,
         OnScrollListener {
     private BasePullToRefreshListView  listView;
-    private ActionBar                  actionBar;
     private ArrayAdapter<CharSequence> list;
     /* TODO Implement proper list positioning once we can add/remove list items.
      * Easist way is probably to have a db table for visible categories and reference by name
@@ -43,13 +40,12 @@ public class ArticlesFragmentTab extends BaseFragment implements OnRefreshListen
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        super.onCreateView(inflater, container, savedInstanceState);
         listView = new BasePullToRefreshListView(getActivity());
         listView.setOnRefreshListener(this);
         listView.setOnScrollListener(this);
-        // mListItems = listView.getResources().getStringArray(R.array.actionbar_categories);
-        // mAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, mListItems);
-        // listView.setAdapter(mAdapter);
+        listView.setBackgroundResource(R.drawable.list_bg);
+        listView.getRefreshableView().setBackgroundResource(R.drawable.list_bg);
+        listView.getRefreshableView().setDividerHeight(0);
         return listView;
     }
 
@@ -113,7 +109,7 @@ public class ArticlesFragmentTab extends BaseFragment implements OnRefreshListen
     private InputStream downloadUrl(String urlFragment) throws IOException {
         // TODO replace this!
         URL url = new URL("http://192.168.1.115:5000");
-        //url = new URL(getResources().getString(R.string.rss_base_url)+urlFragment);
+        //URL url = new URL(getResources().getString(R.string.rss_base_url)+urlFragment);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         if(getResources().getString(R.string.rss_user_agent).length() > 0)
             conn.setRequestProperty("User-Agent", getResources().getString(R.string.rss_user_agent));
@@ -124,27 +120,6 @@ public class ArticlesFragmentTab extends BaseFragment implements OnRefreshListen
         conn.connect();
         InputStream stream = conn.getInputStream();
         return stream;
-    }
-
-    @Override
-    public boolean onNavigationItemSelected(int itemPosition, long itemId) {
-        savedListPosition = itemPosition;
-        return true;
-    }
-
-    @Override
-    public void getActionBar() {
-        if (actionBar == null) actionBar = MainActivity.actionBar;
-
-        actionBar.setTitle(null);
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-        if (list == null) {
-            list = ArrayAdapter.createFromResource(actionBar.getThemedContext(), R.array.actionbar_categories,
-                    R.layout.sherlock_spinner_item);
-            list.setDropDownViewResource(R.layout.sherlock_spinner_dropdown_item);
-        }
-        actionBar.setListNavigationCallbacks(list, this);
-        actionBar.setSelectedNavigationItem(savedListPosition);
     }
 
     @Override

@@ -12,6 +12,5 @@
     android:entries="@array/sidebar_fragment_items"
     android:headerDividersEnabled="false"
     tools:context=".SidebarFragment" >
-
 </ListView>
 </FrameLayout>

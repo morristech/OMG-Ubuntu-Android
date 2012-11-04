@@ -2,71 +2,81 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:minHeight="75dp"
+    android:background="@drawable/article_row_bg"
     android:orientation="horizontal" >
 
     <LinearLayout
         android:id="@+id/article_row_image_container"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" >
+        android:layout_height="75dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="5dp"
+        android:gravity="center" >
 
         <ImageView
             android:id="@+id/article_row_image"
-            android:layout_width="75dp"
+            android:layout_width="wrap_content"
             android:layout_height="75dp"
-            android:background="#e0e0e0"
-            android:contentDescription="@string/article_image_description"
-            android:src="@drawable/ic_plain_launcher" />
+            android:contentDescription="@string/article_image_description" />
+
     </LinearLayout>
 
     <RelativeLayout
         android:id="@+id/article_row_text_container"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_marginBottom="5dp"
+        android:layout_height="75dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
         android:layout_marginLeft="5dp"
-        android:layout_marginRight="12dp"
-        android:layout_marginTop="5dp"
-        android:layout_toRightOf="@id/article_row_image_container"
-        android:orientation="vertical" >
+        android:layout_toLeftOf="@id/article_row_image_container"
+        android:orientation="vertical"
+        android:paddingBottom="2dp"
+        android:paddingTop="11sp" >
 
         <TextView
             android:id="@+id/article_row_text_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:ellipsize="end"
             android:maxLines="3"
+            android:paddingLeft="5dp"
             android:text="Ubuntu 12.10 Ditches ‘Messaging Menu’ Pips, Updates Icons but what happens with it goes on"
-            android:textStyle="bold" />
+            android:textSize="16sp" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/article_row_image_container"
+        android:paddingBottom="2dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="5dp"
+        android:paddingTop="3dp" >
 
         <TextView
             android:id="@+id/article_row_text_author"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/article_row_text_title"
+            android:layout_alignParentLeft="true"
             android:maxLines="1"
             android:text="by Joey Sneddon"
             android:textAppearance="?android:attr/textAppearance"
-            android:textColor="#808080"
+            android:textColor="@color/Grey.9"
             android:textSize="11sp"
             android:typeface="normal" />
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/article_row_pip"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:layout_marginRight="5dp" >
 
         <TextView
-            android:id="@+id/textView1"
+            android:id="@+id/article_row_text_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text=">"
-            android:textColor="#a0a0a0"
-            android:textStyle="bold" />
+            android:layout_alignParentRight="true"
+            android:text="4 days ago"
+            android:textColor="@color/Grey.9"
+            android:textSize="11sp" />
 
     </RelativeLayout>
 

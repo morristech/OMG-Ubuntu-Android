@@ -6,8 +6,9 @@
     <uses-sdk
         android:minSdkVersion="8"
         android:targetSdkVersion="15" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.INTERNET"/>
+
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:icon="@drawable/ic_plain_launcher"
@@ -19,16 +20,25 @@
             android:label="@string/title_activity_main" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".AuthorsActivity"
-            android:label="@string/title_activity_authors" >
+            android:name=".ArticleActivity"
+            android:label="@string/app_name"
+            android:noHistory="true" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.actionbarsherlock.app.SherlockFragmentActivity" />
+                android:value="com.ohso.omgubuntu.BaseActivity" />
+            <intent-filter>
+                <data
+                    android:host="www.omgubuntu.co.uk"
+                    android:scheme="http" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <action android:name="android.intent.action.VIEW" />
+            </intent-filter>
         </activity>
     </application>
 

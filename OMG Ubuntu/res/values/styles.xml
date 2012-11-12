@@ -1,15 +1,8 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
     <style name="Theme.Styled" parent="Theme.Sherlock.Light.DarkActionBar">
-        <item name="vpiTabPageIndicatorStyle">@style/Tab.Themed</item>
     </style>
     <style name="SidebarTheme.Styled" parent="Theme.Sherlock.NoActionBar" />
-    <style name="Tab.Themed" parent="Widget.TabPageIndicator">
-        <item name="android:background">@drawable/tab_container</item>
-        <item name="android:textAllCaps">true</item>
-        <item name="android:textSize">10dp</item>
-        <item name="android:textColor">@drawable/tab_indicator_unpressed_text</item>
-        <item name="android:height">30dp</item>
-        <item name="android:paddingTop">5dp</item>
-        <item name="android:paddingBottom">5dp</item>
+    <style name="Button.Categories" parent="@android:attr/buttonStyleSmall">
+        <item name="android:background">@drawable/category_button</item>
     </style>
 </resources>

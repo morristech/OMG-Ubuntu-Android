@@ -2,6 +2,8 @@ package com.ohso.util.rss;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -19,19 +21,21 @@ import android.sax.RootElement;
 import android.sax.StartElementListener;
 import android.text.Html;
 import android.text.Html.ImageGetter;
-import android.util.Log;
 import android.util.Xml;
 
-public class RSSHandler extends DefaultHandler {
-    private RSSItems items;
-    private RSSItem  item;
+import com.ohso.omgubuntu.sqlite.Article;
+import com.ohso.omgubuntu.sqlite.Articles;
+
+public class ArticlesHandler extends DefaultHandler {
+    private Articles items;
+    private Article  item;
     private DateFormat pubDateFormatter = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss ZZZZ");
 
-    public RSSHandler() {
-        items = new RSSItems();
+    public ArticlesHandler() {
+        items = new Articles();
     }
 
-    public RSSItems parse(InputStream is) {
+    public Articles parse(InputStream is) {
         RootElement root = new RootElement("rss");
         Element chanElement = root.getChild("channel");
 
@@ -40,13 +44,14 @@ public class RSSHandler extends DefaultHandler {
         Element itemAuthor = chanItem.getChild("http://purl.org/dc/elements/1.1/", "creator");
         Element itemLink = chanItem.getChild("link");
         Element itemDescription = chanItem.getChild("description");
+        Element itemContent = chanItem.getChild("http://purl.org/rss/1.0/modules/content/", "encoded");
         Element itemCategory = chanItem.getChild("category");
         Element itemDate = chanItem.getChild("pubDate");
 
         chanItem.setStartElementListener(new StartElementListener() {
             @Override
             public void start(Attributes attributes) {
-                item = new RSSItem();
+                item = new Article();
             }
         });
 
@@ -74,7 +79,13 @@ public class RSSHandler extends DefaultHandler {
         itemLink.setEndTextElementListener(new EndTextElementListener() {
             @Override
             public void end(String body) {
-                item.setLink(body);
+                URI path = null;
+                try {
+                    path = new URI(body);
+                } catch (URISyntaxException e) {
+                    e.printStackTrace();
+                }
+                item.setPath(path.getPath());
             }
         });
 
@@ -83,14 +94,24 @@ public class RSSHandler extends DefaultHandler {
             public void end(String body) {
                 String thumb = new Thumbnail(body).getThumbnail();
                 item.setThumb(thumb);
+                // TODO what's going here? Extra garbled char at start due to stripping tags?
+                item.setSummary(Html.fromHtml(body).toString());
+            }
+        });
+
+        itemContent.setEndTextElementListener(new EndTextElementListener() {
+            @Override
+            public void end(String body) {
+                item.setContent(body);
             }
         });
 
         itemCategory.setEndTextElementListener(new EndTextElementListener() {
             @Override
             public void end(String body) {
-                // TODO implement addCategory() as String[]
-                item.addCategory(body);
+                if(Character.isUpperCase(body.charAt(0))) {
+                    item.addCategory(body);
+                }
             }
         });
 
@@ -101,11 +122,9 @@ public class RSSHandler extends DefaultHandler {
                 try {
                     date = pubDateFormatter.parse(body);
                 } catch (ParseException e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
-                Log.i("OMG!", "Got date: "+date);
-                item.setDate(date);
+                item.setDate(date.getTime());
             }
         });
 
@@ -120,7 +139,6 @@ public class RSSHandler extends DefaultHandler {
         return null; // :(
 
     }
-
     private class Thumbnail implements ImageGetter {
         private String thumbnailSrc;
 
@@ -130,8 +148,6 @@ public class RSSHandler extends DefaultHandler {
 
         @Override
         public Drawable getDrawable(String source) {
-            // TODO Send this to the thumbnail handler
-            // Probably best to wait until article is in db, then we can get thumbnails
             thumbnailSrc = source;
             return null;
         }

@@ -3,19 +3,13 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:gravity="left" >
-    <fragment
-        android:name="com.ohso.omgubuntu.SidebarFragment"
+    <RelativeLayout
+        android:id="@+id/fragment_sidebar_container"
         android:layout_width="wrap_content"
         android:layout_height="match_parent" />
 	<RelativeLayout
 	    android:id="@+id/fragment_articles_container"
 	    android:layout_width="wrap_content"
 	    android:background="@android:color/background_light"
-	    android:layout_height="match_parent">
-		<fragment
-		    android:id="@+id/fragment_articles_fragment"
-		    android:name="com.ohso.omgubuntu.ArticlesFragmentTab"
-		    android:layout_width="fill_parent"
-		    android:layout_height="match_parent" />
-	</RelativeLayout>
+	    android:layout_height="match_parent" />
 </RelativeLayout>

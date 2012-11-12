@@ -1,10 +1,10 @@
 package com.ohso.omgubuntu;
 
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources.NotFoundException;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 
 import com.actionbarsherlock.app.ActionBar;
@@ -12,17 +12,22 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.MenuItem;
 
 /**
- * The Class BaseActivity.
+ * The Class BaseActivity that contains the default sidebar for the application
  *
  * @author Sam Tran <samvtran@gmail.com>
  */
 public abstract class BaseActivity extends SherlockFragmentActivity implements SidebarFragment.OnSidebarClickListener {
     protected boolean         sidebarFragmentActive = false;
+
+ // Useful for disabling certain actions whilst the sidebar is still transitioning
+    public boolean         sidebarFragmentTransitionComplete = true;
+    protected SidebarFragment sidebar;
+//    protected FrameLayout sidebarFragmentLayout;
+//    protected int sidebarFragmentLayoutOffset;
     protected FragmentManager fragmentManager       = getSupportFragmentManager();
-    public static ActionBar actionBar;
+    protected ActionBar actionBar;
 
     private int layoutResourceId;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,6 +36,15 @@ public abstract class BaseActivity extends SherlockFragmentActivity implements S
         } catch (NotFoundException e) {
             throw new NotFoundException(getClass().toString() + " must provide a layout resource id.");
         }
+        sidebar = new SidebarFragment();
+
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.add(R.id.fragment_sidebar_container, sidebar);
+        fragmentTransaction.commit();
+
+//        sidebarFragmentLayout = (FrameLayout) findViewById(R.id.sidebar_fragment_overlay);
+//        sidebarFragmentLayoutOffset = sidebarFragmentLayout.getChildAt(0).getWidth();
+
         actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
     }
@@ -43,7 +57,6 @@ public abstract class BaseActivity extends SherlockFragmentActivity implements S
     protected int getLayoutResourceId() { return layoutResourceId; }
     protected void setLayoutResourceId(int layoutResourceId) { this.layoutResourceId = layoutResourceId; }
 
-    //protected void setLayoutResourceId(int layoutResourceId) { layoutResourceId = this.layoutResourceId; }
 
     /**
      * Gets the default ActionBar
@@ -81,8 +94,9 @@ public abstract class BaseActivity extends SherlockFragmentActivity implements S
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        if (sidebarFragmentActive) sidebarFragmentActive = false;
+        //if (sidebarFragmentActive) sidebarFragmentActive = false;
+        if (sidebarFragmentActive) toggleSidebarFragment();
+        else super.onBackPressed();
     }
 
     @Override
@@ -96,7 +110,7 @@ public abstract class BaseActivity extends SherlockFragmentActivity implements S
      * Toggle sidebar fragment.
      *
      */
-    protected void toggleSidebarFragment() {
+    public void toggleSidebarFragment() {
         // TODO This might do something else...one day
         sidebarFragmentActive = !sidebarFragmentActive;
     }
@@ -108,22 +122,7 @@ public abstract class BaseActivity extends SherlockFragmentActivity implements S
      */
     //protected abstract int getSidebarResourceContainer();
 
-    public void onSidebarItemClicked(String name, boolean onActiveActivity) {
-        Log.i("OMG!", "Got sidebar click.");
-        toggleSidebarFragment();
-        if (onActiveActivity) {
-            Log.i("OMG!", "On active activity. Not leaving.");
-            return;
-        }
-
-        // TODO: Switch active fragment instead
-        if (name.equals("Home")) {
-            Intent homeIntent = new Intent(this, MainActivity.class);
-            homeIntent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-            Log.i("OMG!", "Going home.");
-            startActivity(homeIntent);
-        } else if (name.equals("Authors")) {}
-    }
+    public void onSidebarItemClicked(String name, boolean onActiveActivity) {}
 
     public void onSidebarLostFocus() {
         Log.i("OMG!", "Sidebar lost focus.");

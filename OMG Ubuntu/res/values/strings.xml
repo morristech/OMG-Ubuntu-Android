@@ -7,10 +7,10 @@
     <string name="menu_unstar">Unstar</string>
     <string name="title_activity_main">OMG! Ubuntu!</string>
     <string name="article_image_description">Thumbnail image for an article</string>
-    <string name="connection_error">Could not connect to feed.</string>
-    <string name="xml_error">Could not parse XML feed.</string>
+    <string name="connection_error">Couldn\'t connect. Try again later.</string>
+    <string name="xml_error">Couldn\'t read</string>
 
-    <string-array name="actionbar_categories">
+    <string-array name="omg_categories">
         <item>Latest News</item>
         <item>News</item>
         <item>App</item>
@@ -18,9 +18,8 @@
     </string-array>
     <string-array name="sidebar_fragment_items">
         <item>Home</item>
-        <item>Authors</item>
         <item>Starred</item>
-        <item>Reading List</item>
+        <item>Categories</item>
         <item>About</item>
     </string-array>
 

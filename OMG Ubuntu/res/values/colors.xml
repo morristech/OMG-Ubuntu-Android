@@ -7,5 +7,7 @@
     <color name="Grey.5">#555</color>
     <color name="Grey.C">#ccc</color>
     <color name="Grey.ED">#ededed</color>
+    <color name="Aubergine">#4d1f41</color>
+    <color name="Ubuntu.Transparent">#ccdd4814</color>
     
 </resources>

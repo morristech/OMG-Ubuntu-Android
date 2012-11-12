@@ -13,12 +13,11 @@ import android.widget.ListView;
 
 public class SidebarFragment extends ListFragment {
     private OnSidebarClickListener mCallback;
-    public static String           sActiveActivity = "Home";
+    protected String           sActiveFragment = "Home";
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Context context = new ContextThemeWrapper(getActivity(), R.style.SidebarTheme_Styled);
         LayoutInflater localInflator = inflater.cloneInContext(context);
-
         View v = localInflator.inflate(R.layout.fragment_sidebar, container, false);
         return v;
     }
@@ -28,7 +27,7 @@ public class SidebarFragment extends ListFragment {
         super.onListItemClick(l, v, position, id);
         String name = (String) l.getItemAtPosition(position);
         boolean onActiveActivity = false;
-        if (sActiveActivity.equals(name)) onActiveActivity = true;
+        if (sActiveFragment.equals(name)) onActiveActivity = true;
         Log.i("OMG!", "Got menu item: " + name);
         mCallback.onSidebarItemClicked(name, onActiveActivity);
 

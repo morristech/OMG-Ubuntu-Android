@@ -1,14 +1,72 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent" >
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:text="Hello"
-        tools:context=".ArticleActivity" />
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/activity_article"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="vertical" >
 
-</RelativeLayout>
+	   <RelativeLayout
+	       android:layout_width="match_parent"
+	       android:layout_height="wrap_content"
+	       android:background="@android:color/white" >
+
+			<TextView
+			    android:id="@+id/activity_article_title"
+			    android:layout_width="match_parent"
+			    android:layout_height="wrap_content"
+			    android:layout_alignParentLeft="true"
+			    android:layout_alignParentRight="true"
+			    android:layout_alignParentTop="true"
+			    android:layout_marginLeft="10dp"
+			    android:layout_marginRight="10dp"
+			    android:layout_marginTop="5dp"
+			    android:fontFamily="Roboto"
+			    android:text="Ubuntu 13.04 Daily Builds Go Live"
+			    android:textColor="@color/Ubuntu"
+			    android:textSize="32dp" />
+
+			<TextView
+			    android:id="@+id/activity_article_byline"
+			    android:layout_width="wrap_content"
+			    android:layout_height="wrap_content"
+			    android:layout_alignParentLeft="true"
+			    android:layout_below="@id/activity_article_title"
+			    android:layout_marginBottom="5dp"
+			    android:layout_marginLeft="10dp"
+			    android:layout_marginRight="10dp"
+			    android:layout_marginTop="5dp"
+			    android:fontFamily="Roboto"
+			    android:text="by Joey Sneddon"
+			    android:textColor="@color/Grey.6" />
+
+			<TextView
+			    android:id="@+id/activity_article_date"
+			    android:layout_width="wrap_content"
+			    android:layout_height="wrap_content"
+			    android:layout_alignParentRight="true"
+			    android:layout_alignTop="@id/activity_article_byline"
+			    android:layout_below="@id/activity_article_title"
+			    android:layout_marginLeft="5dp"
+			    android:layout_marginRight="10dp"
+			    android:layout_toRightOf="@id/activity_article_byline"
+			    android:fontFamily="Roboto"
+			    android:gravity="right"
+			    android:text="35 minutes ago"
+			    android:textColor="@color/Grey.9" />
+		
+		    <WebView
+		        android:id="@+id/activity_article_webview"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_alignParentLeft="true"
+		        android:layout_below="@+id/activity_article_byline"
+		        android:layout_marginLeft="10dp"
+		        android:layout_marginRight="10dp"
+		        android:scrollbars="vertical|horizontal" />
+       
+        </RelativeLayout>
+    </ScrollView>
+
+    
+

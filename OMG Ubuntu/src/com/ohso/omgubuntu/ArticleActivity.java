@@ -10,13 +10,15 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.text.format.DateUtils;
-import android.util.Log;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.TextView;
 
 import com.actionbarsherlock.app.ActionBar;
@@ -38,6 +40,7 @@ public class ArticleActivity extends SherlockFragmentActivity implements OnArtic
     private TextView byline;
     private TextView dateView;
     private MenuItem refresh;
+    public static final String INTERNAL_ARTICLE_PATH_INTENT = "article_path";
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
@@ -49,6 +52,8 @@ public class ArticleActivity extends SherlockFragmentActivity implements OnArtic
         setContentView(R.layout.activity_article);
         webview = (WebView) findViewById(R.id.activity_article_webview);
         webview.getSettings().setJavaScriptEnabled(true);
+        webview.setWebViewClient(new ArticleWebViewClient(this));
+
         titleView = (TextView) findViewById(R.id.activity_article_title);
         dateView = (TextView) findViewById(R.id.activity_article_date);
         Typeface robotoLight = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Light.ttf");
@@ -58,14 +63,19 @@ public class ArticleActivity extends SherlockFragmentActivity implements OnArtic
         URL article_uri = null;
         try {
            article_uri = new URL(getIntent().getDataString());
-        } catch (MalformedURLException e) {
-            // We want to know if there's a URL or not
-        }
+        } catch (MalformedURLException e) {}
 
         if (article_uri == null) { // We're opening from the application
-            activeArticle = getIntent().getExtras().getString("article_path");
+            activeArticle = getIntent().getExtras().getString(INTERNAL_ARTICLE_PATH_INTENT);
+            SharedPreferences sharedPref = getSharedPreferences(OMGUbuntuApplication.PREFS_FILE, 0);
+            String lastPath = sharedPref.getString(NotificationService.LAST_NOTIFIED_PATH, null);
+            if (lastPath != null && lastPath.equals(activeArticle)) {
+                Editor editor = sharedPref.edit();
+                editor.putString(NotificationService.LAST_NOTIFIED_PATH, null);
+                editor.commit();
+                ArticlesWidgetProvider.notifyUpdate(this, 0);
+            }
         } else { // We're opening from an external application
-            Log.i("OMG!", "Using article "+ article_uri.getPath());
             activeArticle = article_uri.getPath();
         }
 
@@ -74,12 +84,31 @@ public class ArticleActivity extends SherlockFragmentActivity implements OnArtic
         openArticle();
     }
 
+    private class ArticleWebViewClient extends WebViewClient {
+        private Context mContext;
+        public ArticleWebViewClient(Context context) {
+            mContext = context;
+        }
+        @Override
+        public boolean shouldOverrideUrlLoading(WebView view, String url) {
+            if(Uri.parse(url).getScheme().equals("internal") && Uri.parse(url).getHost().equals("app-comments")) {
+                Intent commentIntent = new Intent(mContext, CommentsActivity.class);
+                commentIntent.putExtra(CommentsActivity.COMMENTS_URL, currentArticle.getPath());
+                startActivity(commentIntent);
+            } else {
+                Intent browseIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                browseIntent.addCategory(Intent.CATEGORY_BROWSABLE);
+                startActivity(browseIntent);
+            }
+            return true;
+        }
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getSupportMenuInflater().inflate(R.menu.activity_article, menu);
         refresh = menu.findItem(R.id.activity_article_menu_refresh);
-        // TODO show star/unstarred
-        if (currentArticle.isStarred()) {
+        if (currentArticle != null && currentArticle.isStarred()) {
             menu.findItem(R.id.activity_article_menu_starred).setVisible(true);
         } else {
             menu.findItem(R.id.activity_article_menu_unstarred).setVisible(true);
@@ -123,6 +152,11 @@ public class ArticleActivity extends SherlockFragmentActivity implements OnArtic
                 articleSource.close();
                 invalidateOptionsMenu();
                 return true;
+            case R.id.activity_article_menu_comments:
+                Intent commentIntent = new Intent(this, CommentsActivity.class);
+                commentIntent.putExtra(CommentsActivity.COMMENTS_URL, currentArticle.getPath());
+                startActivity(commentIntent);
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -130,7 +164,6 @@ public class ArticleActivity extends SherlockFragmentActivity implements OnArtic
     }
 
     private void openArticle() {
-        //final ArticleDataSource articleSource = new ArticleDataSource(this);
         articleSource.open();
         Article article = articleSource.getArticle(activeArticle, true);
         if (article == null) {
@@ -145,7 +178,7 @@ public class ArticleActivity extends SherlockFragmentActivity implements OnArtic
                 }
                 @Override
                 public void articleError() {
-                    DialogFragment fragment = new AlertDialogFragment();
+                    DialogFragment fragment = AlertDialogFragment.newInstance(activeArticle);
                     fragment.show(getSupportFragmentManager(), "article_error");
                     articleSource.close();
                 }
@@ -162,6 +195,7 @@ public class ArticleActivity extends SherlockFragmentActivity implements OnArtic
             }
 
         }
+        invalidateOptionsMenu();
     }
 
     private void setContents(Article article) {
@@ -173,8 +207,9 @@ public class ArticleActivity extends SherlockFragmentActivity implements OnArtic
         content.append("<!DOCTYPE html><head><link rel='stylesheet' type='text/css' href='style.css'></head>");
         content.append("<body><div class='post'>");
         content.append(article.getContent());
-        content.append("</div></body></html>");
-        webview.loadDataWithBaseURL("file:///android_asset/", content.toString(), "text/html", "UTF-8", getResources().getString(R.string.rss_base_url) + article.getPath().substring(1));
+        content.append("<h2 class='internal-comments-link'><a href='internal://app-comments'>"+
+                getResources().getString(R.string.activity_article_comment_text) +"</a></h2></div></body></html>");
+        webview.loadDataWithBaseURL("file:///android_asset/", content.toString(), "text/html", "UTF-8", getResources().getString(R.string.base_url) + article.getPath());
     }
 
     private void refreshArticle() {
@@ -187,6 +222,7 @@ public class ArticleActivity extends SherlockFragmentActivity implements OnArtic
         refresh.setActionView(null);
         ArticleDataSource articleSource = new ArticleDataSource(this);
         articleSource.open();
+        result.setUnread(0);
         Article article = articleSource.updateArticle(result);
         currentArticle = article;
         setContents(article);
@@ -196,31 +232,44 @@ public class ArticleActivity extends SherlockFragmentActivity implements OnArtic
 
     @Override
     public void articleError() {
-        DialogFragment fragment = new AlertDialogFragment();
+        DialogFragment fragment = AlertDialogFragment.newInstance(activeArticle);
         fragment.show(getSupportFragmentManager(), "article_error");
     }
 
-    private class AlertDialogFragment extends DialogFragment {
+    public static class AlertDialogFragment extends DialogFragment {
+        private static final String ACTIVE_ARTICLE = "active_article";
+
+        public static AlertDialogFragment newInstance(String activeArticle) {
+            AlertDialogFragment fragment = new AlertDialogFragment();
+            Bundle args = new Bundle();
+            args.putString(ACTIVE_ARTICLE, activeArticle);
+            fragment.setArguments(args);
+            return fragment;
+        }
+
+        public String getArticlePath() {
+            return getArguments().getString(ACTIVE_ARTICLE);
+        }
 
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
-            //return super.onCreateDialog(savedInstanceState);
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            builder.setMessage("Couldn't get the article. Would you like to open it in an external browser?");
+            builder.setMessage(getResources().getString(R.string.article_fetch_error));
             builder.setPositiveButton("Open", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    Intent external = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.omgubuntu.co.uk" + activeArticle));
+                    Intent external = new Intent(Intent.ACTION_VIEW, Uri.parse(getResources().getString(R.string.base_url)
+                            + getArticlePath()));
                     external.addCategory(Intent.CATEGORY_BROWSABLE);
-                    Intent chooser = Intent.createChooser(external, "Reopen this article in");
+                    Intent chooser = Intent.createChooser(external, getResources().getString(R.string.article_fetch_error_dialog));
                     startActivity(chooser);
-                    finish();
+                    getActivity().finish();
                 }
             });
             builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    finish();
+                    getActivity().finish();
                 }
             });
             return builder.create();

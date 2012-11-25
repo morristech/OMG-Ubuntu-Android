@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/transparent"
+    android:orientation="vertical" >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:background="@color/White.B.Transparent"
+        android:layout_height="50dp"
+        android:orientation="horizontal"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:showDividers="end" >
+
+        <ImageView
+            android:id="@+id/widget_articles_logo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/app_logo_description"
+            android:maxHeight="50dp"
+            android:maxWidth="50dp"
+            android:paddingBottom="3dp"
+            android:paddingTop="3dp"
+            android:src="@drawable/launcher" />
+
+        <LinearLayout
+            android:id="@+id/widget_articles_texts"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="5dp"
+            android:layout_weight="2"
+            android:gravity="center_vertical"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/textView1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/app_name"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@android:color/primary_text_light" />
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/widget_articles_list_title"
+                android:textColor="@android:color/primary_text_light" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/widget_articles_count"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@color/Grey.Holo"
+            android:textStyle="bold" />
+        <RelativeLayout
+            android:id="@+id/widget_articles_refresh_container"
+            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center">
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/widget_articles_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/widget_articles_divider"
+        android:paddingTop="2dp"
+        android:paddingBottom="2dp"
+        android:divider="@color/Grey.ED"
+        android:dividerHeight="1dp" >
+
+    </ListView>
+
+    <TextView
+        android:id="@+id/widget_articles_list_empty"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/widget_articles_divider"
+        android:paddingLeft="10dp"
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp"
+        android:text="@string/widget_articles_list_empty_title"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@android:color/primary_text_light" />
+
+</LinearLayout>

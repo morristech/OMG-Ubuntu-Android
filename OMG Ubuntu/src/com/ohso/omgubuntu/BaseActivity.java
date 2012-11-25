@@ -10,6 +10,7 @@ import android.util.Log;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.MenuItem;
+import com.ohso.util.ImageHandler;
 
 /**
  * The Class BaseActivity that contains the default sidebar for the application
@@ -17,15 +18,15 @@ import com.actionbarsherlock.view.MenuItem;
  * @author Sam Tran <samvtran@gmail.com>
  */
 public abstract class BaseActivity extends SherlockFragmentActivity implements SidebarFragment.OnSidebarClickListener {
-    protected boolean         sidebarFragmentActive = false;
+    protected static boolean         sidebarFragmentActive = false;
 
  // Useful for disabling certain actions whilst the sidebar is still transitioning
     public boolean         sidebarFragmentTransitionComplete = true;
     protected SidebarFragment sidebar;
-//    protected FrameLayout sidebarFragmentLayout;
-//    protected int sidebarFragmentLayoutOffset;
+    private ImageHandler imageHandler;
     protected FragmentManager fragmentManager       = getSupportFragmentManager();
     protected ActionBar actionBar;
+    private MenuItem refreshMenuItem;
 
     private int layoutResourceId;
     @Override
@@ -37,17 +38,28 @@ public abstract class BaseActivity extends SherlockFragmentActivity implements S
             throw new NotFoundException(getClass().toString() + " must provide a layout resource id.");
         }
         sidebar = new SidebarFragment();
+        imageHandler = new ImageHandler(this);
 
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.add(R.id.fragment_sidebar_container, sidebar);
         fragmentTransaction.commit();
 
-//        sidebarFragmentLayout = (FrameLayout) findViewById(R.id.sidebar_fragment_overlay);
-//        sidebarFragmentLayoutOffset = sidebarFragmentLayout.getChildAt(0).getWidth();
-
         actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
     }
+
+
+
+
+    public ImageHandler getImageHandler() { return imageHandler; }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        imageHandler.closeCache();
+    }
+
+    public MenuItem getRefreshMenuItem() { return refreshMenuItem; }
 
     /**
      * Gets the layout resource id.
@@ -75,11 +87,11 @@ public abstract class BaseActivity extends SherlockFragmentActivity implements S
      * @param item MenuItem corresponding to the actionBar item selected.
      * @return true (consumed selection)
      */
-    public boolean actionBarItemSelected(MenuItem item) {
-        // TODO Auto-generated method stub
-        Log.i("OMG!", "Something pressed in home view!");
-        return true;
-    }
+//    public boolean actionBarItemSelected(MenuItem item) {
+//        // TODO Auto-generated method stub
+//        Log.i("OMG!", "Something pressed in home view!");
+//        return true;
+//    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -88,13 +100,13 @@ public abstract class BaseActivity extends SherlockFragmentActivity implements S
                 toggleSidebarFragment();
                 return true;
             default:
-                return actionBarItemSelected(item);
+                //return actionBarItemSelected(item);
+                return super.onOptionsItemSelected(item);
         }
     }
 
     @Override
     public void onBackPressed() {
-        //if (sidebarFragmentActive) sidebarFragmentActive = false;
         if (sidebarFragmentActive) toggleSidebarFragment();
         else super.onBackPressed();
     }
@@ -115,6 +127,10 @@ public abstract class BaseActivity extends SherlockFragmentActivity implements S
         sidebarFragmentActive = !sidebarFragmentActive;
     }
 
+    public static boolean isSidebarActive() {
+        return sidebarFragmentActive;
+    }
+
     /**
      * Gets the resource container to add the sidebar to.
      *
@@ -124,8 +140,4 @@ public abstract class BaseActivity extends SherlockFragmentActivity implements S
 
     public void onSidebarItemClicked(String name, boolean onActiveActivity) {}
 
-    public void onSidebarLostFocus() {
-        Log.i("OMG!", "Sidebar lost focus.");
-        toggleSidebarFragment();
-    }
 }

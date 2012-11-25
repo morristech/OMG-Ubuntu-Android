@@ -1,93 +1,82 @@
 package com.ohso.omgubuntu;
 
-import android.app.ActionBar.LayoutParams;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ListView;
+import java.util.ArrayList;
+import java.util.List;
 
-import com.handmark.pulltorefresh.library.PullToRefreshBase;
-import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
-import com.ohso.omgubuntu.sqlite.ArticleDataSource;
+import android.content.res.Resources;
+import android.content.res.TypedArray;
+
+import com.actionbarsherlock.app.ActionBar;
+import com.ohso.omgubuntu.sqlite.Article;
 import com.ohso.omgubuntu.sqlite.Articles;
-import com.ohso.omgubuntu.sqlite.Articles.OnArticlesLoaded;
-import com.ohso.util.ImageHandler;
+import com.ohso.omgubuntu.sqlite.Category;
 
-public class CategoriesFragment extends BaseFragment implements OnRefreshListener<ListView>,
-        OnItemClickListener, OnArticlesLoaded {
-    private Articles articles = new Articles();
-    private ImageHandler imageHandler;
-    private String activeCategory;
-    private ArticleAdapter mAdapter;
-    public CategoriesFragment() {
-        setTitle("Categories");
-    }
+public class CategoriesFragment extends BaseFragment implements ActionBar.OnNavigationListener {
+    private static int lastActiveCategory = 0;
+    private List<Category> categories = new ArrayList<Category>();
+
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        listView = new BasePullToRefreshListView(getActivity());
-        listView.setOnRefreshListener(this);
-        listView.setOnScrollListener(this);
-        listView.setDisableScrollingWhileRefreshing(true);
-        listView.setBackgroundResource(R.drawable.list_bg);
-        listView.getRefreshableView().setBackgroundResource(R.drawable.list_bg);
-        listView.getRefreshableView().setDividerHeight(0);
-        listView.setLayoutParams(new ListView.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
-        listView.setOnItemClickListener(this);
-
-        imageHandler = new ImageHandler(getActivity());
-        ArticleDataSource dataSource = new ArticleDataSource(getActivity());
+    public void getData() {
+        if (categories.isEmpty()) populateData();
         dataSource.open();
-        articles = dataSource.getArticles(false);
+        Articles newData = dataSource.getArticlesWithCategory(categories.get(lastActiveCategory).getName(), false);
         dataSource.close();
-        //TODO also trigger refresh if first article is ages old.
-        if (articles.isEmpty()) {
-            listView.setRefreshing();
-            articles.getLatest(this);
-            //articles.getCategory(activeCategory);
+        articles.clear();
+        for (Article article : newData) {
+            articles.add(article);
         }
-
-        mAdapter = new ArticleAdapter(getActivity(), R.layout.article_row, R.id.article_row_text_title, articles);
-        listView.setAdapter(mAdapter);
-        return listView;
-    }
-    @Override
-    public void onRefresh(PullToRefreshBase<ListView> refreshView) {
-        // TODO Auto-generated method stub
-
-    }
-    @Override
-    public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-        // TODO Auto-generated method stub
-
-    }
-    @Override
-    public void articlesLoaded(Articles result) {
-        // TODO Auto-generated method stub
-
+        ((ArticleAdapter) getListAdapter()).notifyDataSetChanged();
     }
 
     @Override
-    public void onDestroy() {
-        Log.i("OMG!", "DESTROYED");
-        imageHandler.closeCache();
-        super.onDestroy();
+    public void setActionBar() {
+        if (categories.isEmpty()) populateData();
+        actionBar.setTitle("");
+        CategoryAdapter list = new CategoryAdapter(actionBar.getThemedContext(), R.layout.sherlock_spinner_item, categories);
+        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+        actionBar.setListNavigationCallbacks(list, this);
+        actionBar.setSelectedNavigationItem(lastActiveCategory);
     }
 
     @Override
-    public void onDetach() {
-        Log.i("OMG!", "DETACHED");
-        imageHandler.closeCache();
-        super.onDetach();
+    public boolean onNavigationItemSelected(int itemPosition, long itemId) {
+        lastActiveCategory = itemPosition;
+        dataSource.open();
+        Articles articlesInCategory = dataSource.getArticlesWithCategory(categories.get(lastActiveCategory).getName(), false);
+        dataSource.close();
+        if (articlesInCategory.isEmpty()) {
+            articles.clear();
+            ((ArticleAdapter) getListAdapter()).notifyDataSetChanged();
+            setRefreshing();
+            getNewData();
+        } else {
+            articles.clear();
+            for (Article article : articlesInCategory) {
+                articles.add(article);
+            }
+            ((ArticleAdapter) getListAdapter()).notifyDataSetChanged();
+        }
+        return true;
     }
+
     @Override
-    public void articlesError() {
-        // TODO Auto-generated method stub
-
+    public void setRefreshing() {
+        super.setRefreshing();
+        articles.getLatestInCategory(this, categories.get(lastActiveCategory).getName());
     }
 
+    private void populateData() {
+        Resources res = getActivity().getResources();
+        TypedArray data = res.obtainTypedArray(R.array.category_list);
+        for (int i = 0; i < data.length(); i++) {
+            int id = data.getResourceId(i, 0);
+            String[] cat = res.getStringArray(id);
+            if (id > 0) categories.add(new Category(res.getResourceEntryName(id), cat[0]));
+        }
+    }
 
+    @Override
+    protected void getNewData() {
+        articles.getLatestInCategory(this, categories.get(lastActiveCategory).getName());
+    }
 }

@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.ohso.omgubuntu"
     android:versionCode="1"
@@ -5,41 +6,108 @@
 
     <uses-sdk
         android:minSdkVersion="8"
-        android:targetSdkVersion="15" />
+        android:targetSdkVersion="17" />
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
+    <supports-screens android:anyDensity="true" />
 
     <application
-        android:icon="@drawable/ic_plain_launcher"
+        android:name="com.ohso.omgubuntu.OMGUbuntuApplication"
+        android:allowBackup="true"
+        android:icon="@drawable/launcher"
         android:label="@string/app_name"
-        android:name="OMGUbuntuApplication"
         android:theme="@style/Theme.Styled" >
         <activity
-            android:name=".MainActivity"
+            android:name="com.ohso.omgubuntu.MainActivity"
             android:configChanges="orientation|screenSize"
-            android:label="@string/title_activity_main" android:launchMode="singleTop">
+            android:label="@string/title_activity_main"
+            android:launchMode="singleTop" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".ArticleActivity"
+            android:name="com.ohso.omgubuntu.ArticleActivity"
+            android:exported="false"
             android:label="@string/app_name" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.ohso.omgubuntu.BaseActivity" />
+
             <intent-filter>
                 <data
                     android:host="www.omgubuntu.co.uk"
                     android:pathPattern="/2.*"
                     android:scheme="http" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-               
+
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>
+        </activity>
+
+        <service
+            android:name="com.ohso.omgubuntu.NotificationService"
+            android:enabled="true"
+            android:exported="false"
+            android:label="Latest Articles Notification Service" >
+        </service>
+        <service
+            android:name="com.ohso.omgubuntu.ArticlesWidgetService"
+            android:enabled="true"
+            android:exported="false"
+            android:label="Articles Widget Service"
+            android:permission="android.permission.BIND_REMOTEVIEWS" >
+        </service>
+
+        <receiver
+            android:name="com.ohso.omgubuntu.NotificationBroadcastReceiver"
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="com.ohso.omgubuntu.NotificationService.NEW_ARTICLES" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name="com.ohso.omgubuntu.NotificationAlarmGenerator"
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name="com.ohso.omgubuntu.NotificationAlarmReceiver"
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="com.ohso.omgubuntu.BroadcastReceiver.NOTIFICATION_ACTION" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name="com.ohso.omgubuntu.ArticlesWidgetProvider" >
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_articles_info" />
+        </receiver>
+
+        <activity
+            android:name="com.ohso.omgubuntu.ArticleImageActivity"
+            android:label="@string/title_activity_article_image" >
+        </activity>
+        <activity
+            android:name="com.ohso.omgubuntu.CommentsActivity"
+            android:exported="false"
+            android:label="@string/title_activity_comments" >
         </activity>
     </application>
 

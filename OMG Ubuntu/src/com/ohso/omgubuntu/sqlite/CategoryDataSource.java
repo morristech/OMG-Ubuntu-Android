@@ -6,7 +6,6 @@ import java.util.List;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.util.Log;
 
 public class CategoryDataSource extends BaseDataSource {
     private Category categorySpec = new Category();
@@ -15,9 +14,20 @@ public class CategoryDataSource extends BaseDataSource {
         super(context);
     }
 
-    public Category getCategory(String title, boolean path) {
+    public Category getCategoryByTitle(String title, boolean path) {
         Category category = new Category();
         Cursor cursor = database.query("category", categorySpec.getColumnNames(), "title = '" + title + "'", null, null, null, null);
+        if (cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            category = cursorToCategory(cursor, path);
+        } else category = null;
+        cursor.close();
+        return category;
+    }
+
+    public Category getCategoryByName(String name, boolean path) {
+        Category category = new Category();
+        Cursor cursor = database.query("category", categorySpec.getColumnNames(), "name = '" + name + "'", null, null, null, null);
         if (cursor.getCount() > 0) {
             cursor.moveToFirst();
             category = cursorToCategory(cursor, path);
@@ -43,15 +53,12 @@ public class CategoryDataSource extends BaseDataSource {
 
     public void setCategories(String articleId, List<String> categoryTitles) {
         for(String title : categoryTitles) {
-            Log.i("OMG!", "Trying to set category "+title);
-            Category dbCategory = getCategory(title, false);
+            Category dbCategory = getCategoryByTitle(title, false);
             if (dbCategory == null) continue;
             ContentValues values = new ContentValues();
             values.put("category_id", dbCategory.getName());
             values.put("article_id", articleId);
-            if(database.insert("article_category", null, values) > 0) {
-                Log.i("OMG!", "Successfully added "+ title +" for "+articleId);
-            }
+            database.insert("article_category", null, values);
         }
     }
     protected Category cursorToCategory(Cursor cursor, boolean path) {

@@ -26,6 +26,12 @@ public class Category extends BaseTableObject {
         }
     }
 
+    public Category(String name, String title) {
+        setName(name);
+        setTitle(title);
+        setPath(null);
+    }
+
     public void setName(String name) { this.name = name; }
     public String getName() { return name; }
 

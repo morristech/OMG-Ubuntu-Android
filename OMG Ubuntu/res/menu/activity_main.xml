@@ -1,6 +1,5 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/menu_settings"
-        android:title="@string/menu_settings"
-        android:orderInCategory="100"
-        android:showAsAction="never" />
+    
+    <item android:id="@+id/activity_main_menu_refresh" android:title="Refresh" android:icon="@drawable/navigation_refresh" android:visible="true" android:showAsAction="always" android:enabled="true"></item><item android:id="@+id/activity_main_menu_read_all" android:title="Mark all as read" android:showAsAction="ifRoom" android:titleCondensed="Mark as read" android:visible="true" android:enabled="true" android:icon="@drawable/content_read"></item>
+    
 </menu>

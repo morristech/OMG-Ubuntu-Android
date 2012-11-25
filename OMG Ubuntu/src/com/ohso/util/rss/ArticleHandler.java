@@ -2,6 +2,8 @@ package com.ohso.util.rss;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.DateFormat;
@@ -109,7 +111,9 @@ public class ArticleHandler extends DefaultHandler {
         });
 
         try {
-            Xml.parse(is, Xml.Encoding.UTF_8, root.getContentHandler());
+            Reader reader = new InputStreamReader(is);
+            Xml.parse(reader, root.getContentHandler());
+            //Xml.parse(is, Xml.Encoding.UTF_8, root.getContentHandler());
             return item; // :D
         } catch (SAXException e) {
             e.printStackTrace();

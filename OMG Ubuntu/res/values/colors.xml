@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <color name="Ubuntu">#dd4814</color>
+    <color name="Grey.Holo">#9333</color>
     <color name="Grey.3">#333</color>
     <color name="Grey.6">#666</color>
     <color name="Grey.9">#999</color>
@@ -9,5 +11,9 @@
     <color name="Grey.ED">#ededed</color>
     <color name="Aubergine">#4d1f41</color>
     <color name="Ubuntu.Transparent">#ccdd4814</color>
-    
+    <color name="Grey.Sidebar">#2d2d2d</color>
+    <color name="White.9.Transparent">#9fff</color>
+    <color name="White.B.Transparent">#bfff</color>
+    <color name="black_overlay">#66000000</color>
+
 </resources>

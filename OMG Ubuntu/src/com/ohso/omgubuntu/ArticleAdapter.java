@@ -1,9 +1,10 @@
 package com.ohso.omgubuntu;
 
 import java.util.Date;
-import java.util.List;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,14 +19,16 @@ import com.ohso.util.ImageHandler;
 import com.ohso.util.ViewTagger;
 
 public class ArticleAdapter extends ArrayAdapter<Article> {
-    private Articles              data;
+    //private Articles              data;
     private LayoutInflater mInflater;
     private ImageHandler imageHandler;
+    private final Bitmap placeholder;
 
-    public ArticleAdapter(Context context, int resource, int textViewResourceId, List<Article> objects) {
+    public ArticleAdapter(Context context, int resource, int textViewResourceId, Articles objects) {
         super(context, resource, textViewResourceId, objects);
         mInflater = LayoutInflater.from(context);
-        data = (Articles) objects;
+        placeholder = BitmapFactory.decodeResource(context.getResources(), R.drawable.logo);
+        //data = (Articles) objects;
     }
 
     public void setImageHandler(ImageHandler imageHandler) { this.imageHandler = imageHandler; }
@@ -55,8 +58,7 @@ public class ArticleAdapter extends ArrayAdapter<Article> {
             holder = (ViewHolder) ViewTagger.getTag(convertView);
         }
 
-        Article article = new Article();
-        article = data.get(position);
+        Article article = getItem(position);
         CharSequence date = DateUtils.getRelativeTimeSpanString(article.getDate(), new Date().getTime(), DateUtils.MINUTE_IN_MILLIS, DateUtils.FORMAT_ABBREV_RELATIVE);
 
         if(article.isStarred()) {
@@ -70,11 +72,10 @@ public class ArticleAdapter extends ArrayAdapter<Article> {
         } else {
             holder.unread.setVisibility(View.INVISIBLE);
         }
-
         holder.title.setText(article.getTitle());
         holder.author.setText(article.getAuthor());
         holder.time.setText(date);
-        imageHandler.getImage(article.getThumb(), holder.thumb, R.drawable.logo);
+        imageHandler.getImage(article.getThumb(), holder.thumb, placeholder);
         return convertView;
     }
 

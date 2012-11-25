@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLDecoder;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -15,8 +15,10 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.ohso.omgubuntu.MainActivity;
 import com.ohso.omgubuntu.OMGUbuntuApplication;
 import com.ohso.omgubuntu.R;
+import com.ohso.util.UrlFactory;
 import com.ohso.util.rss.FeedParser;
 
 public class Article extends BaseTableObject {
@@ -76,7 +78,14 @@ public class Article extends BaseTableObject {
     public List<String> getCategories() { return categories; }
 
     public void setSummary(String summary) { this.summary = summary; }
-    public String getSummary() { return summary; }
+    public String getSummary() {
+        String formattedSummary = summary;
+        if(formattedSummary.length() > 0 && formattedSummary.substring(0,1).matches("\\W")) {
+            if (MainActivity.DEVELOPER_MODE) Log.d("OMG!", "Got non-word character in summary. Stripping");
+            formattedSummary = formattedSummary.substring(1);
+        }
+        return formattedSummary;
+    }
 
     public void setContent(String content) { this.content = content; }
     public String getContent() { return content; }
@@ -125,9 +134,7 @@ public class Article extends BaseTableObject {
 
         @Override
         protected void onPostExecute(Article result) {
-            //Log.i("OMG!", "Got back " + result.getTitle());
             if (result == null) {
-                // TODO mCallback.articleError();
                 mCallback.articleError();
             } else {
                 mCallback.articleLoaded(result);
@@ -155,9 +162,7 @@ public class Article extends BaseTableObject {
     }
 
     private InputStream downloadUrl(String urlFragment) throws IOException {
-        URL url = new URL(context.getResources().getString(R.string.rss_base_url) +
-                urlFragment + context.getResources().getString(R.string.rss_article_suffix) +
-                URLDecoder.decode(context.getResources().getString(R.string.rss_article_params), "UTF-8"));
+        URL url = new URL(UrlFactory.forArticle(urlFragment));
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         if(context.getResources().getString(R.string.rss_user_agent).length() > 0) {
             conn.setRequestProperty("User-Agent", context.getResources().getString(R.string.rss_user_agent));
@@ -174,6 +179,20 @@ public class Article extends BaseTableObject {
     public interface OnArticleLoaded {
         void articleLoaded(Article result);
         void articleError();
+    }
+
+    public static class Compare implements Comparator<Article> {
+        @Override
+        public int compare(Article lhs, Article rhs) {
+            if (lhs.getDate() < rhs.getDate()) {
+                return -1;
+            } else if (lhs.getDate() > rhs.getDate()) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+
     }
 
 }

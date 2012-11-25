@@ -1,93 +1,75 @@
 package com.ohso.omgubuntu;
 
-import android.app.ActionBar.LayoutParams;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ListView;
 
-import com.handmark.pulltorefresh.library.PullToRefreshBase;
-import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
-import com.ohso.omgubuntu.sqlite.ArticleDataSource;
+import com.ohso.omgubuntu.sqlite.Article;
 import com.ohso.omgubuntu.sqlite.Articles;
-import com.ohso.omgubuntu.sqlite.Articles.OnArticlesLoaded;
-import com.ohso.util.ImageHandler;
 
-public class StarredFragment extends BaseFragment implements OnRefreshListener<ListView>,
-        OnItemClickListener, OnArticlesLoaded {
-    private Articles articles = new Articles();
-    private ImageHandler imageHandler;
-    private String activeCategory;
-    private ArticleAdapter mAdapter;
-    public StarredFragment() {
-        setTitle("Categories");
-    }
+public class StarredFragment extends BaseFragment {
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        listView = new BasePullToRefreshListView(getActivity());
-        listView.setOnRefreshListener(this);
-        listView.setOnScrollListener(this);
-        listView.setDisableScrollingWhileRefreshing(true);
-        listView.setBackgroundResource(R.drawable.list_bg);
-        listView.getRefreshableView().setBackgroundResource(R.drawable.list_bg);
-        listView.getRefreshableView().setDividerHeight(0);
-        listView.setLayoutParams(new ListView.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
-        listView.setOnItemClickListener(this);
+        ((BaseActivity) getActivity()).getSupportActionBar().setTitle("Starred");
+        return super.onCreateView(inflater, container, savedInstanceState);
+    }
 
-        imageHandler = new ImageHandler(getActivity());
-        ArticleDataSource dataSource = new ArticleDataSource(getActivity());
+    @Override
+    protected void getData() {
+        Log.i("OMG!", "Getting data");
         dataSource.open();
-        articles = dataSource.getArticles(false);
+        Articles newData = dataSource.getStarredArticles(false);
         dataSource.close();
-        //TODO also trigger refresh if first article is ages old.
-        if (articles.isEmpty()) {
-            listView.setRefreshing();
-            articles.getLatest(this);
-            //articles.getCategory(activeCategory);
+        articles.clear();
+        for (Article article : newData) {
+            Log.i("OMG!", "Adding " + article.getTitle());
+            articles.add(article);
         }
-
-        mAdapter = new ArticleAdapter(getActivity(), R.layout.article_row, R.id.article_row_text_title, articles);
-        listView.setAdapter(mAdapter);
-        return listView;
-    }
-    @Override
-    public void onRefresh(PullToRefreshBase<ListView> refreshView) {
-        // TODO Auto-generated method stub
-
-    }
-    @Override
-    public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-        // TODO Auto-generated method stub
-
-    }
-    @Override
-    public void articlesLoaded(Articles result) {
-        // TODO Auto-generated method stub
-
+        ((ArticleAdapter) getListAdapter()).notifyDataSetChanged();
     }
 
     @Override
-    public void onDestroy() {
-        Log.i("OMG!", "DESTROYED");
-        imageHandler.closeCache();
-        super.onDestroy();
+    public void setActionBar() {
+        actionBar.setTitle("Starred");
     }
 
     @Override
-    public void onDetach() {
-        Log.i("OMG!", "DETACHED");
-        imageHandler.closeCache();
-        super.onDetach();
+    public void setRefreshing() {
+        super.setRefreshing();
+        dataSource.open();
+        Articles newData = dataSource.getStarredArticles(false);
+        dataSource.close();
+        articles.clear();
+        for (Article article : newData) {
+            articles.add(article);
+        }
+        ((ArticleAdapter) getListAdapter()).notifyDataSetChanged();
+        onRefreshComplete();
     }
+
+    //TODO onstar onunstar
     @Override
-    public void articlesError() {
-        // TODO Auto-generated method stub
-
+    protected void onUnstarred(int position) {
+        articles.remove(position);
     }
 
-
+    @Override
+    protected void getNewData() {
+        Log.i("OMG!", "Get new data!");
+        dataSource.open();
+        Articles newData = dataSource.getStarredArticles(false);
+        dataSource.close();
+        articles.clear();
+        for(Article article : newData) {
+            Log.i("OMG!", "Adding " + article.getTitle());
+            articles.add(article);
+        }
+        Log.i("OMG!", "Notifying again!");
+        ((ArticleAdapter) getListAdapter()).notifyDataSetChanged();
+        Log.i("OMG!", "Notified!");
+        onRefreshComplete();
+    }
 }

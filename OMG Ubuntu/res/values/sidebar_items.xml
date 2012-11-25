@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="sidebar_home">
+        <item>Home</item>
+        <item>@drawable/sidebar_bubble</item>
+    </array>
+    <array name="sidebar_starred">
+        <item>Starred</item>
+        <item>@drawable/starred</item>
+    </array>
+    <array name="sidebar_categories">
+        <item>Categories</item>
+        <item>@drawable/sidebar_categories</item>
+    </array>
+    <array name="sidebar_settings">
+        <item>Settings</item>
+        <item>@drawable/sidebar_settings</item>
+    </array>
+    <array name="sidebar_about">
+        <item>About</item>
+        <item>@drawable/sidebar_about</item>
+    </array>
+    <array name="sidebar_list">
+        <item>@array/sidebar_home</item>
+        <item>@array/sidebar_starred</item>
+        <item>@array/sidebar_categories</item>
+        <item>@array/sidebar_settings</item>
+        <item>@array/sidebar_about</item>
+    </array>
+</resources>

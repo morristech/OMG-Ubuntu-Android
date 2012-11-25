@@ -7,7 +7,8 @@
      >
 
      <ProgressBar
-         style="?android:attr/indeterminateProgressStyle"
+         android:id="@+id/refresh_indeterminate_item"
+         style="?attr/indeterminateProgressStyle"
          android:layout_width="30dp"
          android:layout_height="30dp"
         />

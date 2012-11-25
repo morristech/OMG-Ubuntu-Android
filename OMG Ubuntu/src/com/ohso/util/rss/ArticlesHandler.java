@@ -2,6 +2,8 @@ package com.ohso.util.rss;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.DateFormat;
@@ -38,7 +40,6 @@ public class ArticlesHandler extends DefaultHandler {
     public Articles parse(InputStream is) {
         RootElement root = new RootElement("rss");
         Element chanElement = root.getChild("channel");
-
         Element chanItem = chanElement.getChild("item");
         Element itemTitle = chanItem.getChild("title");
         Element itemAuthor = chanItem.getChild("http://purl.org/dc/elements/1.1/", "creator");
@@ -129,7 +130,9 @@ public class ArticlesHandler extends DefaultHandler {
         });
 
         try {
-            Xml.parse(is, Xml.Encoding.UTF_8, root.getContentHandler());
+            Reader reader = new InputStreamReader(is);
+            Xml.parse(reader, root.getContentHandler());
+            //Xml.parse(is, Xml.Encoding.UTF_8, root.getContentHandler());
             return items; // :D
         } catch (SAXException e) {
             e.printStackTrace();

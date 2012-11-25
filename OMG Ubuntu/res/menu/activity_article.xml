@@ -1,7 +1,42 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-    
-    <item android:id="@+id/activity_article_menu_refresh" android:enabled="true" android:icon="@drawable/navigation_refresh" android:visible="true" android:title="Refresh" android:showAsAction="always"></item><item android:id="@+id/activity_article_menu_share" android:visible="true" android:showAsAction="ifRoom"  android:enabled="true" android:title="Share..." android:icon="@drawable/social_share" android:titleCondensed="Share"></item><item android:id="@+id/menu_settings" android:title="@string/menu_settings" android:orderInCategory="100" android:showAsAction="never" />
-    <item android:id="@+id/activity_article_menu_starred" android:title="Unstar" android:visible="false" android:icon="@drawable/starred" android:enabled="true" android:showAsAction="always"></item>
-    <item android:id="@+id/activity_article_menu_unstarred" android:title="Star" android:visible="false" android:icon="@drawable/unstarred" android:enabled="true" android:showAsAction="always"></item>
-    
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/activity_article_menu_refresh"
+        android:enabled="true"
+        android:icon="@drawable/navigation_refresh"
+        android:showAsAction="always"
+        android:title="Refresh"
+        android:visible="true">
+    </item>
+    <item
+        android:id="@+id/activity_article_menu_share"
+        android:enabled="true"
+        android:icon="@drawable/social_share"
+        android:showAsAction="ifRoom"
+        android:title="Share..."
+        android:titleCondensed="Share"
+        android:visible="true">
+    </item>
+    <item
+        android:id="@+id/activity_article_menu_starred"
+        android:enabled="true"
+        android:icon="@drawable/starred"
+        android:showAsAction="always"
+        android:title="Unstar"
+        android:visible="false">
+    </item>
+    <item
+        android:id="@+id/activity_article_menu_unstarred"
+        android:enabled="true"
+        android:icon="@drawable/unstarred"
+        android:showAsAction="always"
+        android:title="Star"
+        android:visible="false">
+    </item>
+    <item
+        android:id="@+id/activity_article_menu_comments"
+        android:enabled="true"
+        android:icon="@drawable/social_chat"
+        android:title="Comments"></item>
+
 </menu>

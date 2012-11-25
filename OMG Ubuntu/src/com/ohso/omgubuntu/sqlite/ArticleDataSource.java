@@ -7,7 +7,6 @@ import java.util.List;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.util.Log;
 
 import com.ohso.omgubuntu.R;
 
@@ -36,7 +35,59 @@ public class ArticleDataSource extends BaseDataSource {
         Cursor cursor = database.query("article", articleSpec.getColumnNames(),
                 null, null, null, null, "date DESC", "15");
         if (cursor.getCount() < 0) {
-            // TODO get latest articles
+            cursor.close();
+            return null;
+        }
+        Articles latestArticles = new Articles();
+        cursor.moveToFirst();
+        while (cursor.isAfterLast() == false) {
+            latestArticles.add(cursorToArticle(cursor, withContent));
+            cursor.moveToNext();
+        }
+        cursor.close();
+        return latestArticles;
+    }
+
+    public Articles getArticlesSince(String path, boolean includingId, boolean unreadOnly, boolean withContent) {
+        Article sinceArticle = getArticle(path, false);
+        Articles articles = new Articles();
+        long lessThanDate = includingId ? sinceArticle.getDate() - 1 : sinceArticle.getDate();
+        // SELECT * FROM article WHERE unread = 1 AND date > 1353075996999
+        String whereClause = (unreadOnly ? "unread = 1 AND " : "") + "date > " + String.valueOf(lessThanDate);
+        Cursor cursor = database.query("article", articleSpec.getColumnNames(),
+                whereClause, null, null, null, "date DESC");
+        if (cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            while (cursor.isAfterLast() == false) {
+                articles.add(cursorToArticle(cursor, withContent));
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+        return articles;
+    }
+
+    public Articles getArticlesWithCategory(String categoryName, boolean withContent) {
+        Articles articles = new Articles();
+        String rawQuery = "SELECT * FROM article a INNER JOIN article_category ac ON ac.article_id=a.path WHERE ac.category_id = ? ORDER BY date DESC LIMIT 15";
+        Cursor cursor = database.rawQuery(rawQuery, new String[] {categoryName});
+        if (cursor.getCount() < 0) {
+            cursor.close();
+            return articles;
+        }
+        cursor.moveToFirst();
+        while (cursor.isAfterLast() == false) {
+            articles.add(cursorToArticle(cursor, withContent));
+            cursor.moveToNext();
+        }
+        cursor.close();
+        return articles;
+    }
+
+    public Articles getStarredArticles(boolean withContent) {
+        Cursor cursor = database.query("article", articleSpec.getColumnNames(),
+                "starred = 1", null, null, null, "date DESC", "15");
+        if (cursor.getCount() < 0) {
             cursor.close();
             return null;
         }
@@ -91,7 +142,6 @@ public class ArticleDataSource extends BaseDataSource {
 }
 
     public Article updateArticle(Article article) {
-        Log.i("OMG!", "Updating article");
         Cursor cursor = database.query("article", articleSpec.getColumnNames(),
                 "path = '" + article.getPath() + "'", null, null, null, null);
         if (cursor.getCount() < 0) {
@@ -107,7 +157,6 @@ public class ArticleDataSource extends BaseDataSource {
         values.put("starred", article.getStarred());
         values.put("unread", article.getUnread());
         database.update("article", values, "path = '"+ existing.getPath() + "'" , null);
-        Log.i("OMG!", "Updated article " + existing.getPath());
         cursor.close();
         cursor= database.query("article", articleSpec.getColumnNames(),
                 "path = '" + article.getPath() + "'", null, null, null, null);
@@ -127,11 +176,11 @@ public class ArticleDataSource extends BaseDataSource {
      */
     public boolean createArticle(Article article, boolean updateArticleIfLessThanADayOld, boolean replaceThumbIfNull) {
         // TODO index paths
-        Log.i("OMG!", "Creating article " + article.getPath());
+        //Log.i("OMG!", "Creating article " + article.getPath());
         Cursor cursor = database.query("article", articleSpec.getColumnNames(),
                 "path = '" + article.getPath() + "'", null, null, null, null);
         if (cursor.getCount() > 0) {
-            Log.i("OMG!", "Article " + article.getTitle() + " exists.");
+            //Log.i("OMG!", "Article " + article.getTitle() + " exists.");
             if (updateArticleIfLessThanADayOld) {
                 cursor.moveToFirst();
                 Article existing = cursorToArticle(cursor, false);
@@ -143,7 +192,7 @@ public class ArticleDataSource extends BaseDataSource {
                     values.put("content", article.getContent());
                     values.put("created_at", new Date().getTime());
                     database.update("article", values, "path = '"+ existing.getPath() + "'" , null);
-                    Log.i("OMG!", "Less than a day old, so updated title, thumb, summary, content");
+                    //Log.i("OMG!", "Less than a day old, so updated title, thumb, summary, content");
                 }
                 cursor.close();
                 return true;
@@ -158,7 +207,7 @@ public class ArticleDataSource extends BaseDataSource {
                     values.put("content", article.getContent());
                     values.put("created_at", new Date().getTime());
                     database.update("article", values, "path = '"+ existing.getPath() + "'" , null);
-                    Log.i("OMG!", "Replaced null thumb with: "+article.getThumb());
+                    //Log.i("OMG!", "Replaced null thumb with: "+article.getThumb());
                 }
                 cursor.close();
                 return true; //We need to check all entries for null thumbs
@@ -178,9 +227,7 @@ public class ArticleDataSource extends BaseDataSource {
         values.put("summary", article.getSummary());
         values.put("content", article.getContent());
         values.put("created_at", new Date().getTime());
-        // TODO make sure db insertion works, then push categories
         if(database.insert("article", null, values) > 0) {
-            Log.i("OMG!", "Pushing categories");
             try {
                 categorySource.open();
                 categorySource.setCategories(article.getPath(), article.getCategories());
@@ -196,11 +243,14 @@ public class ArticleDataSource extends BaseDataSource {
         return true;
     }
 
-    public List<Category> getFullCategories(String articleId) {
+    public List<Category> getArticleCategories(String articleId) {
         List<Category> categories = new ArrayList<Category>();
         String rawQuery = "SELECT name, title FROM article_category ac INNER JOIN category c ON ac.category_id=c.name WHERE ac.article_id = ?";
         Cursor cursor = database.rawQuery(rawQuery, new String[] {articleId});
-        if(cursor.getCount() < 0) return null;
+        if(cursor.getCount() < 0) {
+            cursor.close();
+            return categories;
+        }
         cursor.moveToFirst();
         categorySource.open();
         while (cursor.isAfterLast() == false) {
@@ -212,6 +262,7 @@ public class ArticleDataSource extends BaseDataSource {
     }
 
     private Article cursorToArticle(Cursor cursor, boolean withContent) {
+        //Log.i("OMG!", "Adding " + cursor.getString(1));
         Article article = new Article();
         article.setPath(cursor.getString(0));
         article.setTitle(cursor.getString(1));
@@ -231,10 +282,9 @@ public class ArticleDataSource extends BaseDataSource {
                 + mContext.getResources().getString(R.string.clear_articles_over);
         Cursor cursor = database.rawQuery(rawQuery, null);
         if(cursor.getCount() > 0) {
-            // Think about clearing caches in the future, though (Disk)LruCache handles cache clearing on its own too.
             cursor.moveToFirst();
             while (cursor.isAfterLast() == false) {
-                Log.i("OMG!", "Removing article " + cursor.getString(0));
+                //Log.i("OMG!", "Removing article " + cursor.getString(0));
                 database.delete("article", "path = '"+ cursor.getString(0) + "'", null);
                 cursor.moveToNext();
             }

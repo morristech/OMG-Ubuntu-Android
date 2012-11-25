@@ -1,16 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/sidebar_fragment_overlay"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent" >
+    android:layout_height="fill_parent">
+    
 <ListView 
     android:id="@android:id/list"
-    android:layout_width="150dp"
+    android:layout_width="200dp"
+    android:listSelector="@drawable/list_view_selector"
     android:layout_height="match_parent"
-    android:background="@drawable/sidebar_fragment_bg"
-    android:entries="@array/sidebar_fragment_items"
+    android:divider="@drawable/sidebar_divider"
+    android:dividerHeight="2px"
+    android:background="@color/Grey.Sidebar"
     android:headerDividersEnabled="false"
     tools:context=".SidebarFragment" >
 </ListView>
-</FrameLayout>
+</LinearLayout>

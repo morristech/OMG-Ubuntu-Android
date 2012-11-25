@@ -1,6 +1,5 @@
 package com.ohso.util;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -8,65 +7,107 @@ import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Locale;
 
 import android.app.Activity;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.TransitionDrawable;
 import android.support.v4.util.LruCache;
 import android.util.Log;
 import android.util.TypedValue;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import com.jakewharton.DiskLruCache;
 import com.jakewharton.DiskLruCache.Editor;
 import com.jakewharton.DiskLruCache.Snapshot;
+import com.ohso.omgubuntu.OMGUbuntuApplication;
 
+/*
+ * Some bits taken from the Android BitmapFun project found here:
+ * http://developer.android.com/training/displaying-bitmaps/cache-bitmap.html
+ * Notably the pausing/cancelling functionality.
+ */
 public class ImageHandler {
+    private static final boolean DEBUG_LOG = false;
     private final int MEMORY_CACHE_SIZE = 1024 * 1024 * 5; // 5 MB
     private final int DISK_CACHE_SIZE = 1024 * 1024 * 10; // 10 MB
     private final CompressFormat IMAGE_COMPRESS_FORMAT = Bitmap.CompressFormat.JPEG;
     private final int IMAGE_COMPRESS_QUALITY = 75;
     private final int IMAGE_DIMENSIONS = 75;
-    private float pixelSize;
+    private static Resources mResources = OMGUbuntuApplication.getContext().getResources();
 
-    private DiskLruCache diskCache;
-    private LruCache<String, Bitmap> memoryCache;
+    // Pausing, cancelling, and locking
+    private final Object mPauseWorkLock = new Object();
+    private boolean mPauseWork = false;
+    private boolean mExitTaskEarly = false;
+
+    private float mPixelSize;
+    private RelativeLayout.LayoutParams mPlaceholderParams;
+
+    private DiskLruCache mDiskCache;
+    private LruCache<String, Bitmap> mMemoryCache;
 
     public ImageHandler(Activity activity) {
-        memoryCache = new LruCache<String, Bitmap>(MEMORY_CACHE_SIZE) {
+        mMemoryCache = new LruCache<String, Bitmap>(MEMORY_CACHE_SIZE) {
             protected int sizeOf(String key, Bitmap bitmap) {
                 return bitmap.getRowBytes() * bitmap.getHeight();
             }
         };
         File cacheDir = new File(activity.getCacheDir(), "thumbnails");
         try {
-            diskCache = DiskLruCache.open(cacheDir, 1, 1, DISK_CACHE_SIZE);
+            mDiskCache = DiskLruCache.open(cacheDir, 1, 1, DISK_CACHE_SIZE);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        pixelSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, IMAGE_DIMENSIONS, activity.getResources().getDisplayMetrics());
+        //mPixelSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, IMAGE_DIMENSIONS, activity.getResources().getDisplayMetrics());
+        mPixelSize = scaledDIP(IMAGE_DIMENSIONS);
+        mPlaceholderParams = new RelativeLayout.LayoutParams((int) mPixelSize, (int) mPixelSize);
+        mPlaceholderParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        mPlaceholderParams.topMargin = 0;
+        //mResources = activity.getResources();
+    }
+
+    public static int scaledDIP (int dip) {
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dip, mResources.getDisplayMetrics());
     }
 
     public void closeCache() {
         try {
-            diskCache.close();
+            mDiskCache.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
 
-    public void getImage(String url, ImageView imageView, int placeholder) {
-        //imageView.setImageResource(placeholder);
-        if (url == null) return;
-        new ImageGetter(imageView, url, placeholder).execute();
+    public void getImage(String url, ImageView imageView, Bitmap placeholder) {
+        if (url == null) {
+            imageView.setLayoutParams(mPlaceholderParams);
+            imageView.setImageBitmap(placeholder);
+            return;
+        }
+        Bitmap bitmap = null;
+        bitmap = mMemoryCache.get(getKey(url));
+        if (bitmap != null) {
+            imageView.setImageBitmap(bitmap);
+        } else if (cancelPotentialWork(getKey(url), imageView)){
+            final ImageGetter imageGetter = new ImageGetter(imageView, url);
+            final AsyncDrawable drawable = new AsyncDrawable(mResources, placeholder, imageGetter);
+            imageView.setImageDrawable(drawable);
+            imageGetter.executeOnExecutor(AsyncTask.DUAL_THREAD_EXECUTOR);
+        }
     }
 
     private String getKey(String url) {
         try {
-            String key = new URL(url).getPath().toLowerCase().replaceAll("[^a-z^0-9^_]", "_");
+            String key = new URL(url).getPath().toLowerCase(Locale.ENGLISH).replaceAll("[^a-z^0-9^_]", "_");
             if (key.length() > 64) return key.substring(0, 63);
             return key;
         } catch (MalformedURLException e) {
@@ -77,41 +118,63 @@ public class ImageHandler {
 
     private class ImageGetter extends AsyncTask<Void, Void, Bitmap> {
         private final WeakReference<ImageView> mImageView;
-        private final String mUrl;
+        private String mUrl;
         private final String mFullUrl;
-        private final int mPlaceholderResource;
-        private Bitmap imageBitmap;
 
-        private ImageGetter(ImageView imageView, String url, int placeholder) {
+        private ImageGetter(ImageView imageView, String url) {
             mImageView = new WeakReference<ImageView>(imageView);
-            mUrl = getKey(url);
             mFullUrl = url;
-            mPlaceholderResource = placeholder;
         }
 
         @Override
         protected Bitmap doInBackground(Void... params) {
-            imageBitmap = getBitmapFromMemory();
-            if(imageBitmap != null) {
-                return imageBitmap;
+            if (DEBUG_LOG) Log.d("OMG!", "Starting background work");
+            Bitmap imageBitmap = null;
+            mUrl = getKey(mFullUrl);
+            synchronized (mPauseWorkLock) {
+                while (mPauseWork && !isCancelled()) {
+                    try {
+                        mPauseWorkLock.wait();
+                    } catch (InterruptedException e) {}
+                }
             }
-            imageBitmap = getBitmapFromDisk();
-            if(imageBitmap != null) {
-                return imageBitmap;
+
+            // From disk
+            if (!isCancelled() && getAttachedImageView() != null && !mExitTaskEarly) {
+                imageBitmap = getBitmapFromDisk();
             }
-            imageBitmap = getBitmapFromUrl();
+            // From url
+            if (imageBitmap == null && !isCancelled() && getAttachedImageView() != null && !mExitTaskEarly) {
+                imageBitmap = getBitmapFromUrl();
+            }
+            // Put into memory cache
+            if (imageBitmap != null) mMemoryCache.put(mUrl, imageBitmap);
             return imageBitmap;
         }
 
         @Override
         protected void onPostExecute(Bitmap result) {
-            final ImageView finalView = mImageView.get();
-            if (mImageView != null && result != null) {
-                finalView.setImageBitmap(result);
-            } else {
-                finalView.setImageResource(mPlaceholderResource);
+            if (isCancelled() || mExitTaskEarly) {
+                result = null;
             }
-            super.onPostExecute(result);
+            final ImageView finalView = getAttachedImageView();
+            if (finalView != null && result != null) {
+                //finalView.setImageBitmap(result);
+                final TransitionDrawable trans = new TransitionDrawable(new Drawable[] {
+                        new ColorDrawable(android.R.color.transparent),
+                        new BitmapDrawable(mResources, result)
+                });
+                finalView.setImageDrawable(trans);
+                trans.startTransition(250);
+            }
+        }
+
+        @Override
+        protected void onCancelled() {
+            super.onCancelled();
+            synchronized (mPauseWorkLock) {
+                mPauseWorkLock.notifyAll();
+            }
         }
 
         private Bitmap getBitmapFromUrl() {
@@ -123,31 +186,30 @@ public class ImageHandler {
                 final BitmapFactory.Options options = new BitmapFactory.Options();
                 options.inJustDecodeBounds = true;
                 Bitmap bitmap = BitmapFactory.decodeStream(is, null, options);
-                options.inSampleSize = calculateInSampleSize(options, (int) pixelSize, (int) pixelSize);
+                options.inSampleSize = calculateInSampleSize(options, (int) mPixelSize, (int) mPixelSize);
 
-                if(is.markSupported()) {
-                    //Log.i("OMG!","Reset supported");
-                    is.reset();
-                } else {
-                    //Log.i("OMG!","Reset not supported");
-                    is = url.openConnection().getInputStream();
-                }
+                // reset() isn't always supported.
+                if(is.markSupported()) is.reset();
+                else is = url.openConnection().getInputStream();
 
                 options.inJustDecodeBounds = false;
                 bitmap = BitmapFactory.decodeStream(is, null, options);
                 is.close();
 
-                memoryCache.put(mUrl, bitmap);
+                if(isCancelled() || getAttachedImageView() == null || mExitTaskEarly) {
+                    return null;
+                }
+
                 try {
-                    Editor editor = diskCache.edit(mUrl);
+                    Editor editor = mDiskCache.edit(mUrl);
                     BufferedOutputStream stream = new BufferedOutputStream(editor.newOutputStream(0));
                     if (bitmap.compress(IMAGE_COMPRESS_FORMAT, IMAGE_COMPRESS_QUALITY, stream)) {
-                        Log.i("OMG!", "Adding image to disk");
+                        if (DEBUG_LOG) Log.d("OMG!", "Adding image to disk");
                         editor.commit();
-                        diskCache.flush();
+                        mDiskCache.flush();
                         stream.close();
                     } else {
-                        Log.i("OMG!", "ABORTING");
+                        if (DEBUG_LOG) Log.d("OMG!", "ABORTING");
                         editor.abort();
                         stream.close();
                     }
@@ -155,7 +217,7 @@ public class ImageHandler {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                Log.i("OMG!", "Wrote image for "+ mUrl);
+                if (DEBUG_LOG) Log.d("OMG!", "Wrote image for "+ mUrl);
                 return bitmap;
             } catch (IOException e) {
                 e.printStackTrace();
@@ -164,28 +226,37 @@ public class ImageHandler {
         }
 
         private Bitmap getBitmapFromDisk() {
-            Snapshot diskCachedSnapshot = null;
+            InputStream inputStream = null;
             try {
-                diskCachedSnapshot = diskCache.get(mUrl);
+                final Snapshot diskCachedSnapshot = mDiskCache.get(mUrl);
                 if (diskCachedSnapshot != null) {
-                    final InputStream inputStream = diskCachedSnapshot.getInputStream(0);
-                    if (inputStream == null) return null;
-                    BufferedInputStream diskCacheBitmap = new BufferedInputStream(inputStream);
-                    final Bitmap bitmap = BitmapFactory.decodeStream(diskCacheBitmap);
-                    inputStream.close();
-                    memoryCache.put(mUrl, bitmap);
-                    return bitmap;
-                } else return null;
+                    inputStream = diskCachedSnapshot.getInputStream(0);
+                    if (inputStream != null) {
+                        final Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+                        diskCachedSnapshot.close();
+                        return bitmap;
+                    }
+                }
             } catch (IOException e) {
                 e.printStackTrace();
-                return null;
             } finally {
-                if (diskCachedSnapshot != null) diskCachedSnapshot.close();
+                if (inputStream != null) {
+                    try {
+                        inputStream.close();
+                    } catch (IOException e) {}
+                }
             }
+            return null;
         }
 
-        private Bitmap getBitmapFromMemory() {
-            return memoryCache.get(mUrl);
+        private ImageView getAttachedImageView() {
+            final ImageView imageView = mImageView.get();
+            final ImageGetter imageGetter = getImageGetter(imageView);
+
+            if (this == imageGetter) {
+                return imageView;
+            }
+            return null;
         }
     }
 
@@ -202,6 +273,75 @@ public class ImageHandler {
             }
         }
         return inSampleSize;
+    }
+
+    public void setExitTasksEarly(boolean exit) {
+        mExitTaskEarly = exit;
+    }
+
+    public void setPauseWork(boolean pause) {
+        synchronized (mPauseWorkLock) {
+            mPauseWork = pause;
+            if (!mPauseWork) {
+                if (DEBUG_LOG) Log.i("OMG!", "Resuming work");
+                mPauseWorkLock.notifyAll();
+            }
+        }
+    }
+
+    public static void cancelWork(ImageView imageView) {
+        final ImageGetter imageGetter = getImageGetter(imageView);
+        if (imageGetter != null) {
+            imageGetter.cancel(true);
+            if (DEBUG_LOG) Log.i("OMG!", "Cancelled work!");
+        }
+    }
+
+    private static ImageGetter getImageGetter(ImageView imageView) {
+        if (imageView != null) {
+            final Drawable drawable = imageView.getDrawable();
+            if (drawable instanceof AsyncDrawable) {
+                final AsyncDrawable asyncDrawable = (AsyncDrawable) drawable;
+                return asyncDrawable.getImageGetter();
+            }
+        }
+        return null;
+    }
+
+    public static boolean cancelPotentialWork(String url, ImageView imageView) {
+        final ImageGetter imageGetter = getImageGetter(imageView);
+
+        if (imageGetter != null) {
+            final String fullUrl = imageGetter.mFullUrl;
+            if (fullUrl == null || !fullUrl.equals(url)) {
+                imageGetter.cancel(true);
+                if (DEBUG_LOG) Log.i("OMG!", "Cancelled potential work");
+            } else {
+                // Not potential, but already occurring.
+                if (DEBUG_LOG) Log.i("OMG!", "Work in progress!");
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private static class AsyncDrawable extends BitmapDrawable {
+        private final WeakReference<ImageGetter> imageGetterReference;
+
+        public AsyncDrawable(Resources res, Bitmap bitmap, ImageGetter imageGetter) {
+            super(res, bitmap);
+            imageGetterReference = new WeakReference<ImageGetter>(imageGetter);
+        }
+
+        public ImageGetter getImageGetter() {
+            return imageGetterReference.get();
+        }
+    }
+
+    public void flush() {
+        try {
+            mDiskCache.flush();
+        } catch (IOException e) {}
     }
 
 }

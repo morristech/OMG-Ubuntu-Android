@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item android:state_pressed="false" android:drawable="@drawable/widget_refresh"></item>
+    <item android:state_pressed="true">
+        <layer-list>
+            <item>
+                <color android:color="@color/Ubuntu.Transparent" />
+                <shape android:shape="rectangle"></shape>
+            </item>
+            <item android:drawable="@drawable/widget_refresh"></item>
+        </layer-list>
+    </item>
+
+</selector>

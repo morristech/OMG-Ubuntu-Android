@@ -41,7 +41,7 @@ textarea {
     color: #222;
 }
 body {
-    margin: 0;
+    margin: 0 10px;
     font-size: 1em;
     line-height: 1.4;
 }
@@ -934,4 +934,13 @@ a.ubuntu-software-center-link:hover {
     .pull-quote { width: auto; }
     .pull-quote-right { margin-left: 5px; }
     .pull-quote-left { margin-right: 5px; }
+}
+
+/* App-specific stylings */
+h2.internal-comments-link {
+    margin-bottom: 20px;
+    font-family: "Roboto Light", "Ubuntu";
+    font-weight: 300;
+    font-style: normal;
+    color: #333;
 }

@@ -1,26 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <!-- Application and menu-level strings -->
     <string name="app_name">OMG! Ubuntu!</string>
     <string name="menu_settings">Settings</string>
     <string name="menu_share">Share</string>
     <string name="menu_star">Star</string>
     <string name="menu_unstar">Unstar</string>
+
+    <!-- Misc activity strings -->
     <string name="title_activity_main">OMG! Ubuntu!</string>
+    <string name="title_activity_article_image">Image</string>
+    <string name="title_activity_comments">Comments</string>
+    <string name="activity_main_footer_text">Load more articles</string>
+    <string name="activity_main_footer_over">Visit the OMG! Ubuntu! website for more articles.</string>
+    <string name="widget_articles_list_title">Latest posts</string>
+    <string name="widget_articles_list_empty_title">No recent articles</string>
+    <string name="activity_article_loading_text">Loading...</string>
+    <string name="activity_article_image_download">Download image</string>
+    <string name="activity_article_comment_text">Read Comments</string>
+
+    <!-- ImageView descriptions -->
+    <string name="app_logo_description">OMG! Ubuntu! bubble logo</string>
     <string name="article_image_description">Thumbnail image for an article</string>
+    <string name="starred_image_description">Image to mark a starred article</string>
+    <string name="unread_image_description">Image to mark an unread article</string>
+    <string name="menu_refresh_description">Refresh icon for refreshing the articles list</string>
+
+    <!-- Errors -->
     <string name="connection_error">Couldn\'t connect. Try again later.</string>
     <string name="xml_error">Couldn\'t read</string>
+    <string name="article_fetch_error">Couldn\'t get the article. Would you like to open it in an external browser?</string>
+    <string name="external_link_error">This link is not on OMG! Ubuntu! Would you like to navigate away?</string>
 
-    <string-array name="omg_categories">
-        <item>Latest News</item>
-        <item>News</item>
-        <item>App</item>
-        <item>Gaming</item>
-    </string-array>
-    <string-array name="sidebar_fragment_items">
-        <item>Home</item>
-        <item>Starred</item>
-        <item>Categories</item>
-        <item>About</item>
-    </string-array>
+    <!-- Dialog text -->
+    <string name="article_fetch_error_dialog">Reopen article in</string>
+    <string name="external_link_dialog">Open link via</string>
+
+    <!-- Notifications -->
+    <string name="new_article_notification_singular">New article</string>
+    <string name="new_article_notification_plural">New articles</string>
+
+    <!-- Misc body copy -->
+    <string name="activity_about_omg_ubuntu">OMG! Ubuntu! boasts over 1.6 million unique visitors a month, who between them view over 7 million pages. Combined with 58,000 Facebook fans, 37,700 Twitter followers, and 9,000 Android app users, you\'ll fit right into our growing community
+\n\nOur full time editorial staff includes Joey-Elijah Sneddon, a 23 year old journalist graduate from Lincoln University, and Benjamin Humphrey, a New Zealand-based professional designer, and founder of The Ubuntu Manual Project.</string>
+    <string name="activity_about_ohso">Ohso is an online media and software publishing company, founded in July 2010 by Joey Sneddon and Benjamin Humphrey, two tech-savvy entrepreneurs based in the United Kingdom and New Zealand.</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="dummy_button">Dummy Button</string>
+    
 
 </resources>

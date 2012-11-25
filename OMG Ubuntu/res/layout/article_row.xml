@@ -10,12 +10,13 @@
         android:id="@+id/article_row_status_container"
         android:layout_width="match_parent"
         android:layout_height="20dp"
-        android:layout_alignParentTop="true" >
+        android:layout_marginBottom="-5dp" >
 
         <ImageView
             android:id="@+id/article_row_starred_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:contentDescription="@string/starred_image_description"
             android:adjustViewBounds="true"
             android:src="@drawable/rating_important"
             android:visibility="invisible" />
@@ -24,6 +25,7 @@
             android:id="@+id/article_row_unread_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:contentDescription="@string/unread_image_description"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
             android:adjustViewBounds="true"

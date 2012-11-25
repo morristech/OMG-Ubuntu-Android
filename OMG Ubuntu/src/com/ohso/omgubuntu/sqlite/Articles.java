@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLDecoder;
 import java.util.ArrayList;
 
 import org.xmlpull.v1.XmlPullParserException;
@@ -15,12 +14,14 @@ import android.util.Log;
 
 import com.ohso.omgubuntu.OMGUbuntuApplication;
 import com.ohso.omgubuntu.R;
+import com.ohso.util.UrlFactory;
 import com.ohso.util.rss.FeedParser;
 
 public class Articles extends ArrayList<Article> {
     private static final long serialVersionUID = 1L;
     private Context context = OMGUbuntuApplication.getContext();
     private OnArticlesLoaded mCallback;
+    private OnNextPageLoaded mNextPageCallback;
 
     public Articles() {}
 
@@ -29,11 +30,66 @@ public class Articles extends ArrayList<Article> {
         new getArticlesAsync().execute();
     }
 
+    public void getNextPage(OnNextPageLoaded caller, int page) {
+        mNextPageCallback = caller;
+        new getNextPageAsync().execute(page);
+    }
+
+    private class getNextPageAsync extends AsyncTask<Integer, Void, Articles> {
+        @Override
+        protected Articles doInBackground(Integer... params) {
+            try {
+                return loadXmlFromNetwork(UrlFactory.forPage(params[0]));
+            } catch (IOException e) {
+                Log.e("OMG!", context.getResources().getString(R.string.connection_error) + e.toString());
+                return null;
+            } catch (XmlPullParserException e) {
+                Log.e("OMG!", context.getResources().getString(R.string.xml_error) + e.toString());
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(Articles result) {
+            if(result == null) mNextPageCallback.nextPageError();
+            else mNextPageCallback.nextPageLoaded(result);
+            super.onPostExecute(result);
+        }
+    }
+
+
     private class getArticlesAsync extends AsyncTask<Void, Void, Articles> {
         @Override
         protected Articles doInBackground(Void... params) {
             try {
-                return loadXmlFromNetwork("feed");
+                return loadXmlFromNetwork(UrlFactory.fromFragment("feed"));
+            } catch (IOException e) {
+                Log.e("OMG!", context.getResources().getString(R.string.connection_error) + e.toString());
+                return null;
+            } catch (XmlPullParserException e) {
+                Log.e("OMG!", context.getResources().getString(R.string.xml_error) + e.toString());
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(Articles result) {
+            if(result == null) mCallback.articlesError();
+            else mCallback.articlesLoaded(result);
+            super.onPostExecute(result);
+        }
+    }
+
+    public void getLatestInCategory(OnArticlesLoaded caller, String categoryName) {
+        mCallback = caller;
+        new getLatestInCategoryAsync().execute(categoryName);
+    }
+
+    private class getLatestInCategoryAsync extends AsyncTask<String, Void, Articles> {
+        @Override
+        protected Articles doInBackground(String... params) {
+            try {
+                return loadXmlFromNetwork(UrlFactory.fromFragment(UrlFactory.fragmentForCategory(params[0])));
             } catch (IOException e) {
                 Log.e("OMG!", context.getResources().getString(R.string.connection_error) + e.toString());
                 return null;
@@ -70,15 +126,14 @@ public class Articles extends ArrayList<Article> {
     }
 
     private InputStream downloadUrl(String urlFragment) throws IOException {
-        // TODO replace this!
-        //URL url = new URL("http://192.168.1.115:5000");
-        URL url = new URL(context.getResources().getString(R.string.rss_base_url)+ urlFragment + URLDecoder.decode(context.getResources().getString(R.string.rss_query_params), "UTF-8"));
+        URL url = new URL(urlFragment);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         if(context.getResources().getString(R.string.rss_user_agent).length() > 0) {
             conn.setRequestProperty("User-Agent", context.getResources().getString(R.string.rss_user_agent));
         }
         conn.setReadTimeout(10000);
         conn.setConnectTimeout(15000);
+        conn.setUseCaches(false);
         conn.setRequestMethod("GET");
         conn.setDoInput(true);
         conn.connect();
@@ -89,5 +144,10 @@ public class Articles extends ArrayList<Article> {
     public interface OnArticlesLoaded {
         void articlesLoaded(Articles result);
         void articlesError();
+    }
+
+    public interface OnNextPageLoaded {
+        void nextPageLoaded(Articles result);
+        void nextPageError();
     }
 }

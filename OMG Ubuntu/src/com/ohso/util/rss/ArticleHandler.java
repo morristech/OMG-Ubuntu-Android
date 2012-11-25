@@ -40,6 +40,7 @@ public class ArticleHandler extends DefaultHandler {
         Element itemTitle = chanItem.getChild("title");
         Element itemAuthor = chanItem.getChild("http://purl.org/dc/elements/1.1/", "creator");
         Element itemLink = chanItem.getChild("link");
+        Element itemIdentifier = chanItem.getChild("guid");
         Element itemDescription = chanItem.getChild("description");
         Element itemContent = chanItem.getChild("http://purl.org/rss/1.0/modules/content/", "encoded");
         Element itemCategory = chanItem.getChild("category");
@@ -69,6 +70,13 @@ public class ArticleHandler extends DefaultHandler {
                     e.printStackTrace();
                 }
                 item.setPath(path.getPath());
+            }
+        });
+
+        itemIdentifier.setEndTextElementListener(new EndTextElementListener() {
+            @Override
+            public void end(String body) {
+                item.setIdentifier(body);
             }
         });
 

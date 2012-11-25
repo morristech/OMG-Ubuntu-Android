@@ -45,6 +45,7 @@ public class NotificationBroadcastReceiver extends BroadcastReceiver {
             mBuilder.setSmallIcon(R.drawable.ic_stat_bubble)
                     .setContentTitle(context.getString(R.string.new_article_notification_singular))
                     .setContentText(article.getTitle())
+                    .setTicker("New OMG! Ubuntu! article: " + article.getTitle())
                     .setOnlyAlertOnce(true).setAutoCancel(true);
 
             Intent notify = new Intent(context, ArticleActivity.class);
@@ -58,6 +59,7 @@ public class NotificationBroadcastReceiver extends BroadcastReceiver {
                     .setContentTitle(context.getString(R.string.new_article_notification_singular))
                     .setContentText(articles.get(0).getTitle())
                     .setContentInfo(String.valueOf(articles.size()))
+                    .setTicker(String.valueOf(articles.size()) + " new OMG! Ubuntu! articles!")
                     .setOnlyAlertOnce(true).setAutoCancel(true);
 
             NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
@@ -73,6 +75,10 @@ public class NotificationBroadcastReceiver extends BroadcastReceiver {
             stackBuilder.addNextIntent(notify);
 
         }
+
+        //mBuilder.setSound(sound);
+        //mBuilder.setVibrate(pattern)
+
 
         // Common intent
         PendingIntent resultPending = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);

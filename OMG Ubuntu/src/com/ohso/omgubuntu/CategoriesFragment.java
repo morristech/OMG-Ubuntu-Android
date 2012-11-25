@@ -55,7 +55,12 @@ public class CategoriesFragment extends BaseFragment implements ActionBar.OnNavi
                 articles.add(article);
             }
             ((ArticleAdapter) getListAdapter()).notifyDataSetChanged();
+            if (articlesInCategory.size() < 15) {
+                setRefreshing();
+                getNewData();
+            }
         }
+
         return true;
     }
 

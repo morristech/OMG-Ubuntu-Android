@@ -57,7 +57,6 @@ public abstract class BaseFragment extends SherlockListFragment implements OnTou
 
     private TextView footerView;
     private int currentPage = 1;
-    protected boolean pagedEnabled = false;
     private boolean nextPageAllowed = true;
 
 
@@ -115,19 +114,40 @@ public abstract class BaseFragment extends SherlockListFragment implements OnTou
         dataSource = new ArticleDataSource(getActivity());
         getData();
 
-        if (articles.size() >= 15 && pagedEnabled) {
-            footerView = (TextView) inflater.inflate(R.layout.activity_main_footer, null, false);
+        footerView = (TextView) inflater.inflate(R.layout.activity_main_footer, null, false);
+        Log.i("OMG!", "WHAT Article size is " + articles.size());
+        if (articles.size() >= 15) {
+            Log.i("OMG!", "WHAT Article size is " + articles.size());
             footerView.setOnClickListener(this);
             listView.addFooterView(footerView, null, false);
+        } else {
+            listView.removeFooterView(footerView);
         }
 
         //TODO also trigger refresh if first article is ages old.
-        if (articles.isEmpty()) {
+        if (articles.isEmpty() ||
+                getActivity().getSharedPreferences(OMGUbuntuApplication.PREFS_FILE, 0)
+                .getBoolean(SettingsFragment.STARTUP_CHECK_ENABLED, true)) {
             setRefreshing();
             getNewData();
         }
         return listView;
     }
+
+//    protected void updateFooter() {
+//        if(footerView == null) {
+//            footerView = (TextView) getActivity().getLayoutInflater().inflate(R.layout.activity_main_footer, null, false);
+//        }
+//        if (articles.size() >= 15) {
+//            Log.i("OMG!", "Adding footer!");
+//            if (getListView().getFooterViewsCount() > 0) return;
+//            footerView.setOnClickListener(this);
+//            getListView().addFooterView(footerView, null, false);
+//        } else {
+//            Log.i("OMG!", "Removing footer");
+//            getListView().removeFooterView(footerView);
+//        }
+//    }
 
 
 
@@ -135,11 +155,13 @@ public abstract class BaseFragment extends SherlockListFragment implements OnTou
     public void onClick(View v) {
         if (nextPageAllowed && currentPage < MAXIMUM_PAGED) {
             ((TextView) v).setText("Loading...");
+
+            //TODO make this a function to getNextPage() so we can separate categories and starred too.
             articles.getNextPage(this, ++currentPage);
         } else {
             Intent external = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.omgubuntu.co.uk"));
             external.addCategory(Intent.CATEGORY_BROWSABLE);
-            Intent chooser = Intent.createChooser(external, "Visit OMG! Ubuntu! via");
+            Intent chooser = Intent.createChooser(external, getResources().getString(R.string.activity_main_footer_dialog));
             startActivity(chooser);
         }
     }

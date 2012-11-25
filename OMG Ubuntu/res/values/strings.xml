@@ -13,7 +13,8 @@
     <string name="title_activity_article_image">Image</string>
     <string name="title_activity_comments">Comments</string>
     <string name="activity_main_footer_text">Load more articles</string>
-    <string name="activity_main_footer_over">Visit the OMG! Ubuntu! website for more articles.</string>
+    <string name="activity_main_footer_over">Visit the OMG! Ubuntu! website for more articles...</string>
+    <string name="activity_main_footer_dialog">Visit OMG! Ubuntu! via</string>
     <string name="widget_articles_list_title">Latest posts</string>
     <string name="widget_articles_list_empty_title">No recent articles</string>
     <string name="activity_article_loading_text">Loading...</string>
@@ -31,10 +32,12 @@
     <string name="connection_error">Couldn\'t connect. Try again later.</string>
     <string name="xml_error">Couldn\'t read</string>
     <string name="article_fetch_error">Couldn\'t get the article. Would you like to open it in an external browser?</string>
-    <string name="external_link_error">This link is not on OMG! Ubuntu! Would you like to navigate away?</string>
+    <string name="external_link_error">This link leaves the app. Would you like to open it?</string>
+    <string name="article_external_alert">@string/external_link_error</string>
 
     <!-- Dialog text -->
     <string name="article_fetch_error_dialog">Reopen article in</string>
+    <string name="article_external_link_dialog">Open link in</string>
     <string name="external_link_dialog">Open link via</string>
 
     <!-- Notifications -->

@@ -11,7 +11,6 @@ import com.ohso.omgubuntu.sqlite.Articles;
 public class ArticlesFragment extends BaseFragment {
     private SharedPreferences mSharedPref;
     public ArticlesFragment() {
-        pagedEnabled = true;
     }
 
     @Override

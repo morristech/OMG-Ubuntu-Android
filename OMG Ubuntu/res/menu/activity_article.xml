@@ -37,6 +37,7 @@
         android:id="@+id/activity_article_menu_comments"
         android:enabled="true"
         android:icon="@drawable/social_chat"
-        android:title="Comments"></item>
+        android:title="Comments" android:showAsAction="ifRoom" android:visible="true"></item>
+    <item android:id="@+id/activity_article_menu_external" android:title="Open in external browser" android:titleCondensed="Open in browser" android:enabled="true" android:icon="@drawable/location_web_site" android:visible="true"></item>
 
 </menu>

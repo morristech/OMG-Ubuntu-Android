@@ -10,7 +10,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.actionbarsherlock.app.SherlockListFragment;
@@ -18,6 +17,7 @@ import com.actionbarsherlock.app.SherlockListFragment;
 
 public class SettingsFragment extends SherlockListFragment {
     public static final String NOTIFICATIONS_ENABLED = "notifications_enabled";
+    public static final String STARTUP_CHECK_ENABLED = "startup_check_enabled";
     private SharedPreferences mSharedPrefs;
 
 
@@ -38,6 +38,8 @@ public class SettingsFragment extends SherlockListFragment {
         preferenceItems.add(new PreferenceItem("checkbox", getString(R.string.pref_notifications_enabled_title),
                 getString(R.string.pref_notifications_enabled_description),
                 NOTIFICATIONS_ENABLED, R.bool.pref_notifications_enabled_default));
+        preferenceItems.add(new PreferenceItem("checkbox", getString(R.string.pref_startup_title),
+                getString(R.string.pref_startup_description), STARTUP_CHECK_ENABLED, R.bool.pref_startup_default));
         setListAdapter(new SettingsAdapter(getActivity(), R.id.fragment_settings_row_title, preferenceItems));
 
 
@@ -56,9 +58,9 @@ public class SettingsFragment extends SherlockListFragment {
                     !mSharedPrefs.getBoolean(item.preference_key, getResources().getBoolean(item.default_value_resource)));
             editor.commit();
         }
-        Log.i("OMG!", "Notifications are now set to " + mSharedPrefs.getBoolean(item.preference_key, getResources().getBoolean(item.default_value_resource)));
-        ((ArrayAdapter<PreferenceItem>) getListAdapter()).notifyDataSetChanged();
+        ((SettingsAdapter) getListAdapter()).notifyDataSetChanged();
         if (item.title.equals(getResources().getString(R.string.pref_notifications_enabled_title))) {
+            Log.i("OMG!", "Notifications are now set to " + mSharedPrefs.getBoolean(item.preference_key, getResources().getBoolean(item.default_value_resource)));
             if(mSharedPrefs.getBoolean(item.preference_key, getResources().getBoolean(item.default_value_resource))) { //Notifications enabled
                 if (!NotificationService.isNotificationAlarmActive()) {
                     NotificationAlarmGenerator.generateAlarm(getActivity());
@@ -66,6 +68,8 @@ public class SettingsFragment extends SherlockListFragment {
             } else { //Notifications disabled
                 NotificationAlarmGenerator.cancelAlarm(getActivity());
             }
+        } else if (item.title.equals(getResources().getString(R.string.pref_startup_title))) {
+            Log.i("OMG!", "Startup check is now set to " + mSharedPrefs.getBoolean(item.preference_key, getResources().getBoolean(item.default_value_resource)));
         }
 
     }

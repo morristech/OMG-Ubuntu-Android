@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item android:id="@+id/activity_comments_menu_refresh" android:title="Refresh comments" android:showAsAction="always" android:titleCondensed="Refresh" android:enabled="true" android:icon="@drawable/navigation_refresh" android:visible="true"></item>
+    <item android:id="@+id/activity_comments_menu_external" android:title="Open in browser" android:showAsAction="ifRoom" android:enabled="true" android:icon="@drawable/location_web_site" android:visible="true"></item>
+    
+
+</menu>

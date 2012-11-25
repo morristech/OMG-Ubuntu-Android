@@ -34,6 +34,7 @@ public class Article extends BaseTableObject {
     private String summary;
     private String content;
     private long createdAt;
+    private String identifier;
     private List<String> categories = new ArrayList<String>();
     public Article() {
         setTitle(null);
@@ -42,6 +43,7 @@ public class Article extends BaseTableObject {
         setThumb(null);
         setStarred(0);
         setUnread(1);
+        setIdentifier(null);
         setDate(System.currentTimeMillis());
     }
 
@@ -87,6 +89,9 @@ public class Article extends BaseTableObject {
         return formattedSummary;
     }
 
+    public String getIdentifier() { return identifier; }
+    public void setIdentifier(String identifier) { this.identifier = identifier; }
+
     public void setContent(String content) { this.content = content; }
     public String getContent() { return content; }
 
@@ -109,6 +114,7 @@ public class Article extends BaseTableObject {
         addColumn(new Column("summary", "TEXT"));
         addColumn(new Column("content", "TEXT"));
         addColumn(new Column("created_at", "INTEGER"));
+        addColumn(new Column("identifier", "TEXT"));
     }
 
     public void getLatest(OnArticleLoaded caller, String path) {

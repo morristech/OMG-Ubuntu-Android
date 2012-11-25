@@ -28,6 +28,8 @@ public class NotificationAlarmGenerator extends BroadcastReceiver {
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
+
+        //TODO pull from prefs
         calendar.add(Calendar.MINUTE, 30);
 
         AlarmManager alarm = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
@@ -43,6 +45,7 @@ public class NotificationAlarmGenerator extends BroadcastReceiver {
         try {
             alarm.cancel(pendingIntent);
             pendingIntent.cancel();
+            Log.d("OMG!", "Alarm cancelled.");
         } catch (Exception e) {
             if (MainActivity.DEVELOPER_MODE) Log.d("OMG!", "No alarm was cancelled. " + e.toString());
         }

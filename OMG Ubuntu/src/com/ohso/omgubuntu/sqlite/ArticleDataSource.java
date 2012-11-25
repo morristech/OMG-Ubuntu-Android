@@ -7,6 +7,7 @@ import java.util.List;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.net.Uri;
 
 import com.ohso.omgubuntu.R;
 
@@ -227,6 +228,12 @@ public class ArticleDataSource extends BaseDataSource {
         values.put("summary", article.getSummary());
         values.put("content", article.getContent());
         values.put("created_at", new Date().getTime());
+        String articleGuid = null;
+        try {
+            Uri identifierUri = Uri.parse(article.getIdentifier());
+            articleGuid = identifierUri.getQueryParameter("p");
+        } catch (Exception e) {}
+        values.put("identifier", articleGuid);
         if(database.insert("article", null, values) > 0) {
             try {
                 categorySource.open();
@@ -262,7 +269,6 @@ public class ArticleDataSource extends BaseDataSource {
     }
 
     private Article cursorToArticle(Cursor cursor, boolean withContent) {
-        //Log.i("OMG!", "Adding " + cursor.getString(1));
         Article article = new Article();
         article.setPath(cursor.getString(0));
         article.setTitle(cursor.getString(1));
@@ -274,6 +280,7 @@ public class ArticleDataSource extends BaseDataSource {
         article.setSummary(cursor.getString(7));
         if (withContent) article.setContent(cursor.getString(8));
         article.setCreatedAt(cursor.getLong(9));
+        article.setIdentifier(cursor.getString(10));
         return article;
     }
 

@@ -41,10 +41,11 @@ public class SettingsAdapter extends ArrayAdapter<PreferenceItem> {
             boolean value = mSharedPrefs.getBoolean(getItem(position).preference_key,
                     convertView.getResources().getBoolean(getItem(position).default_value_resource));
             box.setChecked(value);
-
             // TODO Figure out what's going on here
             widgetContainer.removeAllViews();
             widgetContainer.addView(box);
+
+
         }
 
         return convertView;

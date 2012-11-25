@@ -25,6 +25,7 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
+import com.ohso.omgubuntu.CommentsActivity.ExternalLinkFragment;
 import com.ohso.omgubuntu.sqlite.Article;
 import com.ohso.omgubuntu.sqlite.Article.OnArticleLoaded;
 import com.ohso.omgubuntu.sqlite.ArticleDataSource;
@@ -96,9 +97,8 @@ public class ArticleActivity extends SherlockFragmentActivity implements OnArtic
                 commentIntent.putExtra(CommentsActivity.COMMENTS_URL, currentArticle.getPath());
                 startActivity(commentIntent);
             } else {
-                Intent browseIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                browseIntent.addCategory(Intent.CATEGORY_BROWSABLE);
-                startActivity(browseIntent);
+                ExternalLinkFragment fragment = ExternalLinkFragment.newInstance(url);
+                fragment.show(getSupportFragmentManager(), "external_article_link");
             }
             return true;
         }
@@ -155,7 +155,13 @@ public class ArticleActivity extends SherlockFragmentActivity implements OnArtic
             case R.id.activity_article_menu_comments:
                 Intent commentIntent = new Intent(this, CommentsActivity.class);
                 commentIntent.putExtra(CommentsActivity.COMMENTS_URL, currentArticle.getPath());
+                commentIntent.putExtra(CommentsActivity.COMMENTS_IDENTIFIER, currentArticle.getIdentifier());
                 startActivity(commentIntent);
+                return true;
+            case R.id.activity_article_menu_external:
+                Intent externalIntent = new Intent(Intent.ACTION_VIEW,
+                        Uri.parse(getResources().getString(R.string.base_url) + currentArticle.getPath()));
+                startActivity(externalIntent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -237,7 +243,7 @@ public class ArticleActivity extends SherlockFragmentActivity implements OnArtic
     }
 
     public static class AlertDialogFragment extends DialogFragment {
-        private static final String ACTIVE_ARTICLE = "active_article";
+        private static final String ACTIVE_ARTICLE = "com.ohso.omgubuntu.ArticleActivity.activeArticle";
 
         public static AlertDialogFragment newInstance(String activeArticle) {
             AlertDialogFragment fragment = new AlertDialogFragment();
@@ -276,6 +282,45 @@ public class ArticleActivity extends SherlockFragmentActivity implements OnArtic
         }
 
     }
+
+ /*   public static class ExternalLinkFragment extends DialogFragment {
+        private static final String EXTERNAL_LINK = "com.ohso.omgubuntu.ArticleActivity.externalLink";
+
+        public static ExternalLinkFragment newInstance(String externalLink) {
+            ExternalLinkFragment fragment = new ExternalLinkFragment();
+            Bundle args = new Bundle();
+            args.putString(EXTERNAL_LINK, externalLink);
+            fragment.setArguments(args);
+            return fragment;
+        }
+
+        public String getExternalLink() {
+            return getArguments().getString(EXTERNAL_LINK);
+        }
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setMessage(getResources().getString(R.string.article_external_alert));
+            builder.setPositiveButton("Open", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Intent external = new Intent(Intent.ACTION_VIEW, Uri.parse(getExternalLink()));
+                    external.addCategory(Intent.CATEGORY_BROWSABLE);
+                    Intent chooser = Intent.createChooser(external, getResources().getString(R.string.article_external_link_dialog));
+                    startActivity(chooser);
+                }
+            });
+            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    getActivity().finish();
+                }
+            });
+            return builder.create();
+        }
+
+    }*/
 
 
 }

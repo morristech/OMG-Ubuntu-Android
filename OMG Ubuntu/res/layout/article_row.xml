@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.ohso.omgubuntu.GridViewItemLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/article_row_bg"
@@ -10,7 +10,7 @@
         android:id="@+id/article_row_status_container"
         android:layout_width="match_parent"
         android:layout_height="20dp"
-        android:layout_marginBottom="-5dp" >
+        android:layout_marginBottom="-10dp" >
 
         <ImageView
             android:id="@+id/article_row_starred_status"
@@ -48,6 +48,7 @@
         android:layout_below="@id/article_row_status_container"
         android:layout_marginRight="85dp"
         android:fontFamily="Roboto"
+        android:maxLines="3"
         android:textColor="@color/Grey.5"
         android:textSize="18sp" />
 
@@ -62,12 +63,25 @@
         android:contentDescription="@string/article_image_description"
         android:maxHeight="75dp"
         android:maxWidth="75dp" />
-
-    <RelativeLayout
-        android:id="@+id/relativeLayout1"
+    
+    <TextView
+        android:id="@+id/article_row_text_summary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/article_row_text_title"
+        android:layout_marginRight="85dp"
+        android:layout_marginTop="5dp"
+        android:fontFamily="Roboto"
+        android:maxLines="3"
+        android:ellipsize="end"
+        android:textColor="@color/Grey.5"
+        android:textSize="15sp"
+    />
+     <RelativeLayout
+        android:id="@+id/relativeLayout1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/article_row_text_summary"
         android:layout_marginRight="85dp"
         android:layout_marginTop="5dp" >
 
@@ -95,4 +109,4 @@
             android:textSize="11sp" />
     </RelativeLayout>
 </RelativeLayout>
-</LinearLayout>
+</com.ohso.omgubuntu.GridViewItemLayout>

@@ -5,9 +5,11 @@ import java.util.List;
 
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.util.Log;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.ohso.omgubuntu.sqlite.Article;
+import com.ohso.omgubuntu.sqlite.ArticleDataSource;
 import com.ohso.omgubuntu.sqlite.Articles;
 import com.ohso.omgubuntu.sqlite.Category;
 
@@ -19,13 +21,13 @@ public class CategoriesFragment extends BaseFragment implements ActionBar.OnNavi
     public void getData() {
         if (categories.isEmpty()) populateData();
         dataSource.open();
-        Articles newData = dataSource.getArticlesWithCategory(categories.get(lastActiveCategory).getName(), false);
+        Articles newData = dataSource.getArticlesWithCategory(categories.get(lastActiveCategory).getName(), false, currentPage);
         dataSource.close();
-        articles.clear();
+        Log.i("OMG!", "Categories got back " + newData.size());
+        adapter.clear();
         for (Article article : newData) {
-            articles.add(article);
+            adapter.add(article);
         }
-        ((ArticleAdapter) getListAdapter()).notifyDataSetChanged();
     }
 
     @Override
@@ -40,34 +42,60 @@ public class CategoriesFragment extends BaseFragment implements ActionBar.OnNavi
 
     @Override
     public boolean onNavigationItemSelected(int itemPosition, long itemId) {
+        //Log.i("OMG!", "Running category selected");
+        if (lastActiveCategory == itemPosition) return true;
+        currentPage = 1;
+        nextPageAllowed = true;
+        hidefooterView();
         lastActiveCategory = itemPosition;
         dataSource.open();
         Articles articlesInCategory = dataSource.getArticlesWithCategory(categories.get(lastActiveCategory).getName(), false);
         dataSource.close();
         if (articlesInCategory.isEmpty()) {
-            articles.clear();
-            ((ArticleAdapter) getListAdapter()).notifyDataSetChanged();
+            Log.i("OMG!", "Empty!");
+            adapter.clear();
             setRefreshing();
             getNewData();
         } else {
-            articles.clear();
+            Log.i("OMG!", "Not empty");
+            adapter.clear();
             for (Article article : articlesInCategory) {
-                articles.add(article);
+                adapter.add(article);
             }
-            ((ArticleAdapter) getListAdapter()).notifyDataSetChanged();
-            if (articlesInCategory.size() < 15) {
+            if (articlesInCategory.size() < ArticleDataSource.MAX_ARTICLES_PER_PAGE) {
                 setRefreshing();
                 getNewData();
             }
+        }
+        if (gridView != null) {
+            Log.i("OMG!", "Scroll to");
+            gridView.setAdapter(adapter);
         }
 
         return true;
     }
 
     @Override
+    public void getNextPage() {
+        new Articles().getNextCategoryPage(this, categories.get(lastActiveCategory).getPath(), ++currentPage);
+    }
+
+    @Override
+    public void refreshView() {
+        dataSource.open();
+        Articles articles = dataSource.getArticlesWithCategory(categories.get(lastActiveCategory).getPath(),
+                false, currentPage);
+        dataSource.close();
+        adapter.clear();
+        for (Article article : articles) {
+            adapter.add(article);
+        }
+    }
+
+    @Override
     public void setRefreshing() {
         super.setRefreshing();
-        articles.getLatestInCategory(this, categories.get(lastActiveCategory).getName());
+        new Articles().getLatestInCategory(this, categories.get(lastActiveCategory).getName());
     }
 
     private void populateData() {
@@ -76,12 +104,12 @@ public class CategoriesFragment extends BaseFragment implements ActionBar.OnNavi
         for (int i = 0; i < data.length(); i++) {
             int id = data.getResourceId(i, 0);
             String[] cat = res.getStringArray(id);
-            if (id > 0) categories.add(new Category(res.getResourceEntryName(id), cat[0]));
+            if (id > 0) categories.add(new Category(res.getResourceEntryName(id), cat[0], cat[1]));
         }
     }
 
     @Override
     protected void getNewData() {
-        articles.getLatestInCategory(this, categories.get(lastActiveCategory).getName());
+        new Articles().getLatestInCategory(this, categories.get(lastActiveCategory).getName());
     }
 }

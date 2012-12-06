@@ -38,11 +38,13 @@ public class MainActivity extends BaseActivity {
         Fragment categoriesFragment = new CategoriesFragment();
         Fragment starredFragment = new StarredFragment();
         Fragment settingsFragment = new SettingsFragment();
+        Fragment feedbackFragment = new FeedbackFragment();
         Fragment aboutFragment = new AboutFragment();
         fragments.put("sidebar_home", articlesFragment);
         fragments.put("sidebar_categories", categoriesFragment);
         fragments.put("sidebar_starred", starredFragment);
         fragments.put("sidebar_settings", settingsFragment);
+        fragments.put("sidebar_feedback", feedbackFragment);
         fragments.put("sidebar_about", aboutFragment);
 
         articleFragmentContainer = (RelativeLayout) findViewById(R.id.fragment_articles_container);
@@ -160,7 +162,7 @@ public class MainActivity extends BaseActivity {
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         if (fragments.get(sidebar.getActiveFragment()) instanceof BaseFragment) {
-            ((BaseFragment) fragments.get(sidebar.getActiveFragment())).getData();
+            ((BaseFragment) fragments.get(sidebar.getActiveFragment())).refreshView();
         }
 
     }

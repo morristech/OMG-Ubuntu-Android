@@ -17,6 +17,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.text.format.DateUtils;
+import android.util.Log;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.TextView;
@@ -41,7 +42,9 @@ public class ArticleActivity extends SherlockFragmentActivity implements OnArtic
     private TextView byline;
     private TextView dateView;
     private MenuItem refresh;
+    //TODO fix this
     public static final String INTERNAL_ARTICLE_PATH_INTENT = "article_path";
+    public static final String LATEST_ARTICLE_INTENT = "ohso.omgubuntu.ArticleActivity.LATEST_ARTICLE";
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
@@ -60,6 +63,7 @@ public class ArticleActivity extends SherlockFragmentActivity implements OnArtic
         Typeface robotoLight = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Light.ttf");
         titleView.setTypeface(robotoLight);
         byline = (TextView) findViewById(R.id.activity_article_byline);
+        articleSource = new ArticleDataSource(this);
 
         URL article_uri = null;
         try {
@@ -67,20 +71,31 @@ public class ArticleActivity extends SherlockFragmentActivity implements OnArtic
         } catch (MalformedURLException e) {}
 
         if (article_uri == null) { // We're opening from the application
-            activeArticle = getIntent().getExtras().getString(INTERNAL_ARTICLE_PATH_INTENT);
-            SharedPreferences sharedPref = getSharedPreferences(OMGUbuntuApplication.PREFS_FILE, 0);
-            String lastPath = sharedPref.getString(NotificationService.LAST_NOTIFIED_PATH, null);
-            if (lastPath != null && lastPath.equals(activeArticle)) {
-                Editor editor = sharedPref.edit();
-                editor.putString(NotificationService.LAST_NOTIFIED_PATH, null);
-                editor.commit();
-                ArticlesWidgetProvider.notifyUpdate(this, 0);
+            if(getIntent().getExtras().getBoolean(LATEST_ARTICLE_INTENT, false)) { //Latest article intent
+                Log.i("OMG!", "Getting latest article...");
+                articleSource.open();
+                Article article = articleSource.getLatestArticle(false);
+                articleSource.close();
+                if (article == null) finish();
+                Log.i("OMG!", "Latest is " + article.getPath());
+                activeArticle = article.getPath();
+            } else {
+                activeArticle = getIntent().getExtras().getString(INTERNAL_ARTICLE_PATH_INTENT);
+                SharedPreferences sharedPref = getSharedPreferences(OMGUbuntuApplication.PREFS_FILE, 0);
+                String lastPath = sharedPref.getString(NotificationService.LAST_NOTIFIED_PATH, null);
+                if (lastPath != null && lastPath.equals(activeArticle)) {
+                    Editor editor = sharedPref.edit();
+                    editor.putString(NotificationService.LAST_NOTIFIED_PATH, null);
+                    editor.commit();
+                    ArticlesWidgetProvider.notifyUpdate(this, 0);
+                }
             }
         } else { // We're opening from an external application
+            Log.i("OMG!", "NOPE");
             activeArticle = article_uri.getPath();
         }
 
-        articleSource = new ArticleDataSource(this);
+
 
         openArticle();
     }
@@ -92,10 +107,17 @@ public class ArticleActivity extends SherlockFragmentActivity implements OnArtic
         }
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            if(Uri.parse(url).getScheme().equals("internal") && Uri.parse(url).getHost().equals("app-comments")) {
+            Uri requestUrl = Uri.parse(url);
+            if(requestUrl.getScheme().equals("internal") && requestUrl.getHost().equals("app-comments")) {
                 Intent commentIntent = new Intent(mContext, CommentsActivity.class);
                 commentIntent.putExtra(CommentsActivity.COMMENTS_URL, currentArticle.getPath());
+                commentIntent.putExtra(CommentsActivity.COMMENTS_IDENTIFIER, currentArticle.getIdentifier());
                 startActivity(commentIntent);
+            } else if (requestUrl.getHost().equals("www.omgubuntu.co.uk") && requestUrl.getPath().startsWith("/2")) {
+                Log.i("OMG!", "Got an article!");
+                Intent articleIntent = new Intent(mContext, ArticleActivity.class);
+                articleIntent.putExtra(ArticleActivity.INTERNAL_ARTICLE_PATH_INTENT, requestUrl.getPath());
+                startActivity(articleIntent);
             } else {
                 ExternalLinkFragment fragment = ExternalLinkFragment.newInstance(url);
                 fragment.show(getSupportFragmentManager(), "external_article_link");

@@ -16,6 +16,10 @@
         <item>Settings</item>
         <item>@drawable/sidebar_settings</item>
     </array>
+    <array name="sidebar_feedback">
+        <item>Feedback</item>
+        <item>@drawable/sidebar_feedback</item>
+    </array>
     <array name="sidebar_about">
         <item>About</item>
         <item>@drawable/sidebar_about</item>
@@ -25,6 +29,7 @@
         <item>@array/sidebar_starred</item>
         <item>@array/sidebar_categories</item>
         <item>@array/sidebar_settings</item>
+        <item>@array/sidebar_feedback</item>
         <item>@array/sidebar_about</item>
     </array>
 </resources>

@@ -1,40 +1,57 @@
 package com.ohso.omgubuntu;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Message;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.webkit.ConsoleMessage;
+import android.webkit.WebChromeClient;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
+import android.widget.RelativeLayout;
 
 import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 
 public class CommentsActivity extends SherlockFragmentActivity {
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        // TODO Auto-generated method stub
+        //super.onSaveInstanceState(outState);
+    }
+
     public static final String COMMENTS_URL = "com.ohso.omgubuntu.commentsUrl";
     public static final String COMMENTS_IDENTIFIER = "com.ohso.omgubuntu.commentsIdentifier";
     private FragmentManager mFragmentManager;
 
     // Need to hold activity-wide references to the WebViews for setting content and onBackPressed() state
     private WebView commentView;
-    protected static WebView popupView;
+    private WebView popupView;
 
-    protected String articlePath;
-    protected String commentIdentifier;
+    private String mArticlePath;
+    private String mIdentifier;
 
     // We need to make sure a popup that's activated is destroyed instead of just losing focus onbackpressed()
     @Override
     public void onBackPressed() {
-        Log.i("OMG!", "Back pressed.");
         if (popupView != null && !popupView.isFocused()) {
-            Log.i("OMG!", "popup destroyed");
             popupView.destroy();
         }
         super.onBackPressed();
@@ -49,17 +66,26 @@ public class CommentsActivity extends SherlockFragmentActivity {
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
 
-        popupView = new WebView(this);
-        articlePath = getIntent().getStringExtra(COMMENTS_URL);
-        if (articlePath == null) finish();
-
-        commentIdentifier = getIntent().getStringExtra(COMMENTS_IDENTIFIER);
+        mArticlePath = getIntent().getStringExtra(COMMENTS_URL);
+        mIdentifier = getIntent().getStringExtra(COMMENTS_IDENTIFIER);
+        if (mArticlePath == null) finish();
         mFragmentManager = getSupportFragmentManager();
 
         // Setting up the default Disqus WebView
-        CommentsFragment commentsView = new CommentsFragment();
+        commentView = new WebView(this);
+
+        WebViewFragment commentsView = new WebViewFragment();
+        commentsView.setWebView(commentView);
 
         mFragmentManager.beginTransaction().replace(R.id.comments_fragment_container, commentsView).commit();
+
+        commentView.getSettings().setJavaScriptEnabled(true);
+        commentView.getSettings().setSupportMultipleWindows(true);
+        commentView.setWebChromeClient(new WebFragmentClient(this));
+        commentView.setWebViewClient(new WebClient(this));
+
+
+        setContents(mArticlePath);
     }
 
     @Override
@@ -68,40 +94,147 @@ public class CommentsActivity extends SherlockFragmentActivity {
             case android.R.id.home:
                 finish();
                 return true;
-            case R.id.activity_comments_menu_external:
-                Intent externalIntent = new Intent(Intent.ACTION_VIEW,
-                        Uri.parse(getResources().getString(R.string.base_url) + articlePath + "#disqus_thread"));
-                startActivity(externalIntent);
-                return true;
             default :
                 return super.onOptionsItemSelected(item);
         }
     }
 
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getSupportMenuInflater().inflate(R.menu.activity_comments, menu);
-        return true;
+    private void setContents(String articlePath) {
+        StringBuilder content = new StringBuilder();
+        content.append("<!DOCTYPE html><head>");
+        content.append("<script type=\"text/javascript\">var disqus_shortname='omgubuntu'; ");
+        content.append("var disqus_url='" + getResources().getString(R.string.base_url) + articlePath + "'; ");
+        content.append("var disqus_identifier='" + mIdentifier + " " +
+                getResources().getString(R.string.base_url) + "/?p=" + mIdentifier + "';");
+        content.append("</script> ");
+        content.append("</head>");
+        content.append("<body><div id='disqus_thread'>Loading...</div>");
+        content.append("<script type=\"text/javascript\" src=\"http://omgubuntu.disqus.com/embed.js\"></script>");
+        content.append("</body></html>");
+        commentView.loadDataWithBaseURL(getResources().getString(R.string.base_url) + articlePath,
+                content.toString(), "text/html", "UTF-8", getResources().getString(R.string.base_url) + articlePath);
     }
 
-    /*public static class WebViewFragment extends SherlockFragment {
+    private class WebFragmentClient extends WebChromeClient {
+        private Context mContext;
+        public WebFragmentClient(Context context) {
+            mContext = context;
+        }
+        @Override
+        public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
+            Log.d("OMG!", consoleMessage.message());
+            return super.onConsoleMessage(consoleMessage);
+        }
+
+        @Override
+        public boolean onCreateWindow(WebView view, boolean isDialog, boolean isUserGesture, Message resultMsg) {
+            WebViewFragment popupFragment = new WebViewFragment();
+            popupView = new WebView(mContext);
+            popupView.getSettings().setJavaScriptEnabled(true);
+            popupView.setWebChromeClient(new WebChromeClient() {
+
+                @Override
+                public void onCloseWindow(WebView window) {
+                    mFragmentManager.popBackStack();
+                    super.onCloseWindow(window);
+                    window.destroy();
+                }
+
+            });
+            popupView.setWebViewClient(new WebClient(mContext));
+
+            popupFragment.setWebView(popupView);
+
+            ((WebView.WebViewTransport) resultMsg.obj).setWebView(popupFragment.getWebView());
+            FragmentTransaction trans = mFragmentManager.beginTransaction();
+            trans.add(R.id.comments_fragment_container, popupFragment);
+            trans.addToBackStack(null);
+            trans.commit();
+            resultMsg.sendToTarget();
+            return true;
+        }
+
+        @Override
+        public void onCloseWindow(WebView window) {
+            super.onCloseWindow(window);
+            mFragmentManager.popBackStack();
+        }
+
+    }
+
+    private class WebClient extends WebViewClient {
+        private Context mContext;
+        public WebClient(Context context) {
+            mContext = context;
+        }
+
+        @Override
+        public void onPageFinished(WebView view, String url) {
+            URL requestUrl = null;
+            try {
+                requestUrl = new URL(url);
+            } catch (MalformedURLException e) {}
+            if (requestUrl == null) return;
+            if (requestUrl.getHost().equals("disqus.com") && requestUrl.getPath().startsWith("/logout")) {
+                setContents(mArticlePath);
+            }
+
+        }
+
+        @Override
+        public boolean shouldOverrideUrlLoading(WebView view, String url) {
+            Uri requestUrl = Uri.parse(url);
+            if (requestUrl != null ) {
+                if (requestUrl.getHost().equals("disqus.com")) {
+                    // Check for /logout and let it go through in a new popup, then onPageFinish should popbackstack and reload page
+                    if(requestUrl.getPath().startsWith("/logout")) {
+                        commentView.loadUrl(url);
+                        return true;
+                    }
+                } else if (requestUrl.getHost().equals("redirect.disqus.com")) {
+                    // Open a popup - if it leads to an article, finish() and open Article intent
+                    // else, popbackstack and open in browser.
+                    String alsoOnPath = Uri.parse(requestUrl.getQueryParameter("url")).getPath().toString();
+                    alsoOnPath = alsoOnPath.substring(0, alsoOnPath.indexOf(":"));
+                    Intent intent = new Intent(mContext, ArticleActivity.class).putExtra(ArticleActivity.INTERNAL_ARTICLE_PATH_INTENT, alsoOnPath);
+                    startActivity(intent);
+                    return true;
+                } else if (requestUrl.getHost().equals("www.omgubuntu.co.uk") && requestUrl.getPath().startsWith("/2")) {
+                    Intent intent = new Intent(mContext, ArticleActivity.class).putExtra(ArticleActivity.INTERNAL_ARTICLE_PATH_INTENT, requestUrl.getPath());
+                    startActivity(intent);
+                    return true;
+                } else if (requestUrl.getPath().endsWith(".rss")) {
+                    // Send to external with warning
+                    /*
+                     * Affects: http://omgubuntu.disqus.com/.../latest.rss
+                     *
+                     */
+                    ExternalLinkFragment.newInstance(requestUrl.toString()).show(mFragmentManager, "external_link");
+                    return true;
+                }
+            }
+            return false;
+        }
+
+    }
+
+    public static class WebViewFragment extends SherlockFragment {
         private WebView mWebView;
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-            Log.i("OMG!", "onCreateView called");
+
             RelativeLayout v = (RelativeLayout) inflater.inflate(R.layout.comments_fragment_webview, container, false);
             v.addView(mWebView);
+            //return mWebView;
             return v;
         }
 
         public void setWebView(WebView webView) { mWebView = webView; }
 
-        public WebView getWebView() { Log.i("OMG!", "getWebView called"); return mWebView; }
+        public WebView getWebView() { return mWebView; }
 
-    }*/
+    }
 
     public static class ExternalLinkFragment extends DialogFragment {
         public static final String EXTERNAL_LINK_FRAGMENT_LINK =

@@ -15,12 +15,17 @@
     <string name="activity_main_footer_text">Load more articles</string>
     <string name="activity_main_footer_over">Visit the OMG! Ubuntu! website for more articles...</string>
     <string name="activity_main_footer_dialog">Visit OMG! Ubuntu! via</string>
+    <string name="activity_main_share_intent_text">Share this article via</string>
     <string name="widget_articles_list_title">Latest posts</string>
     <string name="widget_articles_list_empty_title">No recent articles</string>
     <string name="activity_article_loading_text">Loading...</string>
     <string name="activity_article_image_download">Download image</string>
     <string name="activity_article_comment_text">Read Comments</string>
-
+    <string name="fragment_feedback_header">Feedback</string>
+    <string name="fragment_feedback_button">Send An Email</string>
+    <string name="fragment_feedback_tips_header">Tips</string>
+    <string name="fragment_feedback_tips_button">Tip Form</string>
+    
     <!-- ImageView descriptions -->
     <string name="app_logo_description">OMG! Ubuntu! bubble logo</string>
     <string name="article_image_description">Thumbnail image for an article</string>
@@ -45,6 +50,9 @@
     <string name="new_article_notification_plural">New articles</string>
 
     <!-- Misc body copy -->
+    <string name="fragment_feedback_copy">Have any comments about the app? Send an email to contact@omgubuntu.co.uk and let us know!</string>
+    <string name="fragment_feedback_tips_copy">Have a tip? Use our tip form linked below.</string>
+
     <string name="activity_about_omg_ubuntu">OMG! Ubuntu! boasts over 1.6 million unique visitors a month, who between them view over 7 million pages. Combined with 58,000 Facebook fans, 37,700 Twitter followers, and 9,000 Android app users, you\'ll fit right into our growing community
 \n\nOur full time editorial staff includes Joey-Elijah Sneddon, a 23 year old journalist graduate from Lincoln University, and Benjamin Humphrey, a New Zealand-based professional designer, and founder of The Ubuntu Manual Project.</string>
     <string name="activity_about_ohso">Ohso is an online media and software publishing company, founded in July 2010 by Joey Sneddon and Benjamin Humphrey, two tech-savvy entrepreneurs based in the United Kingdom and New Zealand.</string>

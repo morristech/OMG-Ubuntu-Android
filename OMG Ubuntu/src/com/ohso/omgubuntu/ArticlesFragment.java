@@ -22,13 +22,12 @@ public class ArticlesFragment extends BaseFragment {
     @Override
     protected void getData() {
         dataSource.open();
-        Articles newData = dataSource.getArticles(false);
+        Articles newData = dataSource.getArticles(false, currentPage);
         dataSource.close();
-        articles.clear();
+        adapter.clear();
         for (Article article : newData) {
-            articles.add(article);
+            adapter.add(article);
         }
-        ((ArticleAdapter) getListAdapter()).notifyDataSetChanged();
     }
 
     @Override
@@ -46,13 +45,13 @@ public class ArticlesFragment extends BaseFragment {
     @Override
     public void setRefreshing() {
         super.setRefreshing();
-        articles.getLatest(this);
+        new Articles().getLatest(this);
 
     }
 
     @Override
     protected void getNewData() {
-        articles.getLatest(this);
+        new Articles().getLatest(this);
     }
 
 }

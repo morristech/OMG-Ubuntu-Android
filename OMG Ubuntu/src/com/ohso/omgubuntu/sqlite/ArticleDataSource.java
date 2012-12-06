@@ -8,10 +8,12 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.util.Log;
 
 import com.ohso.omgubuntu.R;
 
 public class ArticleDataSource extends BaseDataSource {
+    public static final int MAX_ARTICLES_PER_PAGE = 20;
     private Article articleSpec = new Article();
     private CategoryDataSource categorySource;
     private Context mContext;
@@ -32,9 +34,37 @@ public class ArticleDataSource extends BaseDataSource {
         return article;
     }
 
+    public Article getLatestArticle(boolean withContent) {
+        Article article = new Article();
+        Cursor cursor = database.query("article", articleSpec.getColumnNames(), null, null, null, null, "date DESC", "1");
+        if (cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            article = cursorToArticle(cursor, withContent);
+        } else article = null;
+        cursor.close();
+        return article;
+    }
+
     public Articles getArticles(boolean withContent) {
         Cursor cursor = database.query("article", articleSpec.getColumnNames(),
-                null, null, null, null, "date DESC", "15");
+                null, null, null, null, "date DESC", String.valueOf(MAX_ARTICLES_PER_PAGE));
+        if (cursor.getCount() < 0) {
+            cursor.close();
+            return null;
+        }
+        Articles latestArticles = new Articles();
+        cursor.moveToFirst();
+        while (cursor.isAfterLast() == false) {
+            latestArticles.add(cursorToArticle(cursor, withContent));
+            cursor.moveToNext();
+        }
+        cursor.close();
+        return latestArticles;
+    }
+
+    public Articles getArticles(boolean withContent, int page) {
+        Cursor cursor = database.query("article", articleSpec.getColumnNames(),
+                null, null, null, null, "date DESC", String.valueOf(MAX_ARTICLES_PER_PAGE * page));
         if (cursor.getCount() < 0) {
             cursor.close();
             return null;
@@ -68,18 +98,72 @@ public class ArticleDataSource extends BaseDataSource {
         return articles;
     }
 
+    /**
+     * Returns the last n articles with an offset of MAX_ARTICLES_PER_PAGE
+     * @param page The page number from which to grab MAX_ARTICLES_PER_PAGE
+     */
+    public Articles getArticlesOnPage(int page) {
+        Articles articles = new Articles();
+        String rawQuery = "SELECT * FROM article ORDER BY date DESC LIMIT "+ MAX_ARTICLES_PER_PAGE +" OFFSET " +
+                String.valueOf(MAX_ARTICLES_PER_PAGE * (page - 1));
+        Cursor cursor = database.rawQuery(rawQuery, null);
+        if (cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            while (cursor.isAfterLast() == false) {
+                articles.add(cursorToArticle(cursor, false));
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+        return articles;
+    }
+
     public Articles getArticlesWithCategory(String categoryName, boolean withContent) {
         Articles articles = new Articles();
-        String rawQuery = "SELECT * FROM article a INNER JOIN article_category ac ON ac.article_id=a.path WHERE ac.category_id = ? ORDER BY date DESC LIMIT 15";
+        String rawQuery = "SELECT * FROM article a INNER JOIN article_category ac ON " +
+                "ac.article_id=a.path WHERE ac.category_id = ? ORDER BY date DESC LIMIT " +
+                String.valueOf(MAX_ARTICLES_PER_PAGE);
         Cursor cursor = database.rawQuery(rawQuery, new String[] {categoryName});
-        if (cursor.getCount() < 0) {
-            cursor.close();
-            return articles;
+        if (cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            while (cursor.isAfterLast() == false) {
+                articles.add(cursorToArticle(cursor, withContent));
+                cursor.moveToNext();
+            }
         }
-        cursor.moveToFirst();
-        while (cursor.isAfterLast() == false) {
-            articles.add(cursorToArticle(cursor, withContent));
-            cursor.moveToNext();
+        cursor.close();
+        return articles;
+    }
+
+    public Articles getArticlesWithCategory(String categoryName, boolean withContent, int page) {
+        Articles articles = new Articles();
+        String rawQuery = "SELECT * FROM article a INNER JOIN article_category ac ON " +
+                "ac.article_id=a.path WHERE ac.category_id = ? ORDER BY date DESC LIMIT " +
+                String.valueOf(MAX_ARTICLES_PER_PAGE * page);
+        Cursor cursor = database.rawQuery(rawQuery, new String[] {categoryName});
+        if (cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            while (cursor.isAfterLast() == false) {
+                articles.add(cursorToArticle(cursor, withContent));
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+        return articles;
+    }
+
+    public Articles getArticlesWithCategoryOnPage(String categoryName, int page) {
+        Articles articles = new Articles();
+        String rawQuery = "SELECT * FROM article a INNER JOIN article_category ac ON " +
+                "ac.article_id=a.path WHERE ac.category_id = ? ORDER BY date DESC LIMIT " +
+                String.valueOf(MAX_ARTICLES_PER_PAGE) + " OFFSET " + String.valueOf(MAX_ARTICLES_PER_PAGE * (page - 1));
+        Cursor cursor = database.rawQuery(rawQuery, new String[] {categoryName});
+        if (cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            while (cursor.isAfterLast() == false) {
+                articles.add(cursorToArticle(cursor, false));
+                cursor.moveToNext();
+            }
         }
         cursor.close();
         return articles;
@@ -87,7 +171,7 @@ public class ArticleDataSource extends BaseDataSource {
 
     public Articles getStarredArticles(boolean withContent) {
         Cursor cursor = database.query("article", articleSpec.getColumnNames(),
-                "starred = 1", null, null, null, "date DESC", "15");
+                "starred = 1", null, null, null, "date DESC");
         if (cursor.getCount() < 0) {
             cursor.close();
             return null;
@@ -291,7 +375,7 @@ public class ArticleDataSource extends BaseDataSource {
         if(cursor.getCount() > 0) {
             cursor.moveToFirst();
             while (cursor.isAfterLast() == false) {
-                //Log.i("OMG!", "Removing article " + cursor.getString(0));
+                Log.i("OMG!", "Removing article " + cursor.getString(0));
                 database.delete("article", "path = '"+ cursor.getString(0) + "'", null);
                 cursor.moveToNext();
             }

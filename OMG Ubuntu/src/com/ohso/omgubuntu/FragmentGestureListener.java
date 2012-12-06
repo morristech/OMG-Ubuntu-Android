@@ -1,7 +1,6 @@
 package com.ohso.omgubuntu;
 
 import android.app.Activity;
-import android.util.Log;
 import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.MotionEvent;
 
@@ -25,7 +24,6 @@ public class FragmentGestureListener extends SimpleOnGestureListener {
     @Override
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
         // TODO Auto-generated method stub
-        Log.i("OMG!", "GEsture detected! ");
         if (Math.abs(e1.getY() - e2.getY()) > maxOffPath) return false;
         if (e1.getX() - e2.getX() > minDistance && Math.abs(velocityX) > thresholdVelocity) onSwipeToLeft();
         else if (e2.getX() - e1.getX() > minDistance && Math.abs(velocityX) > thresholdVelocity) onSwipeToRight();
@@ -37,7 +35,6 @@ public class FragmentGestureListener extends SimpleOnGestureListener {
      *
      */
     public void onSwipeToRight() {
-        Log.i("OMG!", "Swiped to the right");
         mFragmentGestureListener.onSwipeToRight();
     }
 
@@ -46,7 +43,6 @@ public class FragmentGestureListener extends SimpleOnGestureListener {
      *
      */
     public void onSwipeToLeft() {
-        Log.i("OMG!", "Swiped to the left");
         mFragmentGestureListener.onSwipeToLeft();
     }
 

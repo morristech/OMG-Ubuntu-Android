@@ -25,6 +25,15 @@ public class UrlFactory {
         return urlFragment;
     }
 
+    public static String forCategoryPage(String urlFragment, int page) {
+        String url = null;
+        try {
+            url = mResources.getString(R.string.base_url) + "/category/" + urlFragment + "/feed" +
+                    URLDecoder.decode(mResources.getString(R.string.rss_paged_params), "UTF-8") + page;
+        } catch (IOException e) {}
+        return url;
+    }
+
     public static String forPage(int page) {
         String url = null;
         try {

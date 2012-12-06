@@ -8,10 +8,11 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.util.Log;
 import android.widget.RemoteViews;
 
-@TargetApi(11)
+//@TargetApi(11)
 public class ArticlesWidgetProvider extends AppWidgetProvider {
     public static final String ACTION_OPEN_ARTICLE = "com.ohso.omgubuntu.OPEN_ARTICLE";
     public static final String ACTION_REFRESH = "com.ohso.omgubuntu.REFRESH";
@@ -19,27 +20,36 @@ public class ArticlesWidgetProvider extends AppWidgetProvider {
     public static RemoteViews remoteViews;
     public static RemoteViews refreshView;
 
-    // TODO Refresh button
-    public ArticlesWidgetProvider() {}
-
     @SuppressWarnings("deprecation")
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        Intent widgetIntent = new Intent(context, ArticlesWidgetService.class);
-        widgetIntent.setData(Uri.parse(widgetIntent.toUri(Intent.URI_INTENT_SCHEME)));
-
-        if (remoteViews == null) remoteViews = getRemoteViews(context, appWidgetManager, appWidgetIds);
-
         for (int appWidgetId : appWidgetIds) {
-            remoteViews.setRemoteAdapter(appWidgetId, R.id.widget_articles_list, widgetIntent);
-            appWidgetManager.updateAppWidget(appWidgetId, remoteViews);
-            appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.widget_articles_list_empty);
+            if (Build.VERSION.SDK_INT >= 11) {
+                Intent widgetIntent = new Intent(context, ArticlesWidgetService.class);
+                widgetIntent.setData(Uri.parse(widgetIntent.toUri(Intent.URI_INTENT_SCHEME)));
+                if (remoteViews == null) remoteViews = getRemoteViews(context, appWidgetManager, appWidgetIds);
+                honeycombSetup(appWidgetManager, appWidgetId, widgetIntent);
+            } else {
+                if (remoteViews == null) remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget_froyo);
+                appWidgetManager.updateAppWidget(appWidgetId, remoteViews);
+                Intent mainIntent = new Intent(context, ArticleActivity.class).putExtra(ArticleActivity.LATEST_ARTICLE_INTENT, true);
+                PendingIntent froyoMainIntent = PendingIntent.getActivity(context, 0, mainIntent, 0);
+                remoteViews.setOnClickPendingIntent(R.id.widget_froyo_container, froyoMainIntent);
+            }
         }
         super.onUpdate(context, appWidgetManager, appWidgetIds);
     }
 
+    @TargetApi(11)
+    public void honeycombSetup(AppWidgetManager appWidgetManager, int appWidgetId, Intent widgetIntent) {
+        remoteViews.setRemoteAdapter(appWidgetId, R.id.widget_articles_list, widgetIntent);
+        appWidgetManager.updateAppWidget(appWidgetId, remoteViews);
+        appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.widget_articles_list_empty);
+    }
+
     @Override
     public void onReceive(Context context, Intent intent) {
+        Log.i("OMG!", "onReceive");
         if (intent.getAction().equals(ACTION_OPEN_ARTICLE)) {
             if (MainActivity.DEVELOPER_MODE) Log.i("OMG!", "Got call to open article: " + intent.getStringExtra(ArticleActivity.INTERNAL_ARTICLE_PATH_INTENT));
             Intent activityIntent = new Intent(context, ArticleActivity.class).putExtra(ArticleActivity.INTERNAL_ARTICLE_PATH_INTENT,
@@ -62,6 +72,13 @@ public class ArticlesWidgetProvider extends AppWidgetProvider {
     }
 
     public static void notifyUpdate(Context context, int newArticleCount) {
+        if (Build.VERSION.SDK_INT >= 11) {
+            honeycombUpdate(context, newArticleCount);
+        }
+    }
+
+    @TargetApi(11)
+    private static void honeycombUpdate(Context context, int newArticleCount) {
         AppWidgetManager manager = AppWidgetManager.getInstance(context);
         int[] ids = manager.getAppWidgetIds(new ComponentName(context, com.ohso.omgubuntu.ArticlesWidgetProvider.class));
         manager.notifyAppWidgetViewDataChanged(ids, R.id.widget_articles_list);
@@ -72,11 +89,10 @@ public class ArticlesWidgetProvider extends AppWidgetProvider {
         remoteViews.addView(R.id.widget_articles_refresh_container, refreshView);
         remoteViews.setTextViewText(R.id.widget_articles_count, newArticleCount < 1 ? null : String.valueOf(newArticleCount));
 
-        // Debug line that shows 0 if no results are returned rather than no textview at all
-        //remoteViews.setTextViewText(R.id.widget_articles_count, String.valueOf(newArticleCount));
         manager.updateAppWidget(ids, remoteViews);
     }
 
+    @TargetApi(11)
     private static RemoteViews getRemoteViews(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         Intent mainActivity = new Intent (context, MainActivity.class);
         PendingIntent mainActivityIntent = PendingIntent.getActivity(context, 0, mainActivity, 0);

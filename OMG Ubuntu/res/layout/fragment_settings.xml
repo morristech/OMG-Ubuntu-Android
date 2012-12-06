@@ -7,6 +7,4 @@
     android:paddingRight="10dp" 
     android:divider="@color/Grey.9"
     android:dividerHeight="1px" >
-    
-
 </ListView>

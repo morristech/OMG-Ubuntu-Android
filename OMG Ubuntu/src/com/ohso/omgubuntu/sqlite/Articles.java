@@ -31,14 +31,78 @@ public class Articles extends ArrayList<Article> {
     }
 
     public void getNextPage(OnNextPageLoaded caller, int page) {
+        // TODO check db first.for exactly 20 pages OFFSET 20
         mNextPageCallback = caller;
-        new getNextPageAsync().execute(page);
+        ArticleDataSource dataSource = new ArticleDataSource(context);
+        dataSource.open();
+        Articles articles = dataSource.getArticlesOnPage(page);
+        dataSource.close();
+        Log.i("OMG!", "Got back articles: " + articles.size());
+        if (articles.size() == ArticleDataSource.MAX_ARTICLES_PER_PAGE) {
+            Log.i("OMG!", "Got enough articles in the database");
+            mNextPageCallback.nextPageLoaded(articles);
+        } else {
+            new getNextPageAsync().execute(page);
+        }
+
+    }
+
+    public void getNextCategoryPage(OnNextPageLoaded caller, String urlFragment, int page) {
+        mNextPageCallback = caller;
+        ArticleDataSource dataSource = new ArticleDataSource(context);
+        dataSource.open();
+        Articles articles = dataSource.getArticlesWithCategoryOnPage(urlFragment, page);
+        dataSource.close();
+        if (articles.size() == ArticleDataSource.MAX_ARTICLES_PER_PAGE) {
+            Log.i("OMG!", "Got enough articles in the database");
+            mNextPageCallback.nextPageLoaded(articles);
+        } else {
+            new getNextCategoryPageAsync(urlFragment, page).execute();
+        }
+    }
+
+    private class getNextCategoryPageAsync extends AsyncTask<Object, Void, Articles> {
+        private final String mUrlFragment;
+        private final int mPage;
+        public getNextCategoryPageAsync(String name, int page) {
+            mUrlFragment = name;
+            mPage = page;
+        }
+        @Override
+        protected Articles doInBackground(Object... params) {
+            try {
+                return loadXmlFromNetwork(UrlFactory.forCategoryPage(mUrlFragment, mPage));
+            } catch (IOException e) {
+                Log.e("OMG!", context.getResources().getString(R.string.connection_error) + e.toString());
+                return null;
+            } catch (XmlPullParserException e) {
+                Log.e("OMG!", context.getResources().getString(R.string.xml_error) + e.toString());
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(Articles result) {
+            if(result == null) {
+                mNextPageCallback.nextPageError();
+                return;
+            }
+            else mNextPageCallback.nextPageLoaded(result);
+            ArticleDataSource dataSource = new ArticleDataSource(context);
+            dataSource.open();
+            for (Article article : result) {
+                dataSource.createArticle(article, false, false);
+            }
+            dataSource.close();
+            super.onPostExecute(result);
+        }
     }
 
     private class getNextPageAsync extends AsyncTask<Integer, Void, Articles> {
         @Override
         protected Articles doInBackground(Integer... params) {
             try {
+                Log.i("OMG!", "Loading page for " + UrlFactory.forPage(params[0]));
                 return loadXmlFromNetwork(UrlFactory.forPage(params[0]));
             } catch (IOException e) {
                 Log.e("OMG!", context.getResources().getString(R.string.connection_error) + e.toString());
@@ -53,6 +117,13 @@ public class Articles extends ArrayList<Article> {
         protected void onPostExecute(Articles result) {
             if(result == null) mNextPageCallback.nextPageError();
             else mNextPageCallback.nextPageLoaded(result);
+            ArticleDataSource dataSource = new ArticleDataSource(context);
+            dataSource.open();
+            //Log.i("OMG!", "got back: " + result.size());
+            for (Article article : result) {
+                dataSource.createArticle(article, false, false);
+            }
+            dataSource.close();
             super.onPostExecute(result);
         }
     }

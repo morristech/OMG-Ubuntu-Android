@@ -5,7 +5,6 @@ import android.content.res.Resources.NotFoundException;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
@@ -81,18 +80,6 @@ public abstract class BaseActivity extends SherlockFragmentActivity implements S
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
     }
 
-    /**
-     * Action bar item selected.
-     *
-     * @param item MenuItem corresponding to the actionBar item selected.
-     * @return true (consumed selection)
-     */
-//    public boolean actionBarItemSelected(MenuItem item) {
-//        // TODO Auto-generated method stub
-//        Log.i("OMG!", "Something pressed in home view!");
-//        return true;
-//    }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -115,7 +102,6 @@ public abstract class BaseActivity extends SherlockFragmentActivity implements S
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         // TODO Should this do anything or just be caught to keep the sidebar active?
-        Log.i("OMG!", "Orientation changed");
     }
 
     /**
@@ -123,7 +109,6 @@ public abstract class BaseActivity extends SherlockFragmentActivity implements S
      *
      */
     public void toggleSidebarFragment() {
-        // TODO This might do something else...one day
         sidebarFragmentActive = !sidebarFragmentActive;
     }
 

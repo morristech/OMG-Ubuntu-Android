@@ -26,10 +26,10 @@ public class Category extends BaseTableObject {
         }
     }
 
-    public Category(String name, String title) {
+    public Category(String name, String title, String path) {
         setName(name);
         setTitle(title);
-        setPath(null);
+        setPath(path);
     }
 
     public void setName(String name) { this.name = name; }
@@ -58,9 +58,6 @@ public class Category extends BaseTableObject {
         addColumn(new Column("path", "TEXT"));
     }
 
-    // TODO Default categories set up
-    // Alphabetised, which it should already be
-    // name, [title, path]
     @Override
     public void setData() {
         for(String[] category : categories) {

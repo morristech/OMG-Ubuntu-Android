@@ -1,10 +1,10 @@
 package com.ohso.omgubuntu;
 
-import android.app.ActionBar.LayoutParams;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -18,17 +18,21 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.LinearLayout;
-import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.SherlockListFragment;
+import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
@@ -42,122 +46,137 @@ import com.ohso.util.ImageHandler;
 /**
  * @author Sam Tran <samvtran@gmail.com>
  */
-public abstract class BaseFragment extends SherlockListFragment implements OnTouchListener,
-        OnArticlesLoaded, OnScrollListener, OnNextPageLoaded, OnClickListener {
+public abstract class BaseFragment extends SherlockFragment implements OnTouchListener,
+        OnArticlesLoaded, OnScrollListener, OnNextPageLoaded, OnClickListener, OnItemClickListener {
     public static final String FORCE_REFRESH = "com.ohso.omgubuntu.BaseFragment.forceRefresh";
+    private boolean onStartRefresh = true;
 
-    // Max # of pages to allow "more articles"
+    // Max # of pages to allow "more articles" from
     private final int MAXIMUM_PAGED = 5;
 
-    protected Articles articles = new Articles();
     protected ArticleDataSource dataSource;
+    protected ArticleAdapter adapter;
+    protected HeterogeneousGridView gridView;
     protected ImageHandler imageHandler;
     protected ActionBar actionBar;
     protected MenuItem refresh;
 
-    private TextView footerView;
-    private int currentPage = 1;
-    private boolean nextPageAllowed = true;
-
-
-    // Updates the last active article when you return from ArticleActivity
-    // e.g., to reflect (un)starring and unmarking the unread marker
-    private int lastActiveArticlePosition = -1;
-    // Marks the list position to restore state upon returning to the fragment
-    private int mCurrentPosition = 0;
+    protected TextView footerView;
+    protected int currentPage = 1;
+    protected boolean nextPageAllowed = false;
+    protected boolean footerEnabled = true;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
     }
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        mCurrentPosition = getListView().getFirstVisiblePosition();
-        outState.putInt("currentPosition", mCurrentPosition);
-    }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         setRetainInstance(true);
         super.onActivityCreated(savedInstanceState);
-        if (savedInstanceState != null) {
-            mCurrentPosition = savedInstanceState.getInt("currentPosition", 0);
-        }
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Reset the default action bar since it's global and setActionBar() would otherwise change things permanently
+        dataSource = new ArticleDataSource(getActivity());
         actionBar = ((BaseActivity) getActivity()).getSupportActionBar();
         ((BaseActivity) getActivity()).getDefaultActionBar();
         setActionBar();
 
-        setListAdapter(new ArticleAdapter(getActivity(),
-                R.layout.article_row, R.id.article_row_text_title, articles));
+        RelativeLayout layout = (RelativeLayout) inflater.inflate(R.layout.fragment_base_view, null, false);
+
+        footerView = (TextView) inflater.inflate(R.layout.activity_main_footer, container, false);
+        footerView.setVisibility(TextView.GONE);
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+        params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        footerView.setLayoutParams(params);
+        layout.addView(footerView);
+        footerView.setOnClickListener(this);
+
+        int columnNumber = getColumnByScreenSize();
+
+        adapter = new ArticleAdapter(getActivity(), R.layout.article_row, R.id.article_row_text_title, new Articles(),
+                columnNumber, footerView);
         imageHandler = ((BaseActivity) getActivity()).getImageHandler();
-        ((ArticleAdapter) getListAdapter()).setImageHandler(imageHandler);
+        adapter.setImageHandler(imageHandler);
 
-        // TODO make this a normal layout
-        ListView listView = new ListView(getActivity());
-        listView.setId(android.R.id.list);
-        listView.setBackgroundResource(R.drawable.list_bg);
-        listView.setSelector(R.drawable.list_view_selector);
-        listView.setDividerHeight(0);
-        listView.setItemsCanFocus(true);
-        listView.setLayoutParams(new ListView.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
-        listView.setOnTouchListener(this);
-        listView.setOnScrollListener(this);
-        listView.setOnTouchListener(this);
-        registerForContextMenu(listView);
 
-        dataSource = new ArticleDataSource(getActivity());
+        gridView = (HeterogeneousGridView) layout.findViewById(R.id.fragment_base_gridview);
+        gridView.setAdapter(adapter);
+        gridView.setBackgroundResource(R.drawable.list_bg);
+        gridView.setNumColumns(columnNumber);
+        gridView.setScrollContainer(false);
+        gridView.setSelector(R.drawable.list_view_selector);
+        gridView.setOnTouchListener(this);
+        gridView.setOnScrollListener(this);
+        gridView.setOnItemClickListener(this);
+        registerForContextMenu(gridView);
+
         getData();
-
-        footerView = (TextView) inflater.inflate(R.layout.activity_main_footer, null, false);
-        Log.i("OMG!", "WHAT Article size is " + articles.size());
-        if (articles.size() >= 15) {
-            Log.i("OMG!", "WHAT Article size is " + articles.size());
-            footerView.setOnClickListener(this);
-            listView.addFooterView(footerView, null, false);
-        } else {
-            listView.removeFooterView(footerView);
-        }
-
-        //TODO also trigger refresh if first article is ages old.
-        if (articles.isEmpty() ||
+        if (adapter.isEmpty() || (onStartRefresh == true &&
                 getActivity().getSharedPreferences(OMGUbuntuApplication.PREFS_FILE, 0)
-                .getBoolean(SettingsFragment.STARTUP_CHECK_ENABLED, true)) {
+                .getBoolean(SettingsFragment.STARTUP_CHECK_ENABLED, true))) {
+            onStartRefresh = false;
             setRefreshing();
             getNewData();
         }
-        return listView;
+
+        if (adapter.getCount() >= ArticleDataSource.MAX_ARTICLES_PER_PAGE && footerEnabled) {
+            nextPageAllowed = true;
+            adapter.setFooterEnabled(true);
+        }
+
+        return layout;
     }
 
-//    protected void updateFooter() {
-//        if(footerView == null) {
-//            footerView = (TextView) getActivity().getLayoutInflater().inflate(R.layout.activity_main_footer, null, false);
-//        }
-//        if (articles.size() >= 15) {
-//            Log.i("OMG!", "Adding footer!");
-//            if (getListView().getFooterViewsCount() > 0) return;
-//            footerView.setOnClickListener(this);
-//            getListView().addFooterView(footerView, null, false);
-//        } else {
-//            Log.i("OMG!", "Removing footer");
-//            getListView().removeFooterView(footerView);
-//        }
-//    }
+    public static int getColumnByScreenSize() {
+        int columnNumber = 1;
+        final int sizeMask = OMGUbuntuApplication.getContext().getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK;
+        final int orientation = OMGUbuntuApplication.getContext().getResources().getConfiguration().orientation;
+        switch(sizeMask) {
+            case(Configuration.SCREENLAYOUT_SIZE_LARGE):
+                if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                    columnNumber = 2;
+                }
+                break;
+            case(Configuration.SCREENLAYOUT_SIZE_XLARGE):
+                if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                    columnNumber = 3;
+                } else {
+                    columnNumber = 2;
+                }
+                break;
+        }
 
+        return columnNumber;
+    }
 
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE || newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            if (footerView.isShown()) footerView.setVisibility(TextView.GONE);
+            gridView.setNumColumns(getColumnByScreenSize());
+            adapter.setColumns(getColumnByScreenSize());
+        }
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> l, View v, int pos, long id) {
+        Article clicked = adapter.getItem((int) id);
+        ((MainActivity) getActivity()).openArticle(clicked.getPath());
+    }
 
     @Override
     public void onClick(View v) {
+        footerView.setEnabled(false);
         if (nextPageAllowed && currentPage < MAXIMUM_PAGED) {
             ((TextView) v).setText("Loading...");
-
-            //TODO make this a function to getNextPage() so we can separate categories and starred too.
-            articles.getNextPage(this, ++currentPage);
+            if (refresh != null) refresh.setActionView(R.layout.refresh_menu_item);
+            getNextPage();
         } else {
             Intent external = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.omgubuntu.co.uk"));
             external.addCategory(Intent.CATEGORY_BROWSABLE);
@@ -166,25 +185,98 @@ public abstract class BaseFragment extends SherlockListFragment implements OnTou
         }
     }
 
+    /**
+     * Gets the next page.
+     * When overriding, don't call super, as this function will call getNextPage()
+     */
+    public void getNextPage() {
+        new Articles().getNextPage(this, ++currentPage);
+    }
+
+    /**
+     * Refreshes the dataset.
+     * When overriding, don't call super, as this function will call getArticles(int limit)
+     */
+    public void refreshView() {
+        dataSource.open();
+        Articles articles = dataSource.getArticles(false, currentPage);
+        dataSource.close();
+        adapter.clear();
+        for (Article article: articles) {
+            adapter.add(article);
+        }
+    }
+
     @Override
     public void nextPageLoaded(Articles result) {
+        footerView.setEnabled(true);
+        checkFooterView();
+        if (refresh != null) refresh.setActionView(null);
         if (currentPage == MAXIMUM_PAGED) {
             footerView.setText(R.string.activity_main_footer_over);
             nextPageAllowed = false;
         } else {
             footerView.setText(getResources().getString(R.string.activity_main_footer_text));
         }
-        articles.addAll(result);
-        ((ArticleAdapter) getListAdapter()).notifyDataSetChanged();
+        for (Article article : result) {
+            adapter.add(article);
+        }
+        if (result.size() < ArticleDataSource.MAX_ARTICLES_PER_PAGE) {
+            nextPageAllowed = false;
+        }
+        gridView.onLayout(true, 0, 0, gridView.getRight(), gridView.getBottom());
     }
+
 
     @Override
     public void nextPageError() {
+        footerView.setEnabled(true);
+        footerView.setText(R.string.activity_main_footer_text);
+        --currentPage;
+        if (refresh != null) refresh.setActionView(null);
         articlesError();
     }
 
     @Override
-    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {}
+    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+        if (visibleItemCount > 0 && (firstVisibleItem + visibleItemCount >= totalItemCount)) {
+            final View child = view.getChildAt((adapter.getRealCount() - 1) - firstVisibleItem);
+            if (child != null) {
+                if (child.getBottom() > view.getBottom() - (adapter.getFooterHeight() / 1.5)) {
+                    // Above
+                    if (footerView.isShown()) hidefooterView();
+                } else {
+                    // Below
+                    if (!footerView.isShown()) showfooterView();
+                }
+            }
+        }
+
+    }
+
+    public void checkFooterView() {
+        if (footerView.isShown()) hidefooterView();
+    }
+
+    protected void showfooterView() {
+        if(nextPageAllowed == false) {
+            if (currentPage == MAXIMUM_PAGED) {
+                footerView.setText(R.string.activity_main_footer_over);
+            } else if (footerView.isShown()) {
+                footerView.setVisibility(TextView.GONE);
+                return;
+            }
+        }
+        footerView.setVisibility(TextView.VISIBLE);
+        final Animation fadeInAnimation = AnimationUtils.loadAnimation(getActivity(), R.anim.slide_in_from_bottom);
+        footerView.startAnimation(fadeInAnimation);
+    }
+
+    protected void hidefooterView() {
+        final Animation fadeInAnimation = AnimationUtils.loadAnimation(getActivity(), R.anim.slide_out_to_bottom);
+        footerView.startAnimation(fadeInAnimation);
+        footerView.setVisibility(TextView.GONE);
+    }
 
     /*
      * Pause the image handler for buttery smooth flinging.
@@ -196,14 +288,15 @@ public abstract class BaseFragment extends SherlockListFragment implements OnTou
         } else {
             imageHandler.setPauseWork(false);
         }
+        if (gridView.getChildCount() > 0 && gridView.getLastVisiblePosition() < adapter.getRealCount()) {
+            if (footerView.isShown()) footerView.setVisibility(TextView.GONE);
+        }
     }
 
     protected abstract void getData();
     protected abstract void getNewData();
 
     public void setActionBar() {}
-
-    public void setData(Articles articles) { this.articles = articles; }
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
@@ -219,13 +312,6 @@ public abstract class BaseFragment extends SherlockListFragment implements OnTou
         return false;
     }
 
-    @Override
-    public void onListItemClick(ListView l, View v, int position, long id) {
-        super.onListItemClick(l, v, position, id);
-        Article clicked = articles.get((int) id);
-        lastActiveArticlePosition = (int) id;
-        ((MainActivity) getActivity()).openArticle(clicked.getPath());
-    }
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
@@ -233,7 +319,7 @@ public abstract class BaseFragment extends SherlockListFragment implements OnTou
         android.view.MenuInflater inflater = getActivity().getMenuInflater();
         inflater.inflate(R.menu.article_row_long_press, menu);
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
-        Article article = articles.get((int) info.id);
+        Article article = adapter.getItem((int) info.id);
         if(article.isStarred()) {
             menu.findItem(R.id.article_row_unstar).setVisible(true);
         } else {
@@ -275,7 +361,7 @@ public abstract class BaseFragment extends SherlockListFragment implements OnTou
     public boolean onContextItemSelected(android.view.MenuItem item) {
         AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
         int position = (int) info.id;
-        Article article = articles.get(position);
+        Article article = adapter.getItem(position);
         dataSource.open();
         switch(item.getItemId()) {
             case R.id.article_row_star:
@@ -303,7 +389,7 @@ public abstract class BaseFragment extends SherlockListFragment implements OnTou
                 return super.onContextItemSelected(item);
         }
         dataSource.close();
-        ((ArticleAdapter) getListAdapter()).notifyDataSetChanged();
+        adapter.notifyDataSetChanged();
         return true;
     }
 
@@ -313,20 +399,19 @@ public abstract class BaseFragment extends SherlockListFragment implements OnTou
         Intent shareIntent = new Intent(Intent.ACTION_SEND);
         shareIntent.setType("text/plain");
         shareIntent.putExtra(Intent.EXTRA_TEXT, title + " " + "http://www.omgubuntu.co.uk" + path);
-        Intent chooser = Intent.createChooser(shareIntent, "Share this article via");
+        Intent chooser = Intent.createChooser(shareIntent, getResources().getString(R.string.activity_main_share_intent_text));
         startActivity(chooser);
     }
 
     @Override
     public void articlesLoaded(Articles result) {
-        // TODO Should we also catch result.size() == 0?
+        checkFooterView();
         onRefreshComplete();
         dataSource.open();
         if(!result.isEmpty()) dataSource.createArticles(result, true);
         dataSource.clearArticlesOverNumberOfEntries();
         dataSource.close();
         getData();
-        ((ArticleAdapter) getListAdapter()).notifyDataSetChanged();
     }
 
     @Override
@@ -363,14 +448,6 @@ public abstract class BaseFragment extends SherlockListFragment implements OnTou
     public void onResume() {
         super.onResume();
         imageHandler.setExitTasksEarly(false);
-        if (lastActiveArticlePosition != -1) {
-            dataSource.open();
-            articles.set(lastActiveArticlePosition,
-                    dataSource.getArticle(articles.get(lastActiveArticlePosition).getPath(), false));
-            dataSource.close();
-            ((ArticleAdapter) getListAdapter()).notifyDataSetChanged();
-            lastActiveArticlePosition = -1;
-        }
     }
 
     @Override
@@ -382,12 +459,12 @@ public abstract class BaseFragment extends SherlockListFragment implements OnTou
 
     public void setAllAsRead() {
         dataSource.open();
-        for (Article article : articles) {
-            article.setUnread(0);
-            dataSource.setArticleToUnread(false, article.getPath());
+        for (int i = 0; i < adapter.getRealCount(); i++) {
+            adapter.getItem(i).setUnread(0);
+            dataSource.setArticleToUnread(false, adapter.getItem(i).getPath());
         }
         dataSource.close();
-        ((ArticleAdapter) getListAdapter()).notifyDataSetChanged();
+        adapter.notifyDataSetChanged();
     }
 
     public static class AlertDialogFragment extends DialogFragment {

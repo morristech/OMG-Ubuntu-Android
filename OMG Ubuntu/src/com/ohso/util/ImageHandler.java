@@ -10,6 +10,8 @@ import java.net.URL;
 import java.util.Locale;
 
 import android.app.Activity;
+import android.app.ActivityManager;
+import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
@@ -36,7 +38,8 @@ import com.ohso.omgubuntu.OMGUbuntuApplication;
  */
 public class ImageHandler {
     private static final boolean DEBUG_LOG = false;
-    private final int MEMORY_CACHE_SIZE = 1024 * 1024 * 5; // 5 MB
+    private final int MEMORY_CLASS;
+    private final int MEMORY_CACHE_SIZE;
     private final int DISK_CACHE_SIZE = 1024 * 1024 * 10; // 10 MB
     private final CompressFormat IMAGE_COMPRESS_FORMAT = Bitmap.CompressFormat.JPEG;
     private final int IMAGE_COMPRESS_QUALITY = 75;
@@ -55,6 +58,8 @@ public class ImageHandler {
     private LruCache<String, Bitmap> mMemoryCache;
 
     public ImageHandler(Activity activity) {
+        MEMORY_CLASS = ((ActivityManager) activity.getSystemService(Context.ACTIVITY_SERVICE)).getMemoryClass();
+        MEMORY_CACHE_SIZE = 1024 * 1024 * MEMORY_CLASS / 8; // Use 1/8 the available memory
         mMemoryCache = new LruCache<String, Bitmap>(MEMORY_CACHE_SIZE) {
             protected int sizeOf(String key, Bitmap bitmap) {
                 return bitmap.getRowBytes() * bitmap.getHeight();
@@ -232,6 +237,20 @@ public class ImageHandler {
                 if (diskCachedSnapshot != null) {
                     inputStream = diskCachedSnapshot.getInputStream(0);
                     if (inputStream != null) {
+                        // START
+/*                        final BitmapFactory.Options options = new BitmapFactory.Options();
+                        options.inJustDecodeBounds = true;
+                        Bitmap bitmap = BitmapFactory.decodeStream(inputStream, null, options);
+                        options.inSampleSize = calculateInSampleSize(options, (int) mPixelSize, (int) mPixelSize);
+
+                        // reset() isn't always supported.
+                        if(inputStream.markSupported()) inputStream.reset();
+                        else inputStream = diskCachedSnapshot.getInputStream(0);
+
+                        options.inJustDecodeBounds = false;
+                        bitmap = BitmapFactory.decodeStream(inputStream, null, options);*/
+
+                        //END
                         final Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
                         diskCachedSnapshot.close();
                         return bitmap;

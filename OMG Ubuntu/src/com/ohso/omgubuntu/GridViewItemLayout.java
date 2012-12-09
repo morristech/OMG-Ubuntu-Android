@@ -2,10 +2,12 @@ package com.ohso.omgubuntu;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.util.SparseIntArray;
 import android.widget.LinearLayout;
 
 public class GridViewItemLayout extends LinearLayout {
-    private static int[] mMaxRowHeight;
+    private static SparseIntArray mMaxRowHeight;
     private static int mNumColumns;
     private int mPosition;
 
@@ -20,7 +22,7 @@ public class GridViewItemLayout extends LinearLayout {
 
     public static void initItemLayout(int numColumns, int itemCount) {
         mNumColumns = numColumns;
-        mMaxRowHeight = new int[(int) Math.ceil(itemCount / numColumns)];
+        mMaxRowHeight = new SparseIntArray((int) Math.ceil(itemCount / numColumns));
     }
 
     @Override
@@ -30,10 +32,15 @@ public class GridViewItemLayout extends LinearLayout {
 
         final int rowIndex = mPosition / mNumColumns;
         final int measuredHeight = getMeasuredHeight();
-        if (measuredHeight > mMaxRowHeight[rowIndex]) {
-            mMaxRowHeight[rowIndex] = measuredHeight;
+
+        // TODO any time this happens, we need to recalculate everything, especially for the footer.
+        if (mMaxRowHeight.get(rowIndex, -1) == -1) {
+            Log.i("OMG!", rowIndex + " has no value");
+        }
+        if (mMaxRowHeight.get(rowIndex, -1) == -1 || measuredHeight > mMaxRowHeight.get(rowIndex)) {
+            mMaxRowHeight.put(rowIndex, measuredHeight);
         }
 
-        setMeasuredDimension(getMeasuredWidth(), mMaxRowHeight[rowIndex]);
+        setMeasuredDimension(getMeasuredWidth(), mMaxRowHeight.get(rowIndex));
     }
 }

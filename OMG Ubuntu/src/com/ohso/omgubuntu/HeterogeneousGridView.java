@@ -2,6 +2,7 @@ package com.ohso.omgubuntu;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.widget.GridView;
 
 public class HeterogeneousGridView extends GridView {
@@ -20,10 +21,11 @@ public class HeterogeneousGridView extends GridView {
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        //Log.i("OMG!", "onLayout called with" + l + " " + t +" " + " " + r + " " + b);
+        Log.i("OMG!", "onLayout called");
         if(changed) {
-            ArticleAdapter adapter = (ArticleAdapter) getAdapter();
 
+            ArticleAdapter adapter = (ArticleAdapter) getAdapter();
+            Log.i("OMG!", "Changed for # " + adapter.getCount());
             int numColumns = BaseFragment.getColumnByScreenSize();
             GridViewItemLayout.initItemLayout(numColumns, adapter.getCount());
 

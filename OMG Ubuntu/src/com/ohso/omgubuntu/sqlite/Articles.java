@@ -27,19 +27,24 @@ public class Articles extends ArrayList<Article> {
 
     public void getLatest(OnArticlesLoaded caller) {
         mCallback = caller;
-        new getArticlesAsync().execute();
+        if (OMGUbuntuApplication.isNetworkAvailable()) {
+            new getArticlesAsync().execute();
+        } else {
+            mCallback.articlesError();
+        }
     }
 
     public void getNextPage(OnNextPageLoaded caller, int page) {
         // TODO check db first.for exactly 20 pages OFFSET 20
         mNextPageCallback = caller;
+        if (!OMGUbuntuApplication.isNetworkAvailable()) mNextPageCallback.nextPageError();
         ArticleDataSource dataSource = new ArticleDataSource(context);
         dataSource.open();
         Articles articles = dataSource.getArticlesOnPage(page);
         dataSource.close();
-        Log.i("OMG!", "Got back articles: " + articles.size());
+        //Log.i("OMG!", "Got back articles: " + articles.size());
         if (articles.size() == ArticleDataSource.MAX_ARTICLES_PER_PAGE) {
-            Log.i("OMG!", "Got enough articles in the database");
+            //Log.i("OMG!", "Got enough articles in the database");
             mNextPageCallback.nextPageLoaded(articles);
         } else {
             new getNextPageAsync().execute(page);
@@ -49,12 +54,13 @@ public class Articles extends ArrayList<Article> {
 
     public void getNextCategoryPage(OnNextPageLoaded caller, String urlFragment, int page) {
         mNextPageCallback = caller;
+        if (!OMGUbuntuApplication.isNetworkAvailable()) mNextPageCallback.nextPageError();
         ArticleDataSource dataSource = new ArticleDataSource(context);
         dataSource.open();
         Articles articles = dataSource.getArticlesWithCategoryOnPage(urlFragment, page);
         dataSource.close();
         if (articles.size() == ArticleDataSource.MAX_ARTICLES_PER_PAGE) {
-            Log.i("OMG!", "Got enough articles in the database");
+            //Log.i("OMG!", "Got enough articles in the database");
             mNextPageCallback.nextPageLoaded(articles);
         } else {
             new getNextCategoryPageAsync(urlFragment, page).execute();
@@ -102,7 +108,7 @@ public class Articles extends ArrayList<Article> {
         @Override
         protected Articles doInBackground(Integer... params) {
             try {
-                Log.i("OMG!", "Loading page for " + UrlFactory.forPage(params[0]));
+                //Log.i("OMG!", "Loading page for " + UrlFactory.forPage(params[0]));
                 return loadXmlFromNetwork(UrlFactory.forPage(params[0]));
             } catch (IOException e) {
                 Log.e("OMG!", context.getResources().getString(R.string.connection_error) + e.toString());
@@ -153,6 +159,7 @@ public class Articles extends ArrayList<Article> {
 
     public void getLatestInCategory(OnArticlesLoaded caller, String categoryName) {
         mCallback = caller;
+        if (!OMGUbuntuApplication.isNetworkAvailable()) mCallback.articlesError();
         new getLatestInCategoryAsync().execute(categoryName);
     }
 

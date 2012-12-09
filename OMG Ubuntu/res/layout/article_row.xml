@@ -48,6 +48,8 @@
         android:layout_below="@id/article_row_status_container"
         android:layout_marginRight="85dp"
         android:fontFamily="Roboto"
+        android:gravity="center_vertical"
+        android:lines="3"
         android:maxLines="3"
         android:textColor="@color/Grey.5"
         android:textSize="18sp" />
@@ -71,12 +73,14 @@
         android:layout_below="@id/article_row_text_title"
         android:layout_marginRight="85dp"
         android:layout_marginTop="5dp"
-        android:fontFamily="Roboto"
-        android:maxLines="3"
         android:ellipsize="end"
+        android:fontFamily="Roboto"
+        android:gravity="center_vertical"
+        android:lines="3"
+        android:maxLines="3"
         android:textColor="@color/Grey.5"
-        android:textSize="15sp"
-    />
+        android:textSize="15sp" />
+
      <RelativeLayout
         android:id="@+id/relativeLayout1"
         android:layout_width="wrap_content"
@@ -105,8 +109,10 @@
             android:layout_toRightOf="@id/article_row_text_author"
             android:fontFamily="Roboto"
             android:gravity="right"
+            android:maxLines="1"
             android:textColor="@color/Grey.9"
             android:textSize="11sp" />
+
     </RelativeLayout>
 </RelativeLayout>
 </com.ohso.omgubuntu.GridViewItemLayout>

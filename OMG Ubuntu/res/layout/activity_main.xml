@@ -1,7 +1,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/activity_main_super"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:background="@drawable/list_bg"
     android:gravity="left" >
     <RelativeLayout
@@ -11,6 +11,6 @@
 	<RelativeLayout
 	    android:id="@+id/fragment_articles_container"
 	    android:background="@drawable/list_bg"
-	    android:layout_width="wrap_content"
+	    android:layout_width="match_parent"
 	    android:layout_height="match_parent" />
 </RelativeLayout>

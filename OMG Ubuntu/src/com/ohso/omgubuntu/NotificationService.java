@@ -88,6 +88,7 @@ public class NotificationService extends IntentService implements OnArticlesLoad
     @Override
     public void articlesError() {
         // Silently fail for now
+        ArticlesWidgetProvider.notifyUpdate(OMGUbuntuApplication.getContext(), 0);
     }
 
     private void broadcastArticlesNotification(String lastPath) {

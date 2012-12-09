@@ -1079,23 +1079,23 @@ containing a value of this type.
         public static final int activity_article=0x7f070038;
         public static final int activity_article_byline=0x7f07003a;
         public static final int activity_article_date=0x7f07003b;
-        public static final int activity_article_menu_comments=0x7f070065;
-        public static final int activity_article_menu_external=0x7f070066;
-        public static final int activity_article_menu_refresh=0x7f070061;
-        public static final int activity_article_menu_share=0x7f070062;
-        public static final int activity_article_menu_starred=0x7f070063;
-        public static final int activity_article_menu_unstarred=0x7f070064;
+        public static final int activity_article_menu_comments=0x7f070066;
+        public static final int activity_article_menu_external=0x7f070067;
+        public static final int activity_article_menu_refresh=0x7f070062;
+        public static final int activity_article_menu_share=0x7f070063;
+        public static final int activity_article_menu_starred=0x7f070064;
+        public static final int activity_article_menu_unstarred=0x7f070065;
         public static final int activity_article_title=0x7f070039;
         public static final int activity_article_webview=0x7f07003c;
-        public static final int activity_comments_menu_external=0x7f070068;
-        public static final int activity_comments_menu_refresh=0x7f070067;
-        public static final int activity_main_menu_read_all=0x7f07006a;
-        public static final int activity_main_menu_refresh=0x7f070069;
+        public static final int activity_comments_menu_external=0x7f070069;
+        public static final int activity_comments_menu_refresh=0x7f070068;
+        public static final int activity_main_menu_read_all=0x7f07006b;
+        public static final int activity_main_menu_refresh=0x7f07006a;
         public static final int activity_main_super=0x7f07003d;
-        public static final int article_mark_as_read=0x7f07006d;
-        public static final int article_mark_as_unread=0x7f07006e;
+        public static final int article_mark_as_read=0x7f07006e;
+        public static final int article_mark_as_unread=0x7f07006f;
         public static final int article_row_image=0x7f070045;
-        public static final int article_row_star=0x7f07006b;
+        public static final int article_row_star=0x7f07006c;
         public static final int article_row_starred_status=0x7f070042;
         public static final int article_row_status_container=0x7f070041;
         public static final int article_row_text_author=0x7f070048;
@@ -1103,8 +1103,8 @@ containing a value of this type.
         public static final int article_row_text_time=0x7f070049;
         public static final int article_row_text_title=0x7f070044;
         public static final int article_row_unread_status=0x7f070043;
-        public static final int article_row_unstar=0x7f07006c;
-        public static final int article_share=0x7f07006f;
+        public static final int article_row_unstar=0x7f07006d;
+        public static final int article_share=0x7f070070;
         public static final int comments_fragment_container=0x7f07004a;
         public static final int comments_fragment_webview_container=0x7f07004b;
         public static final int disableHome=0x7f070009;
@@ -1143,6 +1143,7 @@ containing a value of this type.
         public static final int widget_articles_row_container=0x7f07005f;
         public static final int widget_articles_texts=0x7f070059;
         public static final int widget_froyo_container=0x7f070060;
+        public static final int widget_froyo_title=0x7f070061;
         public static final int wrap_content=0x7f070000;
     }
     public static final class integer {

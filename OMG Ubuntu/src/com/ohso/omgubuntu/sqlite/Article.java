@@ -119,7 +119,11 @@ public class Article extends BaseTableObject {
 
     public void getLatest(OnArticleLoaded caller, String path) {
         mCallback = caller;
-        new getArticleAsync().execute(path);
+        if (OMGUbuntuApplication.isNetworkAvailable()) {
+            new getArticleAsync().execute(path);
+        } else {
+            mCallback.articleError();
+        }
     }
 
     private class getArticleAsync extends AsyncTask<String, Void, Article> {

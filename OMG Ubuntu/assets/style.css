@@ -937,10 +937,29 @@ a.ubuntu-software-center-link:hover {
 }
 
 /* App-specific stylings */
-h2.internal-comments-link {
-    margin-bottom: 20px;
+h2.internal-comments-link a {
+    margin-bottom: 36px;
     font-family: "Roboto Light", "Ubuntu";
     font-weight: 300;
     font-style: normal;
-    color: #333;
+    font-size: 36px;
+    color: #1c6f97;
+
 }
+
+.arconix-box-alert {
+    background: #ff0000 url("images/caution.png") no-repeat 16px;
+    padding: 15px 20px 15px 55px;
+    background-size: 24px;
+    color: white;
+    -webkit-border-radius: 0px;
+    -moz-border-radius: 0px;
+    border-radius: 0px;
+    border: none;
+    clear: both;
+    margin: 15px 0;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+        box-shadow: none;
+}
+

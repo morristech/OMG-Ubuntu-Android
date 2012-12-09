@@ -12,6 +12,9 @@ import android.os.Build;
 import android.util.Log;
 import android.widget.RemoteViews;
 
+import com.ohso.omgubuntu.sqlite.Article;
+import com.ohso.omgubuntu.sqlite.ArticleDataSource;
+
 //@TargetApi(11)
 public class ArticlesWidgetProvider extends AppWidgetProvider {
     public static final String ACTION_OPEN_ARTICLE = "com.ohso.omgubuntu.OPEN_ARTICLE";
@@ -32,6 +35,11 @@ public class ArticlesWidgetProvider extends AppWidgetProvider {
             } else {
                 if (remoteViews == null) remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget_froyo);
                 appWidgetManager.updateAppWidget(appWidgetId, remoteViews);
+                ArticleDataSource source = new ArticleDataSource(context);
+                source.open();
+                Article latestArticle = source.getLatestArticle(false);
+                source.close();
+                remoteViews.setTextViewText(R.id.widget_froyo_title, latestArticle.getTitle());
                 Intent mainIntent = new Intent(context, ArticleActivity.class).putExtra(ArticleActivity.LATEST_ARTICLE_INTENT, true);
                 PendingIntent froyoMainIntent = PendingIntent.getActivity(context, 0, mainIntent, 0);
                 remoteViews.setOnClickPendingIntent(R.id.widget_froyo_container, froyoMainIntent);
@@ -49,7 +57,6 @@ public class ArticlesWidgetProvider extends AppWidgetProvider {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.i("OMG!", "onReceive");
         if (intent.getAction().equals(ACTION_OPEN_ARTICLE)) {
             if (MainActivity.DEVELOPER_MODE) Log.i("OMG!", "Got call to open article: " + intent.getStringExtra(ArticleActivity.INTERNAL_ARTICLE_PATH_INTENT));
             Intent activityIntent = new Intent(context, ArticleActivity.class).putExtra(ArticleActivity.INTERNAL_ARTICLE_PATH_INTENT,
@@ -74,7 +81,22 @@ public class ArticlesWidgetProvider extends AppWidgetProvider {
     public static void notifyUpdate(Context context, int newArticleCount) {
         if (Build.VERSION.SDK_INT >= 11) {
             honeycombUpdate(context, newArticleCount);
+        } else {
+            froyoUpdate(context);
         }
+    }
+    private static void froyoUpdate(Context context) {
+        AppWidgetManager manager = AppWidgetManager.getInstance(context);
+        int[] ids = manager.getAppWidgetIds(new ComponentName(context, com.ohso.omgubuntu.ArticlesWidgetProvider.class));
+
+        if (remoteViews == null) remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget_froyo);
+        ArticleDataSource source = new ArticleDataSource(context);
+        source.open();
+        Article latestArticle = source.getLatestArticle(false);
+        source.close();
+        remoteViews.setTextViewText(R.id.widget_froyo_title, latestArticle.getTitle());
+
+        manager.updateAppWidget(ids, remoteViews);
     }
 
     @TargetApi(11)

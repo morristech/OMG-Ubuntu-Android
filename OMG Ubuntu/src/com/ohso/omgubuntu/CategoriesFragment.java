@@ -5,7 +5,6 @@ import java.util.List;
 
 import android.content.res.Resources;
 import android.content.res.TypedArray;
-import android.util.Log;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.ohso.omgubuntu.sqlite.Article;
@@ -23,10 +22,16 @@ public class CategoriesFragment extends BaseFragment implements ActionBar.OnNavi
         dataSource.open();
         Articles newData = dataSource.getArticlesWithCategory(categories.get(lastActiveCategory).getName(), false, currentPage);
         dataSource.close();
-        Log.i("OMG!", "Categories got back " + newData.size());
         adapter.clear();
         for (Article article : newData) {
             adapter.add(article);
+        }
+        if (newData.size() < ArticleDataSource.MAX_ARTICLES_PER_PAGE) {
+            footerEnabled = false;
+            adapter.setFooterEnabled(false);
+        } else {
+            footerEnabled = true;
+            adapter.setFooterEnabled(true);
         }
     }
 
@@ -42,34 +47,41 @@ public class CategoriesFragment extends BaseFragment implements ActionBar.OnNavi
 
     @Override
     public boolean onNavigationItemSelected(int itemPosition, long itemId) {
-        //Log.i("OMG!", "Running category selected");
         if (lastActiveCategory == itemPosition) return true;
+        lastActiveCategory = itemPosition;
+        if (footerView.isShown()) hidefooterView();
         currentPage = 1;
         nextPageAllowed = true;
-        hidefooterView();
-        lastActiveCategory = itemPosition;
+        footerEnabled = false;
+        adapter.setFooterEnabled(false);
+
         dataSource.open();
         Articles articlesInCategory = dataSource.getArticlesWithCategory(categories.get(lastActiveCategory).getName(), false);
         dataSource.close();
         if (articlesInCategory.isEmpty()) {
-            Log.i("OMG!", "Empty!");
             adapter.clear();
             setRefreshing();
             getNewData();
         } else {
-            Log.i("OMG!", "Not empty");
             adapter.clear();
             for (Article article : articlesInCategory) {
                 adapter.add(article);
             }
             if (articlesInCategory.size() < ArticleDataSource.MAX_ARTICLES_PER_PAGE) {
+                footerEnabled = false;
+                adapter.setFooterEnabled(true);
                 setRefreshing();
                 getNewData();
+            } else {
+                footerEnabled = true;
+                adapter.setFooterEnabled(true);
             }
         }
+
+        // Puts the user at the top of the list again
         if (gridView != null) {
-            Log.i("OMG!", "Scroll to");
             gridView.setAdapter(adapter);
+            gridView.onLayout(true, 0, 0, gridView.getRight(), gridView.getBottom());
         }
 
         return true;

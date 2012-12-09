@@ -9,15 +9,11 @@ import com.actionbarsherlock.app.SherlockFragment;
 
 
 public class AboutFragment extends SherlockFragment {
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.activity_about, null);
+        View view = inflater.inflate(R.layout.activity_about, container, false);
         ((BaseActivity) getSherlockActivity()).getDefaultActionBar();
         getSherlockActivity().getSupportActionBar().setTitle("About OMG! Ubuntu!");
         return view;
     }
-
-
 }

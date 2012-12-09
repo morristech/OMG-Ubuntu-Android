@@ -28,6 +28,10 @@ public class ArticlesFragment extends BaseFragment {
         for (Article article : newData) {
             adapter.add(article);
         }
+        if (adapter.getCount() > 20) {
+            footerEnabled = true;
+            adapter.setFooterEnabled(true);
+        }
     }
 
     @Override

@@ -239,7 +239,7 @@ public abstract class BaseFragment extends SherlockFragment implements OnTouchLi
 
     @Override
     public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-        if (visibleItemCount > 0 && (firstVisibleItem + visibleItemCount >= totalItemCount)) {
+        if (visibleItemCount > 0 && (firstVisibleItem + visibleItemCount >= totalItemCount) && footerEnabled) {
             final View child = view.getChildAt((adapter.getRealCount() - 1) - firstVisibleItem);
             if (child != null) {
                 if (child.getBottom() > view.getBottom() - (adapter.getFooterHeight() / 1.5)) {
@@ -288,8 +288,10 @@ public abstract class BaseFragment extends SherlockFragment implements OnTouchLi
         } else {
             imageHandler.setPauseWork(false);
         }
-        if (gridView.getChildCount() > 0 && gridView.getLastVisiblePosition() < adapter.getRealCount()) {
-            if (footerView.isShown()) footerView.setVisibility(TextView.GONE);
+        if (gridView.getChildCount() > 0
+                && (gridView.getLastVisiblePosition() < adapter.getRealCount())
+                && footerView.isShown()) {
+            footerView.setVisibility(TextView.GONE);
         }
     }
 
@@ -412,6 +414,7 @@ public abstract class BaseFragment extends SherlockFragment implements OnTouchLi
         dataSource.clearArticlesOverNumberOfEntries();
         dataSource.close();
         getData();
+        ArticlesWidgetProvider.notifyUpdate(getActivity(), 0);
     }
 
     @Override

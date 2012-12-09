@@ -6,6 +6,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.text.format.DateUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.MeasureSpec;
@@ -143,11 +144,11 @@ public class ArticleAdapter extends ArrayAdapter<Article> {
                 return convertView;
             } else {
                 final View footerReserveLayout = new FrameLayout(getContext());
-                if (mFooterHeight == -1) {
-                    int heightMeasureSpec = MeasureSpec.makeMeasureSpec(LayoutParams.WRAP_CONTENT, MeasureSpec.EXACTLY);
-                    mFooterView.measure(0, heightMeasureSpec);
-                    mFooterHeight = mFooterView.getMeasuredHeight();
-                }
+                int heightMeasureSpec = MeasureSpec.makeMeasureSpec(LayoutParams.WRAP_CONTENT, MeasureSpec.EXACTLY);
+                mFooterView.measure(0, heightMeasureSpec);
+                mFooterHeight = mFooterView.getMeasuredHeight();
+                Log.i("OMG!", "Footer height of " + mFooterHeight);
+                Log.i("OMG!", "Footer enabled: " + mFooterEnabled);
                 final AbsListView.LayoutParams footerReserveParams = new AbsListView.LayoutParams(LayoutParams.WRAP_CONTENT,
                         mFooterEnabled ? mFooterHeight : 0);
                 footerReserveLayout.setLayoutParams(footerReserveParams);
@@ -186,9 +187,6 @@ public class ArticleAdapter extends ArrayAdapter<Article> {
         }
 
         imageHandler.getImage(article.getThumb(), holder.thumb, placeholder);
-
-
-        //Log.i("OMG!", "Inflating view for " + article.getTitle() + " with height " + convertView.getMeasuredHeight());
         return convertView;
     }
 
@@ -220,7 +218,6 @@ public class ArticleAdapter extends ArrayAdapter<Article> {
 
             gridItem.requestLayout();
             gridItem.measure(widthMeasureSpec, heightMeasureSpec);
-            //Log.i("OMG!", "Height: " + gridItem.getMeasuredHeight() + " for " + item.getTitle());
         }
     }
 

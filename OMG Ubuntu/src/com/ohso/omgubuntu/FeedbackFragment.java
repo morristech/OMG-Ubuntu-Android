@@ -7,18 +7,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.Button;
 
 import com.actionbarsherlock.app.SherlockFragment;
 
 public class FeedbackFragment extends SherlockFragment implements OnClickListener {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_feedback, null);
-        Button feedback = (Button) view.findViewById(R.id.fragment_feedback_button);
-        Button tips = (Button) view.findViewById(R.id.fragment_feedback_tip_button);
-        feedback.setOnClickListener(this);
-        tips.setOnClickListener(this);
+        View view = inflater.inflate(R.layout.fragment_feedback, container, false);
+        view.findViewById(R.id.fragment_feedback_button).setOnClickListener(this);
+        view.findViewById(R.id.fragment_feedback_tip_button).setOnClickListener(this);
         ((BaseActivity) getSherlockActivity()).getDefaultActionBar();
         getSherlockActivity().getSupportActionBar().setTitle("Feedback");
         return view;
@@ -26,7 +23,6 @@ public class FeedbackFragment extends SherlockFragment implements OnClickListene
 
     @Override
     public void onClick(View v) {
-
         switch(v.getId()) {
             case R.id.fragment_feedback_button:
                 Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
@@ -43,5 +39,4 @@ public class FeedbackFragment extends SherlockFragment implements OnClickListene
                 break;
         }
     }
-
 }

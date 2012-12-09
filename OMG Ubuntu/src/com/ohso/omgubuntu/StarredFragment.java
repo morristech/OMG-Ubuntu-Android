@@ -10,7 +10,7 @@ import com.ohso.omgubuntu.sqlite.Articles;
 
 public class StarredFragment extends BaseFragment {
     public StarredFragment() {
-        footerEnabled = false;
+        setFooterEnabled(false);
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -27,7 +27,6 @@ public class StarredFragment extends BaseFragment {
         for (Article article : newData) {
             adapter.add(article);
         }
-        //adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -45,8 +44,6 @@ public class StarredFragment extends BaseFragment {
         for (Article article : newData) {
             adapter.add(article);
         }
-        adapter.notifyDataSetChanged();
-        //((ArticleAdapter) getListAdapter()).notifyDataSetChanged();
         onRefreshComplete();
     }
 
@@ -69,8 +66,6 @@ public class StarredFragment extends BaseFragment {
         for(Article article : newData) {
             adapter.add(article);
         }
-        //adapter.notifyDataSetChanged();
-        //((ArticleAdapter) getListAdapter()).notifyDataSetChanged();
         onRefreshComplete();
     }
 }

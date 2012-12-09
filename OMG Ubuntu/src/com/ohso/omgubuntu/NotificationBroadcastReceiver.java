@@ -19,8 +19,7 @@ public class NotificationBroadcastReceiver extends BroadcastReceiver {
     public NotificationBroadcastReceiver() {
     }
 
-    //TODO ringtone and/or vibration
-    // TODO update widgets
+    // TODO ringtone and/or vibration
     @Override
     public void onReceive(Context context, Intent intent) {
         String lastPath = intent.getExtras().getString("last_path");
@@ -56,7 +55,7 @@ public class NotificationBroadcastReceiver extends BroadcastReceiver {
 
         } else if (articles.size() > 1) {
             mBuilder.setSmallIcon(R.drawable.ic_stat_bubble)
-                    .setContentTitle(context.getString(R.string.new_article_notification_singular))
+                    .setContentTitle(context.getString(R.string.new_article_notification_plural))
                     .setContentText(articles.get(0).getTitle())
                     .setContentInfo(String.valueOf(articles.size()))
                     .setTicker(String.valueOf(articles.size()) + " new OMG! Ubuntu! articles!")

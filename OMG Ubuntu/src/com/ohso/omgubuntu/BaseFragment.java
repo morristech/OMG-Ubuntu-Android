@@ -26,6 +26,7 @@ import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -56,15 +57,15 @@ public abstract class BaseFragment extends SherlockFragment implements OnTouchLi
 
     protected ArticleDataSource dataSource;
     protected ArticleAdapter adapter;
-    protected HeterogeneousGridView gridView;
+    protected GridView gridView;
     protected ImageHandler imageHandler;
     protected ActionBar actionBar;
     protected MenuItem refresh;
 
     protected TextView footerView;
     protected int currentPage = 1;
-    protected boolean nextPageAllowed = false;
-    protected boolean footerEnabled = true;
+    protected boolean nextPageAllowed = true;
+    private boolean footerEnabled = true;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -97,14 +98,12 @@ public abstract class BaseFragment extends SherlockFragment implements OnTouchLi
         footerView.setOnClickListener(this);
 
         int columnNumber = getColumnByScreenSize();
-
         adapter = new ArticleAdapter(getActivity(), R.layout.article_row, R.id.article_row_text_title, new Articles(),
                 columnNumber, footerView);
         imageHandler = ((BaseActivity) getActivity()).getImageHandler();
         adapter.setImageHandler(imageHandler);
 
-
-        gridView = (HeterogeneousGridView) layout.findViewById(R.id.fragment_base_gridview);
+        gridView = (GridView) layout.findViewById(R.id.fragment_base_gridview);
         gridView.setAdapter(adapter);
         gridView.setBackgroundResource(R.drawable.list_bg);
         gridView.setNumColumns(columnNumber);
@@ -125,7 +124,6 @@ public abstract class BaseFragment extends SherlockFragment implements OnTouchLi
         }
 
         if (adapter.getCount() >= ArticleDataSource.MAX_ARTICLES_PER_PAGE && footerEnabled) {
-            nextPageAllowed = true;
             adapter.setFooterEnabled(true);
         }
 
@@ -210,7 +208,7 @@ public abstract class BaseFragment extends SherlockFragment implements OnTouchLi
     @Override
     public void nextPageLoaded(Articles result) {
         footerView.setEnabled(true);
-        checkFooterView();
+        hideFooterViewIfShown();
         if (refresh != null) refresh.setActionView(null);
         if (currentPage == MAXIMUM_PAGED) {
             footerView.setText(R.string.activity_main_footer_over);
@@ -224,7 +222,6 @@ public abstract class BaseFragment extends SherlockFragment implements OnTouchLi
         if (result.size() < ArticleDataSource.MAX_ARTICLES_PER_PAGE) {
             nextPageAllowed = false;
         }
-        gridView.onLayout(true, 0, 0, gridView.getRight(), gridView.getBottom());
     }
 
 
@@ -239,6 +236,23 @@ public abstract class BaseFragment extends SherlockFragment implements OnTouchLi
 
     @Override
     public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+        toggleFooter(visibleItemCount, firstVisibleItem, totalItemCount, view);
+/*        if (visibleItemCount > 0 && (firstVisibleItem + visibleItemCount >= totalItemCount) && footerEnabled) {
+            final View child = view.getChildAt((adapter.getRealCount() - 1) - firstVisibleItem);
+            if (child != null) {
+                if (child.getBottom() > view.getBottom() - (adapter.getFooterHeight() / 1.5)) {
+                    // Above
+                    if (footerView.isShown()) hidefooterView();
+                } else {
+                    // Below
+                    if (!footerView.isShown()) showFooterView();
+                }
+            }
+        }*/
+
+    }
+
+    private void toggleFooter(int visibleItemCount, int firstVisibleItem, int totalItemCount, ViewGroup view) {
         if (visibleItemCount > 0 && (firstVisibleItem + visibleItemCount >= totalItemCount) && footerEnabled) {
             final View child = view.getChildAt((adapter.getRealCount() - 1) - firstVisibleItem);
             if (child != null) {
@@ -247,18 +261,28 @@ public abstract class BaseFragment extends SherlockFragment implements OnTouchLi
                     if (footerView.isShown()) hidefooterView();
                 } else {
                     // Below
-                    if (!footerView.isShown()) showfooterView();
+                    if (!footerView.isShown()) showFooterView();
                 }
             }
         }
-
     }
 
-    public void checkFooterView() {
+    protected void hideFooterViewIfShown() {
         if (footerView.isShown()) hidefooterView();
     }
 
-    protected void showfooterView() {
+    protected void setFooterEnabled(boolean enabled) {
+        footerEnabled = enabled;
+        if (adapter != null) adapter.setFooterEnabled(enabled);
+    }
+
+    protected boolean isFooterViewEnabled() {
+        return footerEnabled;
+    }
+
+    protected void showFooterView() {
+        if (!footerEnabled) return;
+        if (footerView.isShown()) return;
         if(nextPageAllowed == false) {
             if (currentPage == MAXIMUM_PAGED) {
                 footerView.setText(R.string.activity_main_footer_over);
@@ -407,7 +431,7 @@ public abstract class BaseFragment extends SherlockFragment implements OnTouchLi
 
     @Override
     public void articlesLoaded(Articles result) {
-        checkFooterView();
+        hideFooterViewIfShown();
         onRefreshComplete();
         dataSource.open();
         if(!result.isEmpty()) dataSource.createArticles(result, true);
@@ -463,11 +487,19 @@ public abstract class BaseFragment extends SherlockFragment implements OnTouchLi
     public void setAllAsRead() {
         dataSource.open();
         for (int i = 0; i < adapter.getRealCount(); i++) {
-            adapter.getItem(i).setUnread(0);
-            dataSource.setArticleToUnread(false, adapter.getItem(i).getPath());
+            if (adapter.getItem(i).isUnread()) {
+                adapter.getItem(i).setUnread(0);
+                dataSource.setArticleToUnread(false, adapter.getItem(i).getPath());
+            }
         }
         dataSource.close();
         adapter.notifyDataSetChanged();
+
+        // Need to reinflate b/c alignment goes off a bit if we're at the bottom
+        if (footerView.isShown()) {
+            adapter.setFooterView((TextView) getActivity().getLayoutInflater()
+                    .inflate(R.layout.activity_main_footer, null));
+        }
     }
 
     public static class AlertDialogFragment extends DialogFragment {

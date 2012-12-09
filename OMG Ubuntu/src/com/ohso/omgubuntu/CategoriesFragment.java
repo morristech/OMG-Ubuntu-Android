@@ -27,11 +27,9 @@ public class CategoriesFragment extends BaseFragment implements ActionBar.OnNavi
             adapter.add(article);
         }
         if (newData.size() < ArticleDataSource.MAX_ARTICLES_PER_PAGE) {
-            footerEnabled = false;
-            adapter.setFooterEnabled(false);
+            setFooterEnabled(false);
         } else {
-            footerEnabled = true;
-            adapter.setFooterEnabled(true);
+            setFooterEnabled(true);
         }
     }
 
@@ -52,8 +50,7 @@ public class CategoriesFragment extends BaseFragment implements ActionBar.OnNavi
         if (footerView.isShown()) hidefooterView();
         currentPage = 1;
         nextPageAllowed = true;
-        footerEnabled = false;
-        adapter.setFooterEnabled(false);
+        setFooterEnabled(false);
 
         dataSource.open();
         Articles articlesInCategory = dataSource.getArticlesWithCategory(categories.get(lastActiveCategory).getName(), false);
@@ -68,22 +65,16 @@ public class CategoriesFragment extends BaseFragment implements ActionBar.OnNavi
                 adapter.add(article);
             }
             if (articlesInCategory.size() < ArticleDataSource.MAX_ARTICLES_PER_PAGE) {
-                footerEnabled = false;
-                adapter.setFooterEnabled(true);
+                setFooterEnabled(false);
                 setRefreshing();
                 getNewData();
             } else {
-                footerEnabled = true;
-                adapter.setFooterEnabled(true);
+                setFooterEnabled(true);
             }
         }
 
         // Puts the user at the top of the list again
-        if (gridView != null) {
-            gridView.setAdapter(adapter);
-            gridView.onLayout(true, 0, 0, gridView.getRight(), gridView.getBottom());
-        }
-
+        if (gridView != null) gridView.setAdapter(adapter);
         return true;
     }
 

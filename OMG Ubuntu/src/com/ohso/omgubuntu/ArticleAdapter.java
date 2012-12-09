@@ -6,7 +6,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.text.format.DateUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.MeasureSpec;
@@ -48,11 +47,6 @@ public class ArticleAdapter extends ArrayAdapter<Article> {
 
     public void setImageHandler(ImageHandler imageHandler) { this.imageHandler = imageHandler; }
 
-    @Override
-    public void notifyDataSetChanged() {
-        super.notifyDataSetChanged();
-    }
-
     public int getRealCount() {
         return super.getCount();
     }
@@ -63,23 +57,19 @@ public class ArticleAdapter extends ArrayAdapter<Article> {
     public int getCount() {
         switch(mColumns) {
             case 2:
-                if (super.getCount() % 2 == 0) {
+                if (super.getCount() % 2 == 0) { // Need only a footer
                     return super.getCount() + 1;
                 }
-                return super.getCount() + 2;
+                return super.getCount() + 2; // Need a dummy item and a footer
             case 3:
-                //Log.i("OMG!", "Count: " + super.getCount());
-                if (super.getCount() % 3 == 0) {
-                    //Log.i("OMG!", "Adding 1 additional row");
+                if (super.getCount() % 3 == 0) { // Need only a footer
                     return super.getCount() + 1;
-                } else if((super.getCount() + 1) % 3 == 0) {
-                    //Log.i("OMG!", "Adding 2 additional rows");
+                } else if((super.getCount() + 1) % 3 == 0) { // Need a dummy item and a footer
                     return super.getCount() + 2;
                 }
-                //Log.i("OMG!", "Adding 3 additional rows");
-                return super.getCount() + 3;
+                return super.getCount() + 3; // Need two dummies + footer
             default:
-                return super.getCount() + 1;
+                return super.getCount() + 1; // Only need the footer for one column layouts
         }
     }
 
@@ -87,8 +77,11 @@ public class ArticleAdapter extends ArrayAdapter<Article> {
 
     protected void setFooterEnabled(boolean footerEnabled) { mFooterEnabled = footerEnabled; }
 
+    protected void setFooterView(TextView footerView) { mFooterView = footerView; }
+
     private boolean isInRealRow(int position) {
         boolean realRow = true;
+        // 0-index means being divisible by column # is the footer in its own row
         switch(mColumns) {
             case 2:
                 realRow = position % 2 == 0 ? false : true;
@@ -115,7 +108,6 @@ public class ArticleAdapter extends ArrayAdapter<Article> {
         ViewHolder holder;
 
         if (convertView == null || convertView.getTag() == null) {
-            //Log.i("OMG!", "Empty view for pos " + position);
             convertView = mInflater.inflate(R.layout.article_row, null);
 
             holder = new ViewHolder();
@@ -134,7 +126,6 @@ public class ArticleAdapter extends ArrayAdapter<Article> {
              */
             ViewTagger.setTag(convertView, holder);
         } else {
-            //Log.i("OMG!", "Recycling a view for pos " + position);
             holder = (ViewHolder) ViewTagger.getTag(convertView);
         }
 
@@ -145,19 +136,18 @@ public class ArticleAdapter extends ArrayAdapter<Article> {
             } else {
                 final View footerReserveLayout = new FrameLayout(getContext());
                 int heightMeasureSpec = MeasureSpec.makeMeasureSpec(LayoutParams.WRAP_CONTENT, MeasureSpec.EXACTLY);
+
                 mFooterView.measure(0, heightMeasureSpec);
                 mFooterHeight = mFooterView.getMeasuredHeight();
-                Log.i("OMG!", "Footer height of " + mFooterHeight);
-                Log.i("OMG!", "Footer enabled: " + mFooterEnabled);
-                final AbsListView.LayoutParams footerReserveParams = new AbsListView.LayoutParams(LayoutParams.WRAP_CONTENT,
+                final AbsListView.LayoutParams footerReserveParams = new AbsListView.LayoutParams(LayoutParams.MATCH_PARENT,
                         mFooterEnabled ? mFooterHeight : 0);
                 footerReserveLayout.setLayoutParams(footerReserveParams);
+
                 return footerReserveLayout;
             }
         }
 
         convertView.setVisibility(ViewGroup.VISIBLE);
-        ((GridViewItemLayout) convertView).setPosition(position);
 
         Article article = getItem(position);
 
@@ -188,37 +178,6 @@ public class ArticleAdapter extends ArrayAdapter<Article> {
 
         imageHandler.getImage(article.getThumb(), holder.thumb, placeholder);
         return convertView;
-    }
-
-    public void measureItems(int columnWidth) {
-        final GridViewItemLayout gridItem = (GridViewItemLayout) mInflater.inflate(R.layout.article_row, null);
-
-        final int widthMeasureSpec = MeasureSpec.makeMeasureSpec(columnWidth, MeasureSpec.EXACTLY);
-        final int heightMeasureSpec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED);
-        ImageView thumb = (ImageView) gridItem.findViewById(R.id.article_row_image);
-        TextView title = (TextView) gridItem.findViewById(R.id.article_row_text_title);
-        TextView author = (TextView) gridItem.findViewById(R.id.article_row_text_author);
-        TextView summary = (TextView) gridItem.findViewById(R.id.article_row_text_summary);
-
-        thumb.setImageBitmap(placeholder);
-
-        for (int i = 0; i < getCount() - 1; i++) { // Iterate over dummy items as well, except the footer.
-            Article item;
-            if (i >= getRealCount()) { // Dummy item
-                item = getItem(getRealCount() - 1);
-            } else { // Real row item
-                item = getItem(i);
-            }
-            gridItem.setPosition(i);
-
-            title.setText(item.getTitle());
-            author.setText(item.getAuthor());
-
-            summary.setText(item.getSummary());
-
-            gridItem.requestLayout();
-            gridItem.measure(widthMeasureSpec, heightMeasureSpec);
-        }
     }
 
     static class ViewHolder {

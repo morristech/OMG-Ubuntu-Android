@@ -23,7 +23,6 @@ public class ArticlesWidgetProvider extends AppWidgetProvider {
     public static RemoteViews remoteViews;
     public static RemoteViews refreshView;
 
-    @SuppressWarnings("deprecation")
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         for (int appWidgetId : appWidgetIds) {
@@ -48,6 +47,7 @@ public class ArticlesWidgetProvider extends AppWidgetProvider {
         super.onUpdate(context, appWidgetManager, appWidgetIds);
     }
 
+    @SuppressWarnings("deprecation")
     @TargetApi(11)
     public void honeycombSetup(AppWidgetManager appWidgetManager, int appWidgetId, Intent widgetIntent) {
         remoteViews.setRemoteAdapter(appWidgetId, R.id.widget_articles_list, widgetIntent);

@@ -3,7 +3,6 @@
 
     <!-- Application and menu-level strings -->
     <string name="app_name">OMG! Ubuntu!</string>
-    <string name="menu_settings">Settings</string>
     <string name="menu_share">Share</string>
     <string name="menu_star">Star</string>
     <string name="menu_unstar">Unstar</string>
@@ -17,14 +16,17 @@
     <string name="activity_main_footer_dialog">Visit OMG! Ubuntu! via</string>
     <string name="activity_main_share_intent_text">Share this article via</string>
     <string name="widget_articles_list_title">Latest posts</string>
+    <string name="widget_froyo_articles_list_title">Latest post</string>
     <string name="widget_articles_list_empty_title">No recent articles</string>
     <string name="activity_article_loading_text">Loading...</string>
-    <string name="activity_article_image_download">Download image</string>
     <string name="activity_article_comment_text">Read Comments</string>
     <string name="fragment_feedback_header">Feedback</string>
     <string name="fragment_feedback_button">Send An Email</string>
     <string name="fragment_feedback_tips_header">Tips</string>
     <string name="fragment_feedback_tips_button">Tip Form</string>
+    
+    <string name="fragment_settings"></string>
+    <string name="fragment_settings"></string>
     
     <!-- ImageView descriptions -->
     <string name="app_logo_description">OMG! Ubuntu! bubble logo</string>
@@ -38,11 +40,9 @@
     <string name="xml_error">Couldn\'t read</string>
     <string name="article_fetch_error">Couldn\'t get the article. Would you like to open it in an external browser?</string>
     <string name="external_link_error">This link leaves the app. Would you like to open it?</string>
-    <string name="article_external_alert">@string/external_link_error</string>
 
     <!-- Dialog text -->
     <string name="article_fetch_error_dialog">Reopen article in</string>
-    <string name="article_external_link_dialog">Open link in</string>
     <string name="external_link_dialog">Open link via</string>
 
     <!-- Notifications -->
@@ -56,8 +56,4 @@
     <string name="activity_about_omg_ubuntu">OMG! Ubuntu! boasts over 1.6 million unique visitors a month, who between them view over 7 million pages. Combined with 58,000 Facebook fans, 37,700 Twitter followers, and 9,000 Android app users, you\'ll fit right into our growing community
 \n\nOur full time editorial staff includes Joey-Elijah Sneddon, a 23 year old journalist graduate from Lincoln University, and Benjamin Humphrey, a New Zealand-based professional designer, and founder of The Ubuntu Manual Project.</string>
     <string name="activity_about_ohso">Ohso is an online media and software publishing company, founded in July 2010 by Joey Sneddon and Benjamin Humphrey, two tech-savvy entrepreneurs based in the United Kingdom and New Zealand.</string>
-    <string name="dummy_content">DUMMY\nCONTENT</string>
-    <string name="dummy_button">Dummy Button</string>
-    
-
 </resources>

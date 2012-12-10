@@ -6,7 +6,6 @@ import java.util.List;
 
 import android.content.res.Resources;
 import android.content.res.TypedArray;
-import android.util.Log;
 
 import com.ohso.omgubuntu.OMGUbuntuApplication;
 import com.ohso.omgubuntu.R;
@@ -56,7 +55,6 @@ public class Category {
     public static HashMap<String, String[]> getCategoriesListByTitle() {
         if (categories.size() < 1) populateCategoriesList();
         if (categoriesByTitle.size() < 1) {
-            Log.i("OMG!", "Populating HashMap");
             for (String[] category : categories) {
                 categoriesByTitle.put(category[1], new String[] {category[0], category[2]});
             }

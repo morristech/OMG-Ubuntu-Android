@@ -10,6 +10,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -26,7 +27,7 @@ import com.ohso.omgubuntu.data.Article;
 
 public class ArticleHandler extends DefaultHandler {
     private Article  item;
-    private DateFormat pubDateFormatter = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss ZZZZ");
+    private DateFormat pubDateFormatter = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss ZZZZ", Locale.UK);
 
     public ArticleHandler() {
         item = new Article();

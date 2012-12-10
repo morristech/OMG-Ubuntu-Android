@@ -9,6 +9,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.util.Log;
 
+import com.ohso.omgubuntu.MainActivity;
 import com.ohso.omgubuntu.R;
 
 public class ArticleDataSource extends BaseDataSource {
@@ -319,7 +320,7 @@ public class ArticleDataSource extends BaseDataSource {
         for (String title : categories) {
             String[] category = Category.getCategoryByTitle(title);
             if (category != null) {
-                String name = category[1];
+                String name = category[0];
                 ContentValues values = new ContentValues();
                 values.put("category_id", name);
                 values.put("article_id", path);
@@ -356,7 +357,7 @@ public class ArticleDataSource extends BaseDataSource {
         if(cursor.getCount() > 0) {
             cursor.moveToFirst();
             while (cursor.isAfterLast() == false) {
-                Log.i("OMG!", "Removing article " + cursor.getString(0));
+                if (MainActivity.DEVELOPER_MODE) Log.d("OMG!", "Removing article " + cursor.getString(0));
                 database.delete("article", "path = '"+ cursor.getString(0) + "'", null);
                 cursor.moveToNext();
             }

@@ -71,12 +71,10 @@ public class ImageHandler {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        //mPixelSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, IMAGE_DIMENSIONS, activity.getResources().getDisplayMetrics());
         mPixelSize = scaledDIP(IMAGE_DIMENSIONS);
         mPlaceholderParams = new RelativeLayout.LayoutParams((int) mPixelSize, (int) mPixelSize);
         mPlaceholderParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         mPlaceholderParams.topMargin = 0;
-        //mResources = activity.getResources();
     }
 
     public static int scaledDIP (int dip) {
@@ -90,7 +88,6 @@ public class ImageHandler {
             e.printStackTrace();
         }
     }
-
 
     public void getImage(String url, ImageView imageView, Bitmap placeholder) {
         if (url == null) {

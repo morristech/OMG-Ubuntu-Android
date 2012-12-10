@@ -458,7 +458,7 @@ public abstract class BaseFragment extends SherlockFragment implements OnTouchLi
     public void setRefreshing() {
         /*
          * 4.2 currently calls onCreateView() before onCreateOptionsMenu(), so this is still null in cases where
-         * setRefreshing() is called b/c the dataset is empty.
+         * setRefreshing() is called because of an empty dataset is empty.
          */
         if (refresh != null) refresh.setActionView(R.layout.refresh_menu_item);
     }
@@ -466,8 +466,7 @@ public abstract class BaseFragment extends SherlockFragment implements OnTouchLi
     public void onRefreshComplete() {
         /*
          * As per the  4.2 bug above, this will also lead to a NullPointerException if onCreateView() still hasn't
-         * been called before the result set gets returned. Especially a problem on the starred page that has no
-         * network activity to give onCreateView() to run.
+         * been called before the result set gets returned.
          */
         if (refresh != null) refresh.setActionView(null);
     }
@@ -495,7 +494,7 @@ public abstract class BaseFragment extends SherlockFragment implements OnTouchLi
         dataSource.close();
         adapter.notifyDataSetChanged();
 
-        // Need to reinflate b/c alignment goes off a bit if we're at the bottom
+        // Need to reinflate because alignment goes off a bit if we're at the bottom
         if (footerView.isShown()) {
             adapter.setFooterView((TextView) getActivity().getLayoutInflater()
                     .inflate(R.layout.activity_main_footer, null));

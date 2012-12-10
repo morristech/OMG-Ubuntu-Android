@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:baselineAligned="false"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
@@ -10,7 +11,7 @@
     android:paddingTop="5dp" >
 
 	<RelativeLayout
-	    android:layout_width="wrap_content"
+	    android:layout_width="0dp"
 	    android:layout_height="wrap_content"
 	    android:layout_weight="1"
 	    android:paddingBottom="6dp"
@@ -21,7 +22,6 @@
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:singleLine="true"
-	        android:text="Notifications"
 	        android:textAppearance="?android:attr/textAppearanceMedium" />
 
 	    <TextView
@@ -31,7 +31,6 @@
 	        android:layout_alignStart="@id/fragment_settings_row_title"
 	        android:layout_below="@id/fragment_settings_row_title"
 	        android:maxLines="10"
-	        android:text="Whether to show notifications"
 	        android:textAppearance="?android:attr/textAppearanceSmall"
 	        android:textColor="?android:attr/textColorSecondary" />
 

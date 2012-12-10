@@ -60,7 +60,6 @@ public class Articles extends ArrayList<Article> {
         Articles articles = dataSource.getArticlesWithCategoryOnPage(urlFragment, page);
         dataSource.close();
         if (articles.size() == ArticleDataSource.MAX_ARTICLES_PER_PAGE) {
-            //Log.i("OMG!", "Got enough articles in the database");
             mNextPageCallback.nextPageLoaded(articles);
         } else {
             new getNextCategoryPageAsync(urlFragment, page).execute();

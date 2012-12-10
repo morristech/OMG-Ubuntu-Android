@@ -61,7 +61,7 @@ public class CommentsActivity extends SherlockFragmentActivity {
     @Override
     public void onCreate(Bundle instance) {
         super.onCreate(instance);
-        setContentView(R.layout.comments_fragment);
+        setContentView(R.layout.fragment_comments);
         setTitle("Comments");
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
@@ -126,6 +126,7 @@ public class CommentsActivity extends SherlockFragmentActivity {
             return super.onConsoleMessage(consoleMessage);
         }
 
+        @SuppressLint("SetJavaScriptEnabled")
         @Override
         public boolean onCreateWindow(WebView view, boolean isDialog, boolean isUserGesture, Message resultMsg) {
             WebViewFragment popupFragment = new WebViewFragment();
@@ -186,7 +187,8 @@ public class CommentsActivity extends SherlockFragmentActivity {
             Uri requestUrl = Uri.parse(url);
             if (requestUrl != null ) {
                 if (requestUrl.getHost().equals("disqus.com")) {
-                    // Check for /logout and let it go through in a new popup, then onPageFinish should popbackstack and reload page
+                    // Check for /logout and let it go through in a new popup,
+                    // then onPageFinish should popbackstack and reload page
                     if(requestUrl.getPath().startsWith("/logout")) {
                         commentView.loadUrl(url);
                         return true;
@@ -224,7 +226,7 @@ public class CommentsActivity extends SherlockFragmentActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-            RelativeLayout v = (RelativeLayout) inflater.inflate(R.layout.comments_fragment_webview, container, false);
+            RelativeLayout v = (RelativeLayout) inflater.inflate(R.layout.fragment_comments_webview, container, false);
             v.addView(mWebView);
             //return mWebView;
             return v;

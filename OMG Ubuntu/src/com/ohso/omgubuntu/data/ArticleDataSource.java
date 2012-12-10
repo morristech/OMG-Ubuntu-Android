@@ -1,6 +1,5 @@
-package com.ohso.omgubuntu.sqlite;
+package com.ohso.omgubuntu.data;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -15,12 +14,10 @@ import com.ohso.omgubuntu.R;
 public class ArticleDataSource extends BaseDataSource {
     public static final int MAX_ARTICLES_PER_PAGE = 20;
     private Article articleSpec = new Article();
-    private CategoryDataSource categorySource;
     private Context mContext;
     public ArticleDataSource(Context context) {
         super(context);
         mContext = context;
-        categorySource = new CategoryDataSource(context);
     }
 
     public Article getArticle(String path, boolean withContent) {
@@ -83,7 +80,6 @@ public class ArticleDataSource extends BaseDataSource {
         Article sinceArticle = getArticle(path, false);
         Articles articles = new Articles();
         long lessThanDate = includingId ? sinceArticle.getDate() - 1 : sinceArticle.getDate();
-        // SELECT * FROM article WHERE unread = 1 AND date > 1353075996999
         String whereClause = (unreadOnly ? "unread = 1 AND " : "") + "date > " + String.valueOf(lessThanDate);
         Cursor cursor = database.query("article", articleSpec.getColumnNames(),
                 whereClause, null, null, null, "date DESC");
@@ -260,12 +256,9 @@ public class ArticleDataSource extends BaseDataSource {
      * @return true, if successful; false if duplicates and neither boolean is set.
      */
     public boolean createArticle(Article article, boolean updateArticleIfLessThanADayOld, boolean replaceThumbIfNull) {
-        // TODO index paths
-        //Log.i("OMG!", "Creating article " + article.getPath());
         Cursor cursor = database.query("article", articleSpec.getColumnNames(),
                 "path = '" + article.getPath() + "'", null, null, null, null);
         if (cursor.getCount() > 0) {
-            //Log.i("OMG!", "Article " + article.getTitle() + " exists.");
             if (updateArticleIfLessThanADayOld) {
                 cursor.moveToFirst();
                 Article existing = cursorToArticle(cursor, false);
@@ -277,7 +270,6 @@ public class ArticleDataSource extends BaseDataSource {
                     values.put("content", article.getContent());
                     values.put("created_at", new Date().getTime());
                     database.update("article", values, "path = '"+ existing.getPath() + "'" , null);
-                    //Log.i("OMG!", "Less than a day old, so updated title, thumb, summary, content");
                 }
                 cursor.close();
                 return true;
@@ -292,7 +284,6 @@ public class ArticleDataSource extends BaseDataSource {
                     values.put("content", article.getContent());
                     values.put("created_at", new Date().getTime());
                     database.update("article", values, "path = '"+ existing.getPath() + "'" , null);
-                    //Log.i("OMG!", "Replaced null thumb with: "+article.getThumb());
                 }
                 cursor.close();
                 return true; //We need to check all entries for null thumbs
@@ -319,37 +310,27 @@ public class ArticleDataSource extends BaseDataSource {
         } catch (Exception e) {}
         values.put("identifier", articleGuid);
         if(database.insert("article", null, values) > 0) {
-            try {
-                categorySource.open();
-                categorySource.setCategories(article.getPath(), article.getCategories());
-            } finally {
-               categorySource.close();
-            }
+            setCategoriesForArticle(article.getPath(), article.getCategories());
         }
         return true;
+    }
+
+    public void setCategoriesForArticle(String path, List<String> categories) {
+        for (String title : categories) {
+            String[] category = Category.getCategoryByTitle(title);
+            if (category != null) {
+                String name = category[1];
+                ContentValues values = new ContentValues();
+                values.put("category_id", name);
+                values.put("article_id", path);
+                database.insert("article_category", null, values);
+            }
+        }
     }
 
     public boolean isThumbSet(Cursor cursor) {
         if (cursor.getString(3) == null) return false;
         return true;
-    }
-
-    public List<Category> getArticleCategories(String articleId) {
-        List<Category> categories = new ArrayList<Category>();
-        String rawQuery = "SELECT name, title FROM article_category ac INNER JOIN category c ON ac.category_id=c.name WHERE ac.article_id = ?";
-        Cursor cursor = database.rawQuery(rawQuery, new String[] {articleId});
-        if(cursor.getCount() < 0) {
-            cursor.close();
-            return categories;
-        }
-        cursor.moveToFirst();
-        categorySource.open();
-        while (cursor.isAfterLast() == false) {
-            categories.add(categorySource.cursorToCategory(cursor, false));
-            cursor.moveToNext();
-        }
-        categorySource.close();
-        return categories;
     }
 
     private Article cursorToArticle(Cursor cursor, boolean withContent) {

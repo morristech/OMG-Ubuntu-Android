@@ -4,8 +4,8 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 
-import com.ohso.omgubuntu.sqlite.Article;
-import com.ohso.omgubuntu.sqlite.Articles;
+import com.ohso.omgubuntu.data.Article;
+import com.ohso.omgubuntu.data.Articles;
 
 
 public class ArticlesFragment extends BaseFragment {

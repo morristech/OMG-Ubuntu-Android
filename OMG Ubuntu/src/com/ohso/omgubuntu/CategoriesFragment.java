@@ -7,10 +7,10 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 
 import com.actionbarsherlock.app.ActionBar;
-import com.ohso.omgubuntu.sqlite.Article;
-import com.ohso.omgubuntu.sqlite.ArticleDataSource;
-import com.ohso.omgubuntu.sqlite.Articles;
-import com.ohso.omgubuntu.sqlite.Category;
+import com.ohso.omgubuntu.data.Article;
+import com.ohso.omgubuntu.data.ArticleDataSource;
+import com.ohso.omgubuntu.data.Articles;
+import com.ohso.omgubuntu.data.Category;
 
 public class CategoriesFragment extends BaseFragment implements ActionBar.OnNavigationListener {
     private static int lastActiveCategory = 0;

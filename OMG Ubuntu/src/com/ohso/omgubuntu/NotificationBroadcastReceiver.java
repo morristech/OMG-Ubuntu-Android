@@ -9,9 +9,9 @@ import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 
-import com.ohso.omgubuntu.sqlite.Article;
-import com.ohso.omgubuntu.sqlite.ArticleDataSource;
-import com.ohso.omgubuntu.sqlite.Articles;
+import com.ohso.omgubuntu.data.Article;
+import com.ohso.omgubuntu.data.ArticleDataSource;
+import com.ohso.omgubuntu.data.Articles;
 
 @TargetApi(11)
 public class NotificationBroadcastReceiver extends BroadcastReceiver {

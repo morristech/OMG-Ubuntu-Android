@@ -17,7 +17,7 @@ import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
 
 import com.actionbarsherlock.internal.nineoldandroids.animation.ObjectAnimator;
-import com.ohso.omgubuntu.sqlite.OMGUbuntuDatabaseHelper;
+import com.ohso.omgubuntu.data.OMGUbuntuDatabaseHelper;
 
 public class MainActivity extends BaseActivity {
     public static final boolean DEVELOPER_MODE = false;

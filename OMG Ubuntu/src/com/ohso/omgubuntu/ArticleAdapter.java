@@ -17,8 +17,8 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.ohso.omgubuntu.sqlite.Article;
-import com.ohso.omgubuntu.sqlite.Articles;
+import com.ohso.omgubuntu.data.Article;
+import com.ohso.omgubuntu.data.Articles;
 import com.ohso.util.ImageHandler;
 import com.ohso.util.ViewTagger;
 

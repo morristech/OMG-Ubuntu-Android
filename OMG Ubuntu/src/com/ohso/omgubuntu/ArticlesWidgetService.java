@@ -6,8 +6,8 @@ import android.content.Intent;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
-import com.ohso.omgubuntu.sqlite.ArticleDataSource;
-import com.ohso.omgubuntu.sqlite.Articles;
+import com.ohso.omgubuntu.data.ArticleDataSource;
+import com.ohso.omgubuntu.data.Articles;
 
 @TargetApi(11)
 public class ArticlesWidgetService extends RemoteViewsService {

@@ -1,4 +1,4 @@
-package com.ohso.omgubuntu.sqlite;
+package com.ohso.omgubuntu.data;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,7 +13,7 @@ public class OMGUbuntuDatabaseHelper extends SQLiteOpenHelper {
     public static final int DATABASE_VERSION = 1;
     public static final String DATABASE_NAME = "omgubuntu.db";
     public static final List<? extends BaseTableObject> tables =
-            Arrays.asList(new Article(), new Category(), new ArticleCategory());
+            Arrays.asList(new Article(), new ArticleCategory());
     public OMGUbuntuDatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }

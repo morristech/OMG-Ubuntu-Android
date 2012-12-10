@@ -47,6 +47,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/article_row_status_container"
         android:layout_marginRight="85dp"
+        android:ellipsize="end"
         android:fontFamily="Roboto"
         android:gravity="center_vertical"
         android:lines="3"

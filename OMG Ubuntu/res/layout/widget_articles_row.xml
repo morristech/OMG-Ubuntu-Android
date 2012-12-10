@@ -9,14 +9,15 @@
         android:id="@android:id/text1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
-        android:maxLines="1"
+        android:layout_marginTop="10dp"
+        android:ellipsize="end"
         android:fadingEdge="horizontal"
+        android:maxLines="1"
+        android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="@android:color/black"
-        android:textStyle="bold"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:textStyle="bold" />
 
     <TextView
         android:id="@android:id/text2"

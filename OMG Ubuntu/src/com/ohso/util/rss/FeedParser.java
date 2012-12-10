@@ -5,8 +5,8 @@ import java.io.InputStream;
 
 import org.xmlpull.v1.XmlPullParserException;
 
-import com.ohso.omgubuntu.sqlite.Article;
-import com.ohso.omgubuntu.sqlite.Articles;
+import com.ohso.omgubuntu.data.Article;
+import com.ohso.omgubuntu.data.Articles;
 
 public class FeedParser {
     public Articles parseArticles(InputStream in) throws XmlPullParserException, IOException {

@@ -12,8 +12,8 @@ import android.os.Build;
 import android.util.Log;
 import android.widget.RemoteViews;
 
-import com.ohso.omgubuntu.sqlite.Article;
-import com.ohso.omgubuntu.sqlite.ArticleDataSource;
+import com.ohso.omgubuntu.data.Article;
+import com.ohso.omgubuntu.data.ArticleDataSource;
 
 //@TargetApi(11)
 public class ArticlesWidgetProvider extends AppWidgetProvider {

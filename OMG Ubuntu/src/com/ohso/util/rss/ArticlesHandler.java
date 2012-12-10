@@ -25,8 +25,8 @@ import android.text.Html;
 import android.text.Html.ImageGetter;
 import android.util.Xml;
 
-import com.ohso.omgubuntu.sqlite.Article;
-import com.ohso.omgubuntu.sqlite.Articles;
+import com.ohso.omgubuntu.data.Article;
+import com.ohso.omgubuntu.data.Articles;
 
 public class ArticlesHandler extends DefaultHandler {
     private Articles items;

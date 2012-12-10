@@ -22,7 +22,7 @@ import android.text.Html;
 import android.text.Html.ImageGetter;
 import android.util.Xml;
 
-import com.ohso.omgubuntu.sqlite.Article;
+import com.ohso.omgubuntu.data.Article;
 
 public class ArticleHandler extends DefaultHandler {
     private Article  item;

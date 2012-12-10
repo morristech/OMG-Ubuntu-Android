@@ -1,4 +1,4 @@
-package com.ohso.omgubuntu.sqlite;
+package com.ohso.omgubuntu.data;
 
 import java.util.ArrayList;
 import java.util.List;

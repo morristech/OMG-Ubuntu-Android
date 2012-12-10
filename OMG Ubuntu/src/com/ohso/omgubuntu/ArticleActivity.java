@@ -27,9 +27,9 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.ohso.omgubuntu.CommentsActivity.ExternalLinkFragment;
-import com.ohso.omgubuntu.sqlite.Article;
-import com.ohso.omgubuntu.sqlite.Article.OnArticleLoaded;
-import com.ohso.omgubuntu.sqlite.ArticleDataSource;
+import com.ohso.omgubuntu.data.Article;
+import com.ohso.omgubuntu.data.ArticleDataSource;
+import com.ohso.omgubuntu.data.Article.OnArticleLoaded;
 
 public class ArticleActivity extends SherlockFragmentActivity implements OnArticleLoaded {
     final Context ctx = this;

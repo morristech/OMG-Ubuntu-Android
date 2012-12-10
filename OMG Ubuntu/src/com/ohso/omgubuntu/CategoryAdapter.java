@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import com.ohso.omgubuntu.sqlite.Category;
+import com.ohso.omgubuntu.data.Category;
 
 public class CategoryAdapter extends ArrayAdapter<Category> {
     private LayoutInflater mInflater;

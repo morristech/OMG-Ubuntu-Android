@@ -1,4 +1,4 @@
-package com.ohso.omgubuntu.sqlite;
+package com.ohso.omgubuntu.data;
 
 public class ArticleCategory extends BaseTableObject {
 
@@ -10,6 +10,7 @@ public class ArticleCategory extends BaseTableObject {
     public void setSQL() {
         title = "article_category";
         addColumn(new Column("article_id", "TEXT", "article", "path"));
-        addColumn(new Column("category_id", "TEXT", "category", "name"));
+        addColumn(new Column("category_id", "TEXT"));
     }
+
 }

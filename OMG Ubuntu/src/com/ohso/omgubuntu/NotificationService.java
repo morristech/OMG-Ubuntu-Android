@@ -10,10 +10,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
 
-import com.ohso.omgubuntu.sqlite.Article;
-import com.ohso.omgubuntu.sqlite.ArticleDataSource;
-import com.ohso.omgubuntu.sqlite.Articles;
-import com.ohso.omgubuntu.sqlite.Articles.OnArticlesLoaded;
+import com.ohso.omgubuntu.data.Article;
+import com.ohso.omgubuntu.data.ArticleDataSource;
+import com.ohso.omgubuntu.data.Articles;
+import com.ohso.omgubuntu.data.Articles.OnArticlesLoaded;
 
 public class NotificationService extends IntentService implements OnArticlesLoaded {
     private static final String NOTIFICATION_SERVICE_NAME = "OMGNotificationService";

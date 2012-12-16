@@ -53,7 +53,12 @@
     <string name="fragment_feedback_copy">Have any comments about the app? Send an email to contact@omgubuntu.co.uk and let us know!</string>
     <string name="fragment_feedback_tips_copy">Have a tip? Use our tip form linked below.</string>
 
-    <string name="activity_about_omg_ubuntu">OMG! Ubuntu! boasts over 1.6 million unique visitors a month, who between them view over 7 million pages. Combined with 58,000 Facebook fans, 37,700 Twitter followers, and 9,000 Android app users, you\'ll fit right into our growing community
-\n\nOur full time editorial staff includes Joey-Elijah Sneddon, a 23 year old journalist graduate from Lincoln University, and Benjamin Humphrey, a New Zealand-based professional designer, and founder of The Ubuntu Manual Project.</string>
-    <string name="activity_about_ohso">Ohso is an online media and software publishing company, founded in July 2010 by Joey Sneddon and Benjamin Humphrey, two tech-savvy entrepreneurs based in the United Kingdom and New Zealand.</string>
+    <string name="activity_about_omg_ubuntu"><![CDATA[
+<p>We\'re the world\'s largest Linux-orientated site on the web, bringing the latest news, reviews and tutorials to over 2 million unique readers a month.</p>
+<p>But we\'re more than just a website &ndash; we\'re also a vibrant community, boasting over 200,000 subscribers across <a href="http://twitter.com/omgubuntu">Twitter</a>, <a href="http://facebook.com/omgubuntu">Facebook</a>, <a href="http://youtube.com/omgubuntu">Youtube</a> and more.</p> 
+<p>And by using this app, you\'re part of that, too!</p>
+]]></string>
+    <string name="activity_about_ohso"><![CDATA[
+<p>OMG! Ubuntu! is part of <strong><a href="http://ohso.co">Ohso Ltd</a></strong>, a New-Zealand based media and software publishing company founded in 2010.</p>        
+]]></string>
 </resources>

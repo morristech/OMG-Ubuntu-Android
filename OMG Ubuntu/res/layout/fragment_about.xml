@@ -22,11 +22,10 @@
 
         <TextView
             android:id="@+id/activity_about_omg_copy"
+            android:linksClickable="true"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="Roboto"
-            android:lineSpacingMultiplier="1.5"
-            android:text="@string/activity_about_omg_ubuntu"
             android:textSize="18sp" />
 
         <ImageView
@@ -34,8 +33,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="15dp"
-            android:layout_marginTop="20dp"
             android:adjustViewBounds="true"
             android:maxHeight="150dp"
             android:src="@drawable/ohso" />
@@ -45,8 +42,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="Roboto"
-            android:lineSpacingMultiplier="1.5"
-            android:text="@string/activity_about_ohso"
             android:textSize="18sp" />
 
     </LinearLayout>

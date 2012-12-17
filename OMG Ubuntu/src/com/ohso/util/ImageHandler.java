@@ -205,6 +205,9 @@ public class ImageHandler {
                 try {
                     Editor editor = mDiskCache.edit(mUrl);
                     BufferedOutputStream stream = new BufferedOutputStream(editor.newOutputStream(0));
+                    if(isCancelled() || getAttachedImageView() == null || mExitTaskEarly || bitmap == null) {
+                        return null;
+                    }
                     if (bitmap.compress(IMAGE_COMPRESS_FORMAT, IMAGE_COMPRESS_QUALITY, stream)) {
                         if (DEBUG_LOG) Log.d("OMG!", "Adding image to disk");
                         editor.commit();

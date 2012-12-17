@@ -97,8 +97,6 @@ public class MainActivity extends BaseActivity {
             sidebarFragmentLayout = (LinearLayout) findViewById(R.id.sidebar_fragment_overlay);
         }
 
-        // TODO add overlay to capture clicks
-
         sidebarFragmentLayoutOffset = sidebarFragmentLayout.getChildAt(0).getWidth();
         if(Build.VERSION.SDK_INT >= 11) {
             ObjectAnimator sidebarAnimation = ObjectAnimator.ofFloat(articleFragmentContainer, "translationX",
@@ -107,10 +105,12 @@ public class MainActivity extends BaseActivity {
             sidebarAnimation.setStartDelay(100);
             sidebarAnimation.start();
             Handler handler = new Handler();
+            // Need to timeout transitionComplete so that the transition...completes.
             handler.postDelayed(transitionComplete, 350);
         } else {
             LayoutParams relParams = new RelativeLayout.LayoutParams (RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
             relParams.leftMargin = sidebarFragmentActive ? sidebarFragmentLayoutOffset : 0;
+            relParams.rightMargin = sidebarFragmentActive ? - sidebarFragmentLayoutOffset : 0;
             articleFragmentContainer.setLayoutParams(relParams);
             sidebarFragmentTransitionComplete = true;
 

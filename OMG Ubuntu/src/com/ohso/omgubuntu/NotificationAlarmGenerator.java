@@ -28,8 +28,6 @@ public class NotificationAlarmGenerator extends BroadcastReceiver {
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
-
-        //TODO pull from prefs
         calendar.add(Calendar.MINUTE, 30);
 
         AlarmManager alarm = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);

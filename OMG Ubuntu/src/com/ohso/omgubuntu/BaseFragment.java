@@ -52,6 +52,7 @@ public abstract class BaseFragment extends SherlockFragment implements OnTouchLi
     public static final String FORCE_REFRESH = "com.ohso.omgubuntu.BaseFragment.forceRefresh";
     private boolean onStartRefresh = true;
 
+    private int lastActiveArticlePosition = -1;
     // Max # of pages to allow "more articles" from
     private final int MAXIMUM_PAGED = 5;
 
@@ -165,6 +166,9 @@ public abstract class BaseFragment extends SherlockFragment implements OnTouchLi
     @Override
     public void onItemClick(AdapterView<?> l, View v, int pos, long id) {
         Article clicked = adapter.getItem((int) id);
+        try {
+            lastActiveArticlePosition = (int) id;
+        } catch (Exception e) {}
         ((MainActivity) getActivity()).openArticle(clicked.getPath());
     }
 
@@ -434,7 +438,7 @@ public abstract class BaseFragment extends SherlockFragment implements OnTouchLi
         hideFooterViewIfShown();
         onRefreshComplete();
         dataSource.open();
-        if(!result.isEmpty()) dataSource.createArticles(result, true);
+        if(!result.isEmpty()) dataSource.createArticles(result, true, true);
         dataSource.clearArticlesOverNumberOfEntries();
         dataSource.close();
         getData();
@@ -474,6 +478,15 @@ public abstract class BaseFragment extends SherlockFragment implements OnTouchLi
     public void onResume() {
         super.onResume();
         imageHandler.setExitTasksEarly(false);
+        if (lastActiveArticlePosition != -1) {
+            dataSource.open();
+            final Article lastActiveArticle = dataSource.getArticle(adapter.getItem(lastActiveArticlePosition).getPath(), false);
+            dataSource.close();
+            adapter.getItem(lastActiveArticlePosition).setUnread(lastActiveArticle.isUnread() ? 1 : 0);
+            adapter.getItem(lastActiveArticlePosition).setStarred(lastActiveArticle.isStarred() ? 1 : 0);
+            adapter.notifyDataSetChanged();
+            lastActiveArticlePosition = -1;
+        }
     }
 
     @Override

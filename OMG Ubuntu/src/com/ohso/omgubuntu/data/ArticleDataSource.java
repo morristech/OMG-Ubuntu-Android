@@ -197,18 +197,6 @@ public class ArticleDataSource extends BaseDataSource {
         }
     }
 
-    /**
-     * Adds articles to the database from an Articles object.
-     *
-     * @param articles The Articles object from which articles are added/updated
-     * @param updateArticleIfLessThanADayOld whether to update the article if it's less than a day old
-     */
-    public void createArticles(Articles articles, boolean updateArticleIfLessThanADayOld) {
-        for(Article article : articles) {
-            if (!createArticle(article, updateArticleIfLessThanADayOld, true)) break;
-        }
-    }
-
     public void setArticleToUnread(boolean unread, String path) {
         ContentValues values = new ContentValues();
         values.put("path", path);

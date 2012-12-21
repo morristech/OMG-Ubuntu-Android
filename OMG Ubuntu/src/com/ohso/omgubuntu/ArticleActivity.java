@@ -18,6 +18,7 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.text.format.DateUtils;
 import android.util.Log;
+import android.view.WindowManager;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.TextView;
@@ -28,8 +29,8 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.ohso.omgubuntu.CommentsActivity.ExternalLinkFragment;
 import com.ohso.omgubuntu.data.Article;
-import com.ohso.omgubuntu.data.ArticleDataSource;
 import com.ohso.omgubuntu.data.Article.OnArticleLoaded;
+import com.ohso.omgubuntu.data.ArticleDataSource;
 
 public class ArticleActivity extends SherlockFragmentActivity implements OnArticleLoaded {
     final Context ctx = this;
@@ -71,13 +72,12 @@ public class ArticleActivity extends SherlockFragmentActivity implements OnArtic
         } catch (MalformedURLException e) {}
 
         if (article_uri == null) { // We're opening from the application
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
             if(getIntent().getExtras().getBoolean(LATEST_ARTICLE_INTENT, false)) { //Latest article intent
-                Log.i("OMG!", "Getting latest article...");
                 articleSource.open();
                 Article article = articleSource.getLatestArticle(false);
                 articleSource.close();
                 if (article == null) finish();
-                Log.i("OMG!", "Latest is " + article.getPath());
                 activeArticle = article.getPath();
             } else {
                 activeArticle = getIntent().getExtras().getString(INTERNAL_ARTICLE_PATH_INTENT);
@@ -91,7 +91,6 @@ public class ArticleActivity extends SherlockFragmentActivity implements OnArtic
                 }
             }
         } else { // We're opening from an external application
-            Log.i("OMG!", "NOPE");
             activeArticle = article_uri.getPath();
         }
 

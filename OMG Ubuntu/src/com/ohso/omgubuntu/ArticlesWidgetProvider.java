@@ -61,7 +61,8 @@ public class ArticlesWidgetProvider extends AppWidgetProvider {
             if (MainActivity.DEVELOPER_MODE) Log.i("OMG!", "Got call to open article: " + intent.getStringExtra(ArticleActivity.INTERNAL_ARTICLE_PATH_INTENT));
             Intent activityIntent = new Intent(context, ArticleActivity.class).putExtra(ArticleActivity.INTERNAL_ARTICLE_PATH_INTENT,
                     intent.getStringExtra(ArticleActivity.INTERNAL_ARTICLE_PATH_INTENT));
-            activityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            activityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            activityIntent.setAction(Intent.ACTION_VIEW);
             context.startActivity(activityIntent);
         } else if (intent.getAction().equals(ACTION_REFRESH)) {
             AppWidgetManager manager = AppWidgetManager.getInstance(context);

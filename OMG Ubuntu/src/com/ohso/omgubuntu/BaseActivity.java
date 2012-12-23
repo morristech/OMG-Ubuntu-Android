@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2012 Ohso Ltd
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 package com.ohso.omgubuntu;
 
 import android.content.res.Configuration;
@@ -11,19 +27,13 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.MenuItem;
 import com.ohso.util.ImageHandler;
 
-/**
- * The Class BaseActivity that contains the default sidebar for the application
- *
- * @author Sam Tran <samvtran@gmail.com>
- */
 public abstract class BaseActivity extends SherlockFragmentActivity implements SidebarFragment.OnSidebarClickListener {
     protected static boolean         sidebarFragmentActive = false;
-
- // Useful for disabling certain actions whilst the sidebar is still transitioning
-    public boolean         sidebarFragmentTransitionComplete = true;
+    // Useful for disabling certain actions whilst the sidebar is still transitioning
+    public boolean sidebarFragmentTransitionComplete = true;
     protected SidebarFragment sidebar;
     private ImageHandler imageHandler;
-    protected FragmentManager fragmentManager       = getSupportFragmentManager();
+    protected FragmentManager fragmentManager = getSupportFragmentManager();
     protected ActionBar actionBar;
     private MenuItem refreshMenuItem;
 
@@ -47,9 +57,6 @@ public abstract class BaseActivity extends SherlockFragmentActivity implements S
         actionBar.setDisplayHomeAsUpEnabled(true);
     }
 
-
-
-
     public ImageHandler getImageHandler() { return imageHandler; }
 
     @Override
@@ -60,19 +67,10 @@ public abstract class BaseActivity extends SherlockFragmentActivity implements S
 
     public MenuItem getRefreshMenuItem() { return refreshMenuItem; }
 
-    /**
-     * Gets the layout resource id.
-     *
-     * @return the layout resource id
-     */
     protected int getLayoutResourceId() { return layoutResourceId; }
     protected void setLayoutResourceId(int layoutResourceId) { this.layoutResourceId = layoutResourceId; }
 
 
-    /**
-     * Gets the default ActionBar
-     *
-     */
     public void getDefaultActionBar() {
         actionBar.setTitle(R.string.app_name);
         actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM|ActionBar.DISPLAY_SHOW_HOME|
@@ -87,7 +85,6 @@ public abstract class BaseActivity extends SherlockFragmentActivity implements S
                 toggleSidebarFragment();
                 return true;
             default:
-                //return actionBarItemSelected(item);
                 return super.onOptionsItemSelected(item);
         }
     }
@@ -104,10 +101,6 @@ public abstract class BaseActivity extends SherlockFragmentActivity implements S
         // TODO Should this do anything or just be caught to keep the sidebar active?
     }
 
-    /**
-     * Toggle sidebar fragment.
-     *
-     */
     public void toggleSidebarFragment() {
         sidebarFragmentActive = !sidebarFragmentActive;
     }
@@ -116,13 +109,5 @@ public abstract class BaseActivity extends SherlockFragmentActivity implements S
         return sidebarFragmentActive;
     }
 
-    /**
-     * Gets the resource container to add the sidebar to.
-     *
-     * @return the sidebar resource container
-     */
-    //protected abstract int getSidebarResourceContainer();
-
     public void onSidebarItemClicked(String name, boolean onActiveActivity) {}
-
 }

@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2012 Ohso Ltd
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 package com.ohso.util;
 
 import java.io.BufferedOutputStream;
@@ -161,7 +177,6 @@ public class ImageHandler {
             }
             final ImageView finalView = getAttachedImageView();
             if (finalView != null && result != null) {
-                //finalView.setImageBitmap(result);
                 final TransitionDrawable trans = new TransitionDrawable(new Drawable[] {
                         new ColorDrawable(android.R.color.transparent),
                         new BitmapDrawable(mResources, result)
@@ -237,20 +252,6 @@ public class ImageHandler {
                 if (diskCachedSnapshot != null) {
                     inputStream = diskCachedSnapshot.getInputStream(0);
                     if (inputStream != null) {
-                        // START
-/*                        final BitmapFactory.Options options = new BitmapFactory.Options();
-                        options.inJustDecodeBounds = true;
-                        Bitmap bitmap = BitmapFactory.decodeStream(inputStream, null, options);
-                        options.inSampleSize = calculateInSampleSize(options, (int) mPixelSize, (int) mPixelSize);
-
-                        // reset() isn't always supported.
-                        if(inputStream.markSupported()) inputStream.reset();
-                        else inputStream = diskCachedSnapshot.getInputStream(0);
-
-                        options.inJustDecodeBounds = false;
-                        bitmap = BitmapFactory.decodeStream(inputStream, null, options);*/
-
-                        //END
                         final Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
                         diskCachedSnapshot.close();
                         return bitmap;
@@ -362,5 +363,4 @@ public class ImageHandler {
             mDiskCache.flush();
         } catch (IOException e) {}
     }
-
 }

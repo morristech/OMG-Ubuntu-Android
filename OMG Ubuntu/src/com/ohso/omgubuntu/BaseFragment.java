@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2012 Ohso Ltd
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 package com.ohso.omgubuntu;
 
 import android.app.AlertDialog;
@@ -44,9 +60,6 @@ import com.ohso.omgubuntu.data.Articles.OnArticlesLoaded;
 import com.ohso.omgubuntu.data.Articles.OnNextPageLoaded;
 import com.ohso.util.ImageHandler;
 
-/**
- * @author Sam Tran <samvtran@gmail.com>
- */
 public abstract class BaseFragment extends SherlockFragment implements OnTouchListener,
         OnArticlesLoaded, OnScrollListener, OnNextPageLoaded, OnClickListener, OnItemClickListener {
     public static final String FORCE_REFRESH = "com.ohso.omgubuntu.BaseFragment.forceRefresh";
@@ -168,7 +181,7 @@ public abstract class BaseFragment extends SherlockFragment implements OnTouchLi
         Article clicked = adapter.getItem((int) id);
         try {
             lastActiveArticlePosition = (int) id;
-        } catch (Exception e) {}
+        } catch (Exception e) {} // Not a major problem if it fails, but we'll be cross
         ((MainActivity) getActivity()).openArticle(clicked.getPath());
     }
 
@@ -176,11 +189,11 @@ public abstract class BaseFragment extends SherlockFragment implements OnTouchLi
     public void onClick(View v) {
         footerView.setEnabled(false);
         if (nextPageAllowed && currentPage < MAXIMUM_PAGED) {
-            ((TextView) v).setText("Loading...");
+            ((TextView) v).setText(getResources().getString(R.string.loading_text));
             if (refresh != null) refresh.setActionView(R.layout.refresh_menu_item);
             getNextPage();
         } else {
-            Intent external = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.omgubuntu.co.uk"));
+            Intent external = new Intent(Intent.ACTION_VIEW, Uri.parse(getResources().getString(R.string.base_url)));
             external.addCategory(Intent.CATEGORY_BROWSABLE);
             Intent chooser = Intent.createChooser(external, getResources().getString(R.string.activity_main_footer_dialog));
             startActivity(chooser);
@@ -241,19 +254,6 @@ public abstract class BaseFragment extends SherlockFragment implements OnTouchLi
     @Override
     public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
         toggleFooter(visibleItemCount, firstVisibleItem, totalItemCount, view);
-/*        if (visibleItemCount > 0 && (firstVisibleItem + visibleItemCount >= totalItemCount) && footerEnabled) {
-            final View child = view.getChildAt((adapter.getRealCount() - 1) - firstVisibleItem);
-            if (child != null) {
-                if (child.getBottom() > view.getBottom() - (adapter.getFooterHeight() / 1.5)) {
-                    // Above
-                    if (footerView.isShown()) hidefooterView();
-                } else {
-                    // Below
-                    if (!footerView.isShown()) showFooterView();
-                }
-            }
-        }*/
-
     }
 
     private void toggleFooter(int visibleItemCount, int firstVisibleItem, int totalItemCount, ViewGroup view) {
@@ -428,7 +428,7 @@ public abstract class BaseFragment extends SherlockFragment implements OnTouchLi
     private void startShareIntent(String title, String path) {
         Intent shareIntent = new Intent(Intent.ACTION_SEND);
         shareIntent.setType("text/plain");
-        shareIntent.putExtra(Intent.EXTRA_TEXT, title + " " + "http://www.omgubuntu.co.uk" + path);
+        shareIntent.putExtra(Intent.EXTRA_TEXT, title + " " + getResources().getString(R.string.base_url) + path);
         Intent chooser = Intent.createChooser(shareIntent, getResources().getString(R.string.activity_main_share_intent_text));
         startActivity(chooser);
     }
@@ -450,7 +450,7 @@ public abstract class BaseFragment extends SherlockFragment implements OnTouchLi
         onRefreshComplete();
         Log.e("OMG!", "FEED ERROR!");
         Toast error = Toast.makeText(getActivity(),
-                "Couldn't refresh the feed. Try again in a few moments.", Toast.LENGTH_SHORT);
+                getResources().getString(R.string.refresh_error), Toast.LENGTH_SHORT);
         try {
             ((TextView) ((LinearLayout) error.getView()).getChildAt(0)).setGravity(Gravity.CENTER);
         } catch (ClassCastException e) {
@@ -474,6 +474,7 @@ public abstract class BaseFragment extends SherlockFragment implements OnTouchLi
          */
         if (refresh != null) refresh.setActionView(null);
     }
+
     @Override
     public void onResume() {
         super.onResume();
@@ -518,21 +519,20 @@ public abstract class BaseFragment extends SherlockFragment implements OnTouchLi
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            builder.setMessage("Mark all as read?");
-            builder.setPositiveButton("Mark", new DialogInterface.OnClickListener() {
+            builder.setMessage(getResources().getString(R.string.activity_main_mark_all_as_read));
+            builder.setPositiveButton(getResources().getString(R.string.activity_main_mark_all_as_read_confirmation),
+                    new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     ((BaseFragment) getTargetFragment()).setAllAsRead();
                 }
             });
-            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            builder.setNegativeButton(getResources().getString(R.string.dialog_fragment_cancel), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                 }
             });
             return builder.create();
         }
-
     }
-
 }

@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2012 Ohso Ltd
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 package com.ohso.omgubuntu;
 
 import android.content.BroadcastReceiver;
@@ -11,16 +27,12 @@ public class NotificationAlarmReceiver extends BroadcastReceiver {
     public static final String NOTIFICATION_ACTION = "com.ohso.omgubuntu.BroadcastReceiver.NOTIFICATION_ACTION";
 
     private static WakeLock wakeLock;
-    public NotificationAlarmReceiver() {
-        // TODO Auto-generated constructor stub
-    }
-
     @Override
     public void onReceive(Context context, Intent intent) {
         if (MainActivity.DEVELOPER_MODE) Log.d("OMG!", "Received call to start background intent");
         PowerManager mgr = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
         wakeLock = mgr.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "OmgNotificationLock");
-        wakeLock.acquire();
+        if (wakeLock.isHeld() == false) wakeLock.acquire();
         Intent notification = new Intent(context, NotificationService.class);
         context.startService(notification);
     }
@@ -28,7 +40,7 @@ public class NotificationAlarmReceiver extends BroadcastReceiver {
     public static WakeLock getWakeLock() { return wakeLock; }
 
     public static void releaseWakeLock() {
-        if (wakeLock != null) {
+        if (wakeLock != null && wakeLock.isHeld()) {
             try {
                 wakeLock.release();
             } catch (Throwable e) {} // Shouldn't worry

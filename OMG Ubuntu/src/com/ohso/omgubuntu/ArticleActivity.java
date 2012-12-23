@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2012 Ohso Ltd
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 package com.ohso.omgubuntu;
 
 import java.net.MalformedURLException;
@@ -17,7 +33,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.text.format.DateUtils;
-import android.util.Log;
 import android.view.WindowManager;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -33,7 +48,6 @@ import com.ohso.omgubuntu.data.Article.OnArticleLoaded;
 import com.ohso.omgubuntu.data.ArticleDataSource;
 
 public class ArticleActivity extends SherlockFragmentActivity implements OnArticleLoaded {
-    final Context ctx = this;
     private ActionBar actionBar;
     private ArticleDataSource articleSource;
     private String activeArticle;
@@ -43,8 +57,8 @@ public class ArticleActivity extends SherlockFragmentActivity implements OnArtic
     private TextView byline;
     private TextView dateView;
     private MenuItem refresh;
-    //TODO fix this
-    public static final String INTERNAL_ARTICLE_PATH_INTENT = "article_path";
+
+    public static final String INTERNAL_ARTICLE_PATH_INTENT = "ohso.omgubuntu.ArticleActivity.ARTICLE_PATH";
     public static final String LATEST_ARTICLE_INTENT = "ohso.omgubuntu.ArticleActivity.LATEST_ARTICLE";
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -113,7 +127,6 @@ public class ArticleActivity extends SherlockFragmentActivity implements OnArtic
                 commentIntent.putExtra(CommentsActivity.COMMENTS_IDENTIFIER, currentArticle.getIdentifier());
                 startActivity(commentIntent);
             } else if (requestUrl.getHost().equals("www.omgubuntu.co.uk") && requestUrl.getPath().startsWith("/2")) {
-                Log.i("OMG!", "Got an article!");
                 Intent articleIntent = new Intent(mContext, ArticleActivity.class);
                 articleIntent.putExtra(ArticleActivity.INTERNAL_ARTICLE_PATH_INTENT, requestUrl.getPath());
                 startActivity(articleIntent);
@@ -140,8 +153,8 @@ public class ArticleActivity extends SherlockFragmentActivity implements OnArtic
     private void createShareIntent(String title, String path) {
         Intent shareIntent = new Intent(Intent.ACTION_SEND);
         shareIntent.setType("text/plain");
-        shareIntent.putExtra(Intent.EXTRA_TEXT, title + " " + "http://www.omgubuntu.co.uk" + path);
-        Intent chooser = Intent.createChooser(shareIntent, "Share this article via");
+        shareIntent.putExtra(Intent.EXTRA_TEXT, title + " " + getResources().getString(R.string.base_url) + path);
+        Intent chooser = Intent.createChooser(shareIntent, getResources().getString(R.string.activity_main_share_intent_text));
         startActivity(chooser);
     }
     @Override
@@ -228,7 +241,8 @@ public class ArticleActivity extends SherlockFragmentActivity implements OnArtic
     private void setContents(Article article) {
         titleView.setText(article.getTitle());
         byline.setText(article.getAuthor());
-        CharSequence date = DateUtils.getRelativeTimeSpanString(article.getDate(), new Date().getTime(), DateUtils.MINUTE_IN_MILLIS, DateUtils.FORMAT_ABBREV_RELATIVE);
+        CharSequence date = DateUtils.getRelativeTimeSpanString(article.getDate(), new Date().getTime(),
+                DateUtils.MINUTE_IN_MILLIS, DateUtils.FORMAT_ABBREV_RELATIVE);
         dateView.setText(date);
         StringBuilder content = new StringBuilder();
         content.append("<!DOCTYPE html><head><link rel='stylesheet' type='text/css' href='style.css'></head>");
@@ -236,7 +250,8 @@ public class ArticleActivity extends SherlockFragmentActivity implements OnArtic
         content.append(article.getContent());
         content.append("<h2 class='internal-comments-link'><a href='internal://app-comments'>"+
                 getResources().getString(R.string.activity_article_comment_text) +"</a></h2></div></body></html>");
-        webview.loadDataWithBaseURL("file:///android_asset/", content.toString(), "text/html", "UTF-8", getResources().getString(R.string.base_url) + article.getPath());
+        webview.loadDataWithBaseURL("file:///android_asset/", content.toString(), "text/html", "UTF-8",
+                getResources().getString(R.string.base_url) + article.getPath());
     }
 
     private void refreshArticle() {
@@ -282,18 +297,21 @@ public class ArticleActivity extends SherlockFragmentActivity implements OnArtic
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setMessage(getResources().getString(R.string.article_fetch_error));
-            builder.setPositiveButton("Open", new DialogInterface.OnClickListener() {
+            builder.setPositiveButton(getResources().getString(R.string.dialog_fragment_open),
+                    new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    Intent external = new Intent(Intent.ACTION_VIEW, Uri.parse(getResources().getString(R.string.base_url)
-                            + getArticlePath()));
+                    Intent external = new Intent(Intent.ACTION_VIEW,
+                            Uri.parse(getResources().getString(R.string.base_url) + getArticlePath()));
                     external.addCategory(Intent.CATEGORY_BROWSABLE);
-                    Intent chooser = Intent.createChooser(external, getResources().getString(R.string.article_fetch_error_dialog));
+                    Intent chooser = Intent.createChooser
+                            (external, getResources().getString(R.string.article_fetch_error_dialog));
                     startActivity(chooser);
                     getActivity().finish();
                 }
             });
-            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            builder.setNegativeButton(getResources().getString(R.string.dialog_fragment_cancel),
+                    new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     getActivity().finish();
@@ -301,47 +319,5 @@ public class ArticleActivity extends SherlockFragmentActivity implements OnArtic
             });
             return builder.create();
         }
-
     }
-
- /*   public static class ExternalLinkFragment extends DialogFragment {
-        private static final String EXTERNAL_LINK = "com.ohso.omgubuntu.ArticleActivity.externalLink";
-
-        public static ExternalLinkFragment newInstance(String externalLink) {
-            ExternalLinkFragment fragment = new ExternalLinkFragment();
-            Bundle args = new Bundle();
-            args.putString(EXTERNAL_LINK, externalLink);
-            fragment.setArguments(args);
-            return fragment;
-        }
-
-        public String getExternalLink() {
-            return getArguments().getString(EXTERNAL_LINK);
-        }
-
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            builder.setMessage(getResources().getString(R.string.article_external_alert));
-            builder.setPositiveButton("Open", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    Intent external = new Intent(Intent.ACTION_VIEW, Uri.parse(getExternalLink()));
-                    external.addCategory(Intent.CATEGORY_BROWSABLE);
-                    Intent chooser = Intent.createChooser(external, getResources().getString(R.string.article_external_link_dialog));
-                    startActivity(chooser);
-                }
-            });
-            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    getActivity().finish();
-                }
-            });
-            return builder.create();
-        }
-
-    }*/
-
-
 }

@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2012 Ohso Ltd
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 package com.ohso.omgubuntu.data;
 
 import java.util.ArrayList;
@@ -30,7 +46,6 @@ public abstract class BaseTableObject {
     public String getDefaultDataSQL() { return null; }
 
     public List<Column> columns = new ArrayList<Column>();
-    // TODO stick all the individual table logic into classes that inherit this, then give the dbHelper their SQL
 
     /*
      * Instantiates columns. Called directly by getSQL()
@@ -53,11 +68,9 @@ public abstract class BaseTableObject {
             throw new SQLException("Columns must be set in setSQL()");
         }
         StringBuilder sql = new StringBuilder();
-        //sql.append("CREATE TABLE " + title + " (");
         sql.append(String.format("CREATE TABLE %s (", title));
         if (primaryId != null) {
             sql.append(primaryId);
-            //sql.append(" " + primaryIdType + " PRIMARY KEY " + getAutoIncrement() + " ");
             sql.append(String.format(" %s PRIMARY KEY %s ", primaryIdType, getAutoIncrement()));
         }
         StringBuilder columnSql = new StringBuilder();
@@ -68,10 +81,8 @@ public abstract class BaseTableObject {
             if(columnSql.length() != 0 || primaryId != null) {
                 columnSql.append(", ");
             }
-            //columnSql.append(column.getName() + " " + column.getType());
             columnSql.append(String.format("%s %s", column.getName(), column.getType()));
             if(column.hasForeignKey()) {
-                //fk.append(", FOREIGN KEY ("+ column.getForeignKey() + ") REFERENCES " + column.getForeignTable() + "(" + column.getForeignColumn() + ")");
                 fk.append(String.format(", FOREIGN KEY (%s) REFERENCES %s (%s) ON DELETE CASCADE",
                         column.getForeignKey(), column.getForeignTable(), column.getForeignColumn()));
             }

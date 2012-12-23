@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2012 Ohso Ltd
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 package com.ohso.omgubuntu;
 
 import android.annotation.TargetApi;
@@ -15,7 +31,6 @@ import android.widget.RemoteViews;
 import com.ohso.omgubuntu.data.Article;
 import com.ohso.omgubuntu.data.ArticleDataSource;
 
-//@TargetApi(11)
 public class ArticlesWidgetProvider extends AppWidgetProvider {
     public static final String ACTION_OPEN_ARTICLE = "com.ohso.omgubuntu.OPEN_ARTICLE";
     public static final String ACTION_REFRESH = "com.ohso.omgubuntu.REFRESH";
@@ -39,7 +54,8 @@ public class ArticlesWidgetProvider extends AppWidgetProvider {
                 Article latestArticle = source.getLatestArticle(false);
                 source.close();
                 remoteViews.setTextViewText(R.id.widget_froyo_title, latestArticle.getTitle());
-                Intent mainIntent = new Intent(context, ArticleActivity.class).putExtra(ArticleActivity.LATEST_ARTICLE_INTENT, true);
+                Intent mainIntent = new Intent(context, ArticleActivity.class)
+                    .putExtra(ArticleActivity.LATEST_ARTICLE_INTENT, true);
                 PendingIntent froyoMainIntent = PendingIntent.getActivity(context, 0, mainIntent, 0);
                 remoteViews.setOnClickPendingIntent(R.id.widget_froyo_container, froyoMainIntent);
             }
@@ -58,15 +74,18 @@ public class ArticlesWidgetProvider extends AppWidgetProvider {
     @Override
     public void onReceive(Context context, Intent intent) {
         if (intent.getAction().equals(ACTION_OPEN_ARTICLE)) {
-            if (MainActivity.DEVELOPER_MODE) Log.i("OMG!", "Got call to open article: " + intent.getStringExtra(ArticleActivity.INTERNAL_ARTICLE_PATH_INTENT));
-            Intent activityIntent = new Intent(context, ArticleActivity.class).putExtra(ArticleActivity.INTERNAL_ARTICLE_PATH_INTENT,
+            if (MainActivity.DEVELOPER_MODE) Log.i("OMG!", "Got call to open article: " +
                     intent.getStringExtra(ArticleActivity.INTERNAL_ARTICLE_PATH_INTENT));
+            Intent activityIntent = new Intent(context, ArticleActivity.class)
+                .putExtra(ArticleActivity.INTERNAL_ARTICLE_PATH_INTENT,
+                        intent.getStringExtra(ArticleActivity.INTERNAL_ARTICLE_PATH_INTENT));
             activityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP);
             activityIntent.setAction(Intent.ACTION_VIEW);
             context.startActivity(activityIntent);
         } else if (intent.getAction().equals(ACTION_REFRESH)) {
             AppWidgetManager manager = AppWidgetManager.getInstance(context);
-            int[] ids = manager.getAppWidgetIds(new ComponentName(context, com.ohso.omgubuntu.ArticlesWidgetProvider.class));
+            int[] ids = manager.getAppWidgetIds
+                    (new ComponentName(context, com.ohso.omgubuntu.ArticlesWidgetProvider.class));
 
             RemoteViews refreshView = new RemoteViews(context.getPackageName(), R.layout.refresh_menu_item);
             remoteViews.removeAllViews(R.id.widget_articles_refresh_container);
@@ -88,7 +107,8 @@ public class ArticlesWidgetProvider extends AppWidgetProvider {
     }
     private static void froyoUpdate(Context context) {
         AppWidgetManager manager = AppWidgetManager.getInstance(context);
-        int[] ids = manager.getAppWidgetIds(new ComponentName(context, com.ohso.omgubuntu.ArticlesWidgetProvider.class));
+        int[] ids = manager.getAppWidgetIds
+                (new ComponentName(context, com.ohso.omgubuntu.ArticlesWidgetProvider.class));
 
         if (remoteViews == null) remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget_froyo);
         ArticleDataSource source = new ArticleDataSource(context);
@@ -103,14 +123,16 @@ public class ArticlesWidgetProvider extends AppWidgetProvider {
     @TargetApi(11)
     private static void honeycombUpdate(Context context, int newArticleCount) {
         AppWidgetManager manager = AppWidgetManager.getInstance(context);
-        int[] ids = manager.getAppWidgetIds(new ComponentName(context, com.ohso.omgubuntu.ArticlesWidgetProvider.class));
+        int[] ids = manager.getAppWidgetIds
+                (new ComponentName(context, com.ohso.omgubuntu.ArticlesWidgetProvider.class));
         manager.notifyAppWidgetViewDataChanged(ids, R.id.widget_articles_list);
 
         if (remoteViews == null) remoteViews = getRemoteViews(context, manager, ids);
 
         remoteViews.removeAllViews(R.id.widget_articles_refresh_container);
         remoteViews.addView(R.id.widget_articles_refresh_container, refreshView);
-        remoteViews.setTextViewText(R.id.widget_articles_count, newArticleCount < 1 ? null : String.valueOf(newArticleCount));
+        remoteViews.setTextViewText(R.id.widget_articles_count, newArticleCount < 1
+                ? null : String.valueOf(newArticleCount));
 
         manager.updateAppWidget(ids, remoteViews);
     }
@@ -130,7 +152,6 @@ public class ArticlesWidgetProvider extends AppWidgetProvider {
         PendingIntent refreshPendingIntent = PendingIntent.getBroadcast(context, 0, refreshIntent, 0);
         refreshView.setOnClickPendingIntent(R.id.widget_articles_refresh, refreshPendingIntent);
         remoteViews.addView(R.id.widget_articles_refresh_container, refreshView);
-
 
         Intent templateIntent = new Intent(context, ArticlesWidgetProvider.class);
         templateIntent.setAction(ACTION_OPEN_ARTICLE);

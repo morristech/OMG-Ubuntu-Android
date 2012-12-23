@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2012 Ohso Ltd
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 package com.ohso.omgubuntu;
 
 import android.os.Bundle;
@@ -14,7 +30,7 @@ public class StarredFragment extends BaseFragment {
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        ((BaseActivity) getActivity()).getSupportActionBar().setTitle("Starred");
+        ((BaseActivity) getActivity()).getSupportActionBar().setTitle(getResources().getString(R.string.title_starred));
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
@@ -47,7 +63,6 @@ public class StarredFragment extends BaseFragment {
         onRefreshComplete();
     }
 
-    //TODO onstar onunstar
     @Override
     protected void onUnstarred(int position) {
         adapter.remove(adapter.getItem(position));
@@ -57,6 +72,7 @@ public class StarredFragment extends BaseFragment {
     public void refreshView() {
         getNewData();
     }
+
     @Override
     protected void getNewData() {
         dataSource.open();

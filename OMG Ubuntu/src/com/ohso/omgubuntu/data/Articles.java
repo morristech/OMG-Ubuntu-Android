@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2012 Ohso Ltd
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 package com.ohso.omgubuntu.data;
 
 import java.io.IOException;
@@ -23,8 +39,6 @@ public class Articles extends ArrayList<Article> {
     private OnArticlesLoaded mCallback;
     private OnNextPageLoaded mNextPageCallback;
 
-    public Articles() {}
-
     public void getLatest(OnArticlesLoaded caller) {
         mCallback = caller;
         if (OMGUbuntuApplication.isNetworkAvailable()) {
@@ -35,16 +49,13 @@ public class Articles extends ArrayList<Article> {
     }
 
     public void getNextPage(OnNextPageLoaded caller, int page) {
-        // TODO check db first.for exactly 20 pages OFFSET 20
         mNextPageCallback = caller;
         if (!OMGUbuntuApplication.isNetworkAvailable()) mNextPageCallback.nextPageError();
         ArticleDataSource dataSource = new ArticleDataSource(context);
         dataSource.open();
         Articles articles = dataSource.getArticlesOnPage(page);
         dataSource.close();
-        //Log.i("OMG!", "Got back articles: " + articles.size());
         if (articles.size() == ArticleDataSource.MAX_ARTICLES_PER_PAGE) {
-            //Log.i("OMG!", "Got enough articles in the database");
             mNextPageCallback.nextPageLoaded(articles);
         } else {
             new getNextPageAsync().execute(page);
@@ -107,7 +118,6 @@ public class Articles extends ArrayList<Article> {
         @Override
         protected Articles doInBackground(Integer... params) {
             try {
-                //Log.i("OMG!", "Loading page for " + UrlFactory.forPage(params[0]));
                 return loadXmlFromNetwork(UrlFactory.forPage(params[0]));
             } catch (IOException e) {
                 Log.e("OMG!", context.getResources().getString(R.string.connection_error) + e.toString());
@@ -124,7 +134,6 @@ public class Articles extends ArrayList<Article> {
             else mNextPageCallback.nextPageLoaded(result);
             ArticleDataSource dataSource = new ArticleDataSource(context);
             dataSource.open();
-            //Log.i("OMG!", "got back: " + result.size());
             for (Article article : result) {
                 dataSource.createArticle(article, false, false);
             }
@@ -132,7 +141,6 @@ public class Articles extends ArrayList<Article> {
             super.onPostExecute(result);
         }
     }
-
 
     private class getArticlesAsync extends AsyncTask<Void, Void, Articles> {
         @Override

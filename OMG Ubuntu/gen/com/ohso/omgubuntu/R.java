@@ -10,11 +10,9 @@ package com.ohso.omgubuntu;
 public final class R {
     public static final class anim {
         public static final int slide_in_from_bottom=0x7f040000;
-        public static final int slide_in_from_left=0x7f040001;
-        public static final int slide_in_from_right=0x7f040002;
-        public static final int slide_out_to_bottom=0x7f040003;
-        public static final int slide_out_to_left=0x7f040004;
-        public static final int slide_out_to_right=0x7f040005;
+        public static final int slide_in_from_right=0x7f040001;
+        public static final int slide_out_to_bottom=0x7f040002;
+        public static final int slide_out_to_right=0x7f040003;
     }
     public static final class array {
         public static final int app=0x7f0d0001;
@@ -997,17 +995,16 @@ containing a value of this type.
         public static final int sidebar_categories=0x7f020080;
         public static final int sidebar_divider=0x7f020081;
         public static final int sidebar_feedback=0x7f020082;
-        public static final int sidebar_fragment_bg=0x7f020083;
-        public static final int sidebar_row_active_bg=0x7f020084;
-        public static final int sidebar_row_active_selector=0x7f020085;
-        public static final int sidebar_settings=0x7f020086;
-        public static final int social_chat=0x7f020087;
-        public static final int social_share=0x7f020088;
-        public static final int starred=0x7f020089;
-        public static final int unstarred=0x7f02008a;
-        public static final int widget_articles_divider=0x7f02008b;
-        public static final int widget_articles_refresh=0x7f02008c;
-        public static final int widget_refresh=0x7f02008d;
+        public static final int sidebar_row_active_bg=0x7f020083;
+        public static final int sidebar_row_active_selector=0x7f020084;
+        public static final int sidebar_settings=0x7f020085;
+        public static final int social_chat=0x7f020086;
+        public static final int social_share=0x7f020087;
+        public static final int starred=0x7f020088;
+        public static final int unstarred=0x7f020089;
+        public static final int widget_articles_divider=0x7f02008a;
+        public static final int widget_articles_refresh=0x7f02008b;
+        public static final int widget_refresh=0x7f02008c;
     }
     public static final class id {
         public static final int abs__action_bar=0x7f060022;
@@ -1065,15 +1062,13 @@ containing a value of this type.
         public static final int activity_article_menu_unstarred=0x7f060065;
         public static final int activity_article_title=0x7f060034;
         public static final int activity_article_webview=0x7f060037;
-        public static final int activity_comments_menu_external=0x7f060069;
-        public static final int activity_comments_menu_refresh=0x7f060068;
-        public static final int activity_main_menu_read_all=0x7f06006b;
-        public static final int activity_main_menu_refresh=0x7f06006a;
+        public static final int activity_main_menu_read_all=0x7f060069;
+        public static final int activity_main_menu_refresh=0x7f060068;
         public static final int activity_main_super=0x7f060038;
-        public static final int article_mark_as_read=0x7f06006e;
-        public static final int article_mark_as_unread=0x7f06006f;
+        public static final int article_mark_as_read=0x7f06006c;
+        public static final int article_mark_as_unread=0x7f06006d;
         public static final int article_row_image=0x7f060040;
-        public static final int article_row_star=0x7f06006c;
+        public static final int article_row_star=0x7f06006a;
         public static final int article_row_starred_status=0x7f06003d;
         public static final int article_row_status_container=0x7f06003c;
         public static final int article_row_text_author=0x7f060043;
@@ -1081,8 +1076,8 @@ containing a value of this type.
         public static final int article_row_text_time=0x7f060044;
         public static final int article_row_text_title=0x7f06003f;
         public static final int article_row_unread_status=0x7f06003e;
-        public static final int article_row_unstar=0x7f06006d;
-        public static final int article_share=0x7f060070;
+        public static final int article_row_unstar=0x7f06006b;
+        public static final int article_share=0x7f06006e;
         public static final int comments_fragment_container=0x7f06004b;
         public static final int comments_fragment_webview_container=0x7f06004c;
         public static final int disableHome=0x7f060009;
@@ -1176,9 +1171,8 @@ containing a value of this type.
     }
     public static final class menu {
         public static final int activity_article=0x7f0e0000;
-        public static final int activity_comments=0x7f0e0001;
-        public static final int activity_main=0x7f0e0002;
-        public static final int article_row_long_press=0x7f0e0003;
+        public static final int activity_main=0x7f0e0001;
+        public static final int article_row_long_press=0x7f0e0002;
     }
     public static final class string {
         /**  Content description for the action bar "home" affordance. [CHAR LIMIT=NONE] 
@@ -1226,49 +1220,53 @@ containing a value of this type.
         /**  Description of a share target (both in the list of such or the default share button) in a ShareActionProvider (share UI). [CHAR LIMIT=NONE] 
          */
         public static final int abs__shareactionprovider_share_with_application=0x7f0b0009;
-        public static final int activity_about_ohso=0x7f0b0042;
-        public static final int activity_about_omg_ubuntu=0x7f0b0041;
-        public static final int activity_article_comment_text=0x7f0b002c;
-        public static final int activity_article_loading_text=0x7f0b002b;
-        public static final int activity_main_footer_dialog=0x7f0b0026;
-        public static final int activity_main_footer_over=0x7f0b0025;
-        public static final int activity_main_footer_text=0x7f0b0024;
-        public static final int activity_main_share_intent_text=0x7f0b0027;
+        public static final int activity_about_ohso=0x7f0b004c;
+        public static final int activity_about_omg_ubuntu=0x7f0b004b;
+        public static final int activity_article_comment_text=0x7f0b0030;
+        public static final int activity_main_footer_dialog=0x7f0b002b;
+        public static final int activity_main_footer_over=0x7f0b002a;
+        public static final int activity_main_footer_text=0x7f0b0029;
+        public static final int activity_main_mark_all_as_read=0x7f0b0027;
+        public static final int activity_main_mark_all_as_read_confirmation=0x7f0b0028;
+        public static final int activity_main_share_intent_text=0x7f0b002c;
         /**  ImageView descriptions 
          */
-        public static final int app_logo_description=0x7f0b0032;
+        public static final int app_logo_description=0x7f0b0039;
         /**  Application and menu-level strings 
          */
         public static final int app_name=0x7f0b001d;
-        public static final int article_fetch_error=0x7f0b0039;
+        public static final int article_fetch_error=0x7f0b0043;
         /**  Dialog text 
          */
-        public static final int article_fetch_error_dialog=0x7f0b003b;
-        public static final int article_image_description=0x7f0b0033;
+        public static final int article_fetch_error_dialog=0x7f0b0045;
+        public static final int article_image_description=0x7f0b003a;
         public static final int base_url=0x7f0b000f;
         public static final int clear_articles_over=0x7f0b0016;
-        /**  Errors 
-         */
-        public static final int connection_error=0x7f0b0037;
-        public static final int external_link_dialog=0x7f0b003c;
-        public static final int external_link_error=0x7f0b003a;
-        public static final int fragment_feedback_button=0x7f0b002e;
+        public static final int connection_error=0x7f0b0041;
+        public static final int dialog_fragment_cancel=0x7f0b0037;
+        public static final int dialog_fragment_open=0x7f0b0036;
+        public static final int external_link_dialog=0x7f0b0046;
+        public static final int external_link_error=0x7f0b0044;
+        public static final int fragment_feedback_button=0x7f0b0032;
         /**  Misc body copy 
          */
-        public static final int fragment_feedback_copy=0x7f0b003f;
-        public static final int fragment_feedback_header=0x7f0b002d;
-        public static final int fragment_feedback_tips_button=0x7f0b0030;
-        public static final int fragment_feedback_tips_copy=0x7f0b0040;
-        public static final int fragment_feedback_tips_header=0x7f0b002f;
-        public static final int fragment_settings=0x7f0b0031;
-        public static final int menu_refresh_description=0x7f0b0036;
+        public static final int fragment_feedback_copy=0x7f0b0049;
+        public static final int fragment_feedback_email_text=0x7f0b0035;
+        public static final int fragment_feedback_header=0x7f0b0031;
+        public static final int fragment_feedback_tips_button=0x7f0b0034;
+        public static final int fragment_feedback_tips_copy=0x7f0b004a;
+        public static final int fragment_feedback_tips_header=0x7f0b0033;
+        public static final int loading_text=0x7f0b0038;
+        public static final int menu_refresh_description=0x7f0b003d;
         public static final int menu_share=0x7f0b001e;
         public static final int menu_star=0x7f0b001f;
         public static final int menu_unstar=0x7f0b0020;
-        public static final int new_article_notification_plural=0x7f0b003e;
+        public static final int new_article_notification_plural=0x7f0b0048;
         /**  Notifications 
          */
-        public static final int new_article_notification_singular=0x7f0b003d;
+        public static final int new_article_notification_singular=0x7f0b0047;
+        public static final int ohso_logo_description=0x7f0b003f;
+        public static final int omg_logo_description=0x7f0b003e;
         /**  <string name="pref_notifications_enabled_description">Enable or disable notifications when the app is closed</string> 
          */
         public static final int pref_notifications_enabled_description=0x7f0b0018;
@@ -1277,23 +1275,29 @@ containing a value of this type.
         public static final int pref_notifications_vibrate_title=0x7f0b0019;
         public static final int pref_startup_description=0x7f0b001c;
         public static final int pref_startup_title=0x7f0b001b;
+        /**  Errors 
+         */
+        public static final int refresh_error=0x7f0b0040;
         public static final int rss_article_params=0x7f0b0015;
         public static final int rss_article_suffix=0x7f0b0014;
         public static final int rss_base_url=0x7f0b0010;
         public static final int rss_paged_params=0x7f0b0013;
         public static final int rss_query_params=0x7f0b0012;
         public static final int rss_user_agent=0x7f0b0011;
-        public static final int starred_image_description=0x7f0b0034;
-        public static final int title_activity_article_image=0x7f0b0022;
-        public static final int title_activity_comments=0x7f0b0023;
+        public static final int starred_image_description=0x7f0b003b;
+        public static final int title_about=0x7f0b0023;
+        public static final int title_activity_comments=0x7f0b0022;
         /**  Misc activity strings 
          */
         public static final int title_activity_main=0x7f0b0021;
-        public static final int unread_image_description=0x7f0b0035;
-        public static final int widget_articles_list_empty_title=0x7f0b002a;
-        public static final int widget_articles_list_title=0x7f0b0028;
-        public static final int widget_froyo_articles_list_title=0x7f0b0029;
-        public static final int xml_error=0x7f0b0038;
+        public static final int title_feedback=0x7f0b0024;
+        public static final int title_settings=0x7f0b0025;
+        public static final int title_starred=0x7f0b0026;
+        public static final int unread_image_description=0x7f0b003c;
+        public static final int widget_articles_list_empty_title=0x7f0b002f;
+        public static final int widget_articles_list_title=0x7f0b002d;
+        public static final int widget_froyo_articles_list_title=0x7f0b002e;
+        public static final int xml_error=0x7f0b0042;
     }
     public static final class style {
         public static final int DialogWindowTitle_Sherlock=0x7f0c0036;

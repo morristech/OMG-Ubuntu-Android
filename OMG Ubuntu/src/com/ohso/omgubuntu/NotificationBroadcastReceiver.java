@@ -1,6 +1,21 @@
+/*
+ * Copyright (C) 2012 Ohso Ltd
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 package com.ohso.omgubuntu;
 
-import android.annotation.TargetApi;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -8,12 +23,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
+import android.util.Log;
 
 import com.ohso.omgubuntu.data.Article;
 import com.ohso.omgubuntu.data.ArticleDataSource;
 import com.ohso.omgubuntu.data.Articles;
 
-@TargetApi(11)
 public class NotificationBroadcastReceiver extends BroadcastReceiver {
     private final int mId = 0;
     public NotificationBroadcastReceiver() {
@@ -22,6 +37,7 @@ public class NotificationBroadcastReceiver extends BroadcastReceiver {
     // TODO ringtone and/or vibration
     @Override
     public void onReceive(Context context, Intent intent) {
+        if (MainActivity.DEVELOPER_MODE) Log.i("OMG!", "Starting NotificationBroadcastReceiver onReceive()");
         String lastPath = intent.getExtras().getString("last_path");
 
         ArticleDataSource dataSource = new ArticleDataSource(context);
@@ -74,10 +90,6 @@ public class NotificationBroadcastReceiver extends BroadcastReceiver {
             stackBuilder.addNextIntent(notify);
 
         }
-
-        //mBuilder.setSound(sound);
-        //mBuilder.setVibrate(pattern)
-
 
         // Common intent
         PendingIntent resultPending = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);

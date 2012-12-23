@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2012 Ohso Ltd
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 package com.ohso.omgubuntu;
 
 import java.net.MalformedURLException;
@@ -31,14 +47,8 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.MenuItem;
 
 public class CommentsActivity extends SherlockFragmentActivity {
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        // TODO Auto-generated method stub
-        //super.onSaveInstanceState(outState);
-    }
-
-    public static final String COMMENTS_URL = "com.ohso.omgubuntu.commentsUrl";
-    public static final String COMMENTS_IDENTIFIER = "com.ohso.omgubuntu.commentsIdentifier";
+    public static final String COMMENTS_URL = "com.ohso.omgubuntu.CommentsActivity.COMMENTS_URL";
+    public static final String COMMENTS_IDENTIFIER = "com.ohso.omgubuntu.CommentsActivity.COMMENTS_IDENTIFIER";
     private FragmentManager mFragmentManager;
 
     // Need to hold activity-wide references to the WebViews for setting content and onBackPressed() state
@@ -48,7 +58,7 @@ public class CommentsActivity extends SherlockFragmentActivity {
     private String mArticlePath;
     private String mIdentifier;
 
-    // We need to make sure a popup that's activated is destroyed instead of just losing focus onbackpressed()
+    // We need to make sure a popup that's activated is destroyed instead of just losing focus onBackPressed()
     @Override
     public void onBackPressed() {
         if (popupView != null && !popupView.isFocused()) {
@@ -83,7 +93,6 @@ public class CommentsActivity extends SherlockFragmentActivity {
         commentView.getSettings().setSupportMultipleWindows(true);
         commentView.setWebChromeClient(new WebFragmentClient(this));
         commentView.setWebViewClient(new WebClient(this));
-
 
         setContents(mArticlePath);
     }
@@ -198,19 +207,19 @@ public class CommentsActivity extends SherlockFragmentActivity {
                     // else, popbackstack and open in browser.
                     String alsoOnPath = Uri.parse(requestUrl.getQueryParameter("url")).getPath().toString();
                     alsoOnPath = alsoOnPath.substring(0, alsoOnPath.indexOf(":"));
-                    Intent intent = new Intent(mContext, ArticleActivity.class).putExtra(ArticleActivity.INTERNAL_ARTICLE_PATH_INTENT, alsoOnPath);
+                    Intent intent = new Intent(mContext, ArticleActivity.class)
+                        .putExtra(ArticleActivity.INTERNAL_ARTICLE_PATH_INTENT, alsoOnPath);
                     startActivity(intent);
                     return true;
-                } else if (requestUrl.getHost().equals("www.omgubuntu.co.uk") && requestUrl.getPath().startsWith("/2")) {
-                    Intent intent = new Intent(mContext, ArticleActivity.class).putExtra(ArticleActivity.INTERNAL_ARTICLE_PATH_INTENT, requestUrl.getPath());
+                } else if (requestUrl.getHost().equals("www.omgubuntu.co.uk")
+                        && requestUrl.getPath().startsWith("/2")) {
+                    Intent intent = new Intent(mContext, ArticleActivity.class)
+                        .putExtra(ArticleActivity.INTERNAL_ARTICLE_PATH_INTENT, requestUrl.getPath());
                     startActivity(intent);
                     return true;
                 } else if (requestUrl.getPath().endsWith(".rss")) {
                     // Send to external with warning
-                    /*
-                     * Affects: http://omgubuntu.disqus.com/.../latest.rss
-                     *
-                     */
+                    // Affects: http://omgubuntu.disqus.com/.../latest.rss
                     ExternalLinkFragment.newInstance(requestUrl.toString()).show(mFragmentManager, "external_link");
                     return true;
                 }
@@ -225,10 +234,8 @@ public class CommentsActivity extends SherlockFragmentActivity {
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
             RelativeLayout v = (RelativeLayout) inflater.inflate(R.layout.fragment_comments_webview, container, false);
             v.addView(mWebView);
-            //return mWebView;
             return v;
         }
 
@@ -240,7 +247,7 @@ public class CommentsActivity extends SherlockFragmentActivity {
 
     public static class ExternalLinkFragment extends DialogFragment {
         public static final String EXTERNAL_LINK_FRAGMENT_LINK =
-                "com.ohso.omgubuntu.CommentsActivity.ExternalLinkFragmentLink";
+                "com.ohso.omgubuntu.CommentsActivity.ExternalLinkFragment.EXTERNAL_LINK_FRAGMENT_LINK";
 
         public static ExternalLinkFragment newInstance(String externalUrl) {
             ExternalLinkFragment fragment = new ExternalLinkFragment();
@@ -256,17 +263,19 @@ public class CommentsActivity extends SherlockFragmentActivity {
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setMessage(getResources().getString(R.string.external_link_error));
-            builder.setPositiveButton("Open", new DialogInterface.OnClickListener() {
+            builder.setPositiveButton(getResources().getString(R.string.dialog_fragment_open),
+                    new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     Intent external = new Intent(Intent.ACTION_VIEW, Uri.parse(getExternalLink()));
                     external.addCategory(Intent.CATEGORY_BROWSABLE);
-                    Intent chooser = Intent.createChooser(external, getResources().getString(R.string.external_link_dialog));
+                    Intent chooser = Intent.createChooser(external,
+                            getResources().getString(R.string.external_link_dialog));
                     startActivity(chooser);
-                    //getActivity().finish();
                 }
             });
-            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            builder.setNegativeButton(getResources().getString(R.string.dialog_fragment_cancel),
+                    new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.dismiss();

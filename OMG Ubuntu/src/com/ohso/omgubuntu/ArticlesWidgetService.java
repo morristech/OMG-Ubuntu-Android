@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2012 Ohso Ltd
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 package com.ohso.omgubuntu;
 
 import android.annotation.TargetApi;
@@ -56,9 +72,8 @@ public class ArticlesWidgetService extends RemoteViewsService {
             RemoteViews rv = new RemoteViews(mContext.getPackageName(), R.layout.widget_articles_row);
             rv.setTextViewText(android.R.id.text1, articles.get(position).getTitle());
             rv.setTextViewText(android.R.id.text2, articles.get(position).getSummary());
-            Intent fillInIntent = new Intent();
-            //fillInIntent.setAction(ArticlesWidgetProvider.ACTION_OPEN_ARTICLE);
 
+            Intent fillInIntent = new Intent();
             fillInIntent.putExtra(ArticleActivity.INTERNAL_ARTICLE_PATH_INTENT, articles.get(position).getPath());
             rv.setOnClickFillInIntent(R.id.widget_articles_row_container, fillInIntent);
             return rv;
@@ -82,8 +97,7 @@ public class ArticlesWidgetService extends RemoteViewsService {
         }
 
         @Override
-        public void onDestroy() {
-        }
+        public void onDestroy() {}
 
     }
 }

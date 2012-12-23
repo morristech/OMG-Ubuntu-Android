@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2012 Ohso Ltd
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 package com.ohso.omgubuntu;
 
 import java.util.Date;
@@ -120,9 +136,9 @@ public class ArticleAdapter extends ArrayAdapter<Article> {
             holder.summary = (TextView) convertView.findViewById(R.id.article_row_text_summary);
 
             /*
-             * The following uses a workaround found here http://code.google.com/p/android/issues/detail?id=18273
+             * The following uses a workaround found here: http://code.google.com/p/android/issues/detail?id=18273
              * setTag used a static WeakHashMap in Android < ICS, which led to memory leaks.
-             * SparseArray is used in our custom ViewTagger, as it is in Android > ICS
+             * SparseArray is used in our custom ViewTagger, as it is in Android >= ICS
              */
             ViewTagger.setTag(convertView, holder);
         } else {
@@ -139,8 +155,8 @@ public class ArticleAdapter extends ArrayAdapter<Article> {
 
                 mFooterView.measure(0, heightMeasureSpec);
                 mFooterHeight = mFooterView.getMeasuredHeight();
-                final AbsListView.LayoutParams footerReserveParams = new AbsListView.LayoutParams(LayoutParams.MATCH_PARENT,
-                        mFooterEnabled ? mFooterHeight : 0);
+                final AbsListView.LayoutParams footerReserveParams =
+                        new AbsListView.LayoutParams(LayoutParams.MATCH_PARENT, mFooterEnabled ? mFooterHeight : 0);
                 footerReserveLayout.setLayoutParams(footerReserveParams);
 
                 return footerReserveLayout;
@@ -151,7 +167,8 @@ public class ArticleAdapter extends ArrayAdapter<Article> {
 
         Article article = getItem(position);
 
-        CharSequence date = DateUtils.getRelativeTimeSpanString(article.getDate(), new Date().getTime(), DateUtils.MINUTE_IN_MILLIS, DateUtils.FORMAT_ABBREV_RELATIVE);
+        CharSequence date = DateUtils.getRelativeTimeSpanString(article.getDate(),
+                new Date().getTime(), DateUtils.MINUTE_IN_MILLIS, DateUtils.FORMAT_ABBREV_RELATIVE);
 
         if(article.isStarred()) {
             holder.starred.setVisibility(View.VISIBLE);

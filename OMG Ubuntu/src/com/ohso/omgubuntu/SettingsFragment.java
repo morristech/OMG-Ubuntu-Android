@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2012 Ohso Ltd
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 package com.ohso.omgubuntu;
 
 import java.util.ArrayList;
@@ -14,12 +30,10 @@ import android.widget.ListView;
 
 import com.actionbarsherlock.app.SherlockListFragment;
 
-
 public class SettingsFragment extends SherlockListFragment {
-    public static final String NOTIFICATIONS_ENABLED = "notifications_enabled";
-    public static final String STARTUP_CHECK_ENABLED = "startup_check_enabled";
+    public static final String NOTIFICATIONS_ENABLED = "com.ohso.omgubuntu.SettingsFragment.NOTIFICATIONS_ENABLED";
+    public static final String STARTUP_CHECK_ENABLED = "com.ohso.omgubuntu.SettingsFragment.STARTUP_CHECK_ENABLED";
     private SharedPreferences mSharedPrefs;
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -30,9 +44,9 @@ public class SettingsFragment extends SherlockListFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         ((BaseActivity) getSherlockActivity()).getDefaultActionBar();
-        getSherlockActivity().getSupportActionBar().setTitle("Settings");
+        getSherlockActivity().getSupportActionBar().setTitle(getResources().getString(R.string.title_settings));
 
-        View v= inflater.inflate(R.layout.fragment_settings, null);
+        View v= inflater.inflate(R.layout.fragment_settings, container, false);
 
         final List<PreferenceItem> preferenceItems = new ArrayList<PreferenceItem>();
         preferenceItems.add(new PreferenceItem("checkbox", getString(R.string.pref_notifications_enabled_title),
@@ -42,11 +56,8 @@ public class SettingsFragment extends SherlockListFragment {
                 getString(R.string.pref_startup_description), STARTUP_CHECK_ENABLED, R.bool.pref_startup_default));
         setListAdapter(new SettingsAdapter(getActivity(), R.id.fragment_settings_row_title, preferenceItems));
 
-
         return v;
     }
-
-
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
@@ -55,13 +66,16 @@ public class SettingsFragment extends SherlockListFragment {
         if (item.type.equals("checkbox")) {
             Editor editor = mSharedPrefs.edit();
             editor.putBoolean(item.preference_key,
-                    !mSharedPrefs.getBoolean(item.preference_key, getResources().getBoolean(item.default_value_resource)));
+                    !mSharedPrefs.getBoolean(item.preference_key,
+                            getResources().getBoolean(item.default_value_resource)));
             editor.commit();
         }
         ((SettingsAdapter) getListAdapter()).notifyDataSetChanged();
         if (item.title.equals(getResources().getString(R.string.pref_notifications_enabled_title))) {
-            Log.i("OMG!", "Notifications are now set to " + mSharedPrefs.getBoolean(item.preference_key, getResources().getBoolean(item.default_value_resource)));
-            if(mSharedPrefs.getBoolean(item.preference_key, getResources().getBoolean(item.default_value_resource))) { //Notifications enabled
+            Log.i("OMG!", "Notifications are now set to " + mSharedPrefs.getBoolean(item.preference_key,
+                    getResources().getBoolean(item.default_value_resource)));
+            if(mSharedPrefs.getBoolean(item.preference_key,
+                    getResources().getBoolean(item.default_value_resource))) { //Notifications enabled
                 if (!NotificationService.isNotificationAlarmActive()) {
                     NotificationAlarmGenerator.generateAlarm(getActivity());
                 }
@@ -69,12 +83,10 @@ public class SettingsFragment extends SherlockListFragment {
                 NotificationAlarmGenerator.cancelAlarm(getActivity());
             }
         } else if (item.title.equals(getResources().getString(R.string.pref_startup_title))) {
-            Log.i("OMG!", "Startup check is now set to " + mSharedPrefs.getBoolean(item.preference_key, getResources().getBoolean(item.default_value_resource)));
+            Log.i("OMG!", "Startup check is now set to " + mSharedPrefs.getBoolean(item.preference_key,
+                    getResources().getBoolean(item.default_value_resource)));
         }
-
     }
-
-
 
     public class PreferenceItem {
         public final String type;

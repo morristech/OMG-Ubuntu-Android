@@ -1,4 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2012 Ohso Ltd
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!-- Application and menu-level strings -->
@@ -9,24 +24,30 @@
 
     <!-- Misc activity strings -->
     <string name="title_activity_main">OMG! Ubuntu!</string>
-    <string name="title_activity_article_image">Image</string>
     <string name="title_activity_comments">Comments</string>
+    <string name="title_about">About OMG! Ubuntu!</string>
+    <string name="title_feedback">Feedback</string>
+    <string name="title_settings">Settings</string>
+    <string name="title_starred">Starred</string>
+    <string name="activity_main_mark_all_as_read">Mark all as read?</string>
+    <string name="activity_main_mark_all_as_read_confirmation">Mark</string>
     <string name="activity_main_footer_text">Load more articles</string>
-    <string name="activity_main_footer_over">Visit the OMG! Ubuntu! website for more articles...</string>
+    <string name="activity_main_footer_over">Visit the OMG! Ubuntu! website for more articles&#8230;</string>
     <string name="activity_main_footer_dialog">Visit OMG! Ubuntu! via</string>
     <string name="activity_main_share_intent_text">Share this article via</string>
     <string name="widget_articles_list_title">Latest posts</string>
     <string name="widget_froyo_articles_list_title">Latest post</string>
     <string name="widget_articles_list_empty_title">No recent articles</string>
-    <string name="activity_article_loading_text">Loading...</string>
     <string name="activity_article_comment_text">Read Comments</string>
     <string name="fragment_feedback_header">Feedback</string>
     <string name="fragment_feedback_button">Send An Email</string>
     <string name="fragment_feedback_tips_header">Tips</string>
     <string name="fragment_feedback_tips_button">Tip Form</string>
+    <string name="fragment_feedback_email_text">Send mail via</string>
     
-    <string name="fragment_settings"></string>
-    <string name="fragment_settings"></string>
+    <string name="dialog_fragment_open">Open</string>
+    <string name="dialog_fragment_cancel">Cancel</string>
+    <string name="loading_text">Loading&#8230;</string>
     
     <!-- ImageView descriptions -->
     <string name="app_logo_description">OMG! Ubuntu! bubble logo</string>
@@ -34,8 +55,11 @@
     <string name="starred_image_description">Image to mark a starred article</string>
     <string name="unread_image_description">Image to mark an unread article</string>
     <string name="menu_refresh_description">Refresh icon for refreshing the articles list</string>
+    <string name="omg_logo_description">OMG! Ubuntu! logo</string>
+    <string name="ohso_logo_description">Ohso Ltd logo</string>
 
     <!-- Errors -->
+    <string name="refresh_error">Couldn\'t refresh the feed. Try again in a few moments.</string>
     <string name="connection_error">Couldn\'t connect. Try again later.</string>
     <string name="xml_error">Couldn\'t read</string>
     <string name="article_fetch_error">Couldn\'t get the article. Would you like to open it in an external browser?</string>

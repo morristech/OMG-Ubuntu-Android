@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2012 Ohso Ltd
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 package com.ohso.omgubuntu;
 
 import java.util.ArrayList;
@@ -37,7 +53,7 @@ public class NotificationService extends IntentService implements OnArticlesLoad
         if(!getSharedPreferences(OMGUbuntuApplication.PREFS_FILE, 0)
                 .getBoolean(SettingsFragment.NOTIFICATIONS_ENABLED,
                 getResources().getBoolean(R.bool.pref_notifications_enabled_default))) {
-            Log.i("OMG!", "Cancelling alarms since it's no longer enabled!");
+            if (MainActivity.DEVELOPER_MODE) Log.i("OMG!", "Cancelling alarms since it's no longer enabled!");
             NotificationAlarmGenerator.cancelAlarm(getApplicationContext());
             return;
         }
@@ -47,6 +63,7 @@ public class NotificationService extends IntentService implements OnArticlesLoad
 
     @Override
     public void articlesLoaded(Articles result) {
+        if (MainActivity.DEVELOPER_MODE) Log.i("OMG!", "Got articles in NotificationService");
         List<Article> newArticles = new ArrayList<Article>();
         ArticleDataSource dataSource = new ArticleDataSource(getApplicationContext());
         dataSource.open();
@@ -88,7 +105,9 @@ public class NotificationService extends IntentService implements OnArticlesLoad
     @Override
     public void articlesError() {
         // Silently fail for now
+        if (MainActivity.DEVELOPER_MODE) Log.i("OMG!", "Article retrieval error in NotificationService");
         ArticlesWidgetProvider.notifyUpdate(OMGUbuntuApplication.getContext(), 0);
+        NotificationAlarmReceiver.releaseWakeLock();
     }
 
     private void broadcastArticlesNotification(String lastPath) {

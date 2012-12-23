@@ -1,68 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2012 Ohso Ltd
 
-    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/activity_article"
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_article"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:scrollbars="vertical" >
+
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scrollbars="vertical" >
+        android:layout_height="wrap_content"
+        android:background="@android:color/white" >
 
-	   <RelativeLayout
-	       android:layout_width="match_parent"
-	       android:layout_height="wrap_content"
-	       android:background="@android:color/white" >
+        <TextView
+            android:id="@+id/activity_article_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="5dp"
+            android:fontFamily="Roboto"
+            android:text="@string/loading_text"
+            android:textColor="@color/Ubuntu"
+            android:textSize="32sp" />
 
-			<TextView
-			    android:id="@+id/activity_article_title"
-			    android:layout_width="match_parent"
-			    android:layout_height="wrap_content"
-			    android:layout_alignParentLeft="true"
-			    android:layout_alignParentRight="true"
-			    android:layout_alignParentTop="true"
-			    android:layout_marginLeft="10dp"
-			    android:layout_marginRight="10dp"
-			    android:layout_marginTop="5dp"
-			    android:fontFamily="Roboto"
-			    android:text="@string/activity_article_loading_text"
-			    android:textColor="@color/Ubuntu"
-			    android:textSize="32sp" />
+        <TextView
+            android:id="@+id/activity_article_byline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@id/activity_article_title"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="5dp"
+            android:fontFamily="Roboto"
+            android:textColor="@color/Grey.6" />
 
-			<TextView
-			    android:id="@+id/activity_article_byline"
-			    android:layout_width="wrap_content"
-			    android:layout_height="wrap_content"
-			    android:layout_alignParentLeft="true"
-			    android:layout_below="@id/activity_article_title"
-			    android:layout_marginBottom="5dp"
-			    android:layout_marginLeft="10dp"
-			    android:layout_marginRight="10dp"
-			    android:layout_marginTop="5dp"
-			    android:fontFamily="Roboto"
-			    android:textColor="@color/Grey.6" />
+        <TextView
+            android:id="@+id/activity_article_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignTop="@id/activity_article_byline"
+            android:layout_below="@id/activity_article_title"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="10dp"
+            android:layout_toRightOf="@id/activity_article_byline"
+            android:fontFamily="Roboto"
+            android:gravity="right"
+            android:textColor="@color/Grey.9" />
 
-			<TextView
-			    android:id="@+id/activity_article_date"
-			    android:layout_width="wrap_content"
-			    android:layout_height="wrap_content"
-			    android:layout_alignParentRight="true"
-			    android:layout_alignTop="@id/activity_article_byline"
-			    android:layout_below="@id/activity_article_title"
-			    android:layout_marginLeft="5dp"
-			    android:layout_marginRight="10dp"
-			    android:layout_toRightOf="@id/activity_article_byline"
-			    android:fontFamily="Roboto"
-			    android:gravity="right"
-			    android:textColor="@color/Grey.9" />
-		
-		    <WebView
-		        android:id="@+id/activity_article_webview"
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:layout_alignParentLeft="true"
-		        android:layout_below="@+id/activity_article_byline"
-		        android:scrollbars="vertical|horizontal" />
-       
-        </RelativeLayout>
-    </ScrollView>
+        <WebView
+            android:id="@+id/activity_article_webview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/activity_article_byline"
+            android:scrollbars="vertical|horizontal" />
+    </RelativeLayout>
 
-    
-
+</ScrollView>

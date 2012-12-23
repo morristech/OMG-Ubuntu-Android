@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2012 Ohso Ltd
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 package com.ohso.omgubuntu;
 
 import java.util.ArrayList;
@@ -20,7 +36,8 @@ public class CategoriesFragment extends BaseFragment implements ActionBar.OnNavi
     public void getData() {
         if (categories.isEmpty()) populateData();
         dataSource.open();
-        Articles newData = dataSource.getArticlesWithCategory(categories.get(lastActiveCategory).getName(), false, currentPage);
+        Articles newData = dataSource.getArticlesWithCategory
+                (categories.get(lastActiveCategory).getName(), false, currentPage);
         dataSource.close();
         adapter.clear();
         for (Article article : newData) {
@@ -37,7 +54,8 @@ public class CategoriesFragment extends BaseFragment implements ActionBar.OnNavi
     public void setActionBar() {
         if (categories.isEmpty()) populateData();
         actionBar.setTitle("");
-        CategoryAdapter list = new CategoryAdapter(actionBar.getThemedContext(), R.layout.sherlock_spinner_item, categories);
+        CategoryAdapter list = new CategoryAdapter(actionBar.getThemedContext(),
+                R.layout.sherlock_spinner_item, categories);
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
         actionBar.setListNavigationCallbacks(list, this);
         actionBar.setSelectedNavigationItem(lastActiveCategory);
@@ -53,7 +71,8 @@ public class CategoriesFragment extends BaseFragment implements ActionBar.OnNavi
         setFooterEnabled(false);
 
         dataSource.open();
-        Articles articlesInCategory = dataSource.getArticlesWithCategory(categories.get(lastActiveCategory).getName(), false);
+        Articles articlesInCategory = dataSource.getArticlesWithCategory
+                (categories.get(lastActiveCategory).getName(), false);
         dataSource.close();
         if (articlesInCategory.isEmpty()) {
             adapter.clear();

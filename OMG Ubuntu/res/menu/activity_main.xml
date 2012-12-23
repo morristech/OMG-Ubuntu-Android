@@ -1,5 +1,37 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-    
-    <item android:id="@+id/activity_main_menu_refresh" android:title="Refresh" android:icon="@drawable/navigation_refresh" android:visible="true" android:showAsAction="always" android:enabled="true"></item><item android:id="@+id/activity_main_menu_read_all" android:title="Mark all as read" android:showAsAction="ifRoom" android:titleCondensed="Mark as read" android:visible="true" android:enabled="true" android:icon="@drawable/content_read"></item>
-    
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2012 Ohso Ltd
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/activity_main_menu_refresh"
+        android:enabled="true"
+        android:icon="@drawable/navigation_refresh"
+        android:showAsAction="always"
+        android:title="Refresh"
+        android:visible="true">
+    </item>
+    <item
+        android:id="@+id/activity_main_menu_read_all"
+        android:enabled="true"
+        android:icon="@drawable/content_read"
+        android:showAsAction="ifRoom"
+        android:title="Mark all as read"
+        android:titleCondensed="Mark as read"
+        android:visible="true">
+    </item>
+
 </menu>

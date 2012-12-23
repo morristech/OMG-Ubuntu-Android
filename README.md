@@ -8,4 +8,4 @@ The following prerequisite libraries are required to build the application:
 
 If these libraries throw any errors, please make sure the OMG! Ubuntu! project and the libraries are built with at least Android 4.0+ and Java 1.6+.
 
-The app additionally requires a configuration.xml file that contains query parameters and base urls necessary for the app to function. Please direct enquiries to your local app developer.
+The app also requires a configuration.xml file that contains query parameters and base urls necessary for the app to function. Please direct enquiries to your local app developer and/or have a look at the GitHub wiki for more information.

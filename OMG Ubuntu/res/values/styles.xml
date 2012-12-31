@@ -18,5 +18,4 @@ under the License.
     <style name="Theme.Styled" parent="Theme.Sherlock.Light.DarkActionBar">
         <item name="dropdownListPreferredItemHeight">48dp</item>
     </style>
-    <style name="SidebarTheme.Styled" parent="Theme.Sherlock.NoActionBar" />
 </resources>

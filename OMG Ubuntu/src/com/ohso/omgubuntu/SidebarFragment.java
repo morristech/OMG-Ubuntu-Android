@@ -20,11 +20,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,9 +35,7 @@ public class SidebarFragment extends SherlockListFragment {
     private static String sActiveFragment = "sidebar_home";
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Context context = new ContextThemeWrapper(getActivity(), R.style.SidebarTheme_Styled);
-        LayoutInflater localInflator = inflater.cloneInContext(context);
-        View v = localInflator.inflate(R.layout.fragment_sidebar, container, false);
+        View v = inflater.inflate(R.layout.fragment_sidebar, container, false);
         final List<SidebarItem> sidebarItems = new ArrayList<SidebarItem>();
         TypedArray items = getResources().obtainTypedArray(R.array.sidebar_list);
         for (int i = 0; i < items.length(); i++) {

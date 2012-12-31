@@ -101,7 +101,7 @@ public class ArticleActivity extends SherlockFragmentActivity implements OnArtic
                     Editor editor = sharedPref.edit();
                     editor.putString(NotificationService.LAST_NOTIFIED_PATH, null);
                     editor.commit();
-                    ArticlesWidgetProvider.notifyUpdate(this, 0);
+                    ArticlesWidgetProvider.notifyUpdate(0);
                 }
             }
         } else { // We're opening from an external application

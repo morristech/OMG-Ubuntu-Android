@@ -18,7 +18,7 @@ under the License.
     android:id="@+id/activity_main_super"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/list_bg"
+
     android:gravity="left" >
     <RelativeLayout
         android:id="@+id/fragment_sidebar_container"

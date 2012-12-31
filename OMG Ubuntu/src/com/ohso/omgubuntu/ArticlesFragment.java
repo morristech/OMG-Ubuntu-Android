@@ -56,7 +56,7 @@ public class ArticlesFragment extends BaseFragment {
             Editor editor = mSharedPref.edit();
             editor.putString(NotificationService.LAST_NOTIFIED_PATH, null);
             editor.commit();
-            ArticlesWidgetProvider.notifyUpdate(getActivity().getApplicationContext(), 0);
+            ArticlesWidgetProvider.notifyUpdate(0);
         }
     }
 

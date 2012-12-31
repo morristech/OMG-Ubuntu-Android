@@ -76,7 +76,7 @@ public class NotificationService extends IntentService implements OnArticlesLoad
 
         // Comment this out for debugging
         if(newArticles.size() < 1) {
-            ArticlesWidgetProvider.notifyUpdate(getApplicationContext(), 0);
+            ArticlesWidgetProvider.notifyUpdate(0);
             NotificationAlarmReceiver.releaseWakeLock();
             return;
         }
@@ -106,7 +106,7 @@ public class NotificationService extends IntentService implements OnArticlesLoad
     public void articlesError() {
         // Silently fail for now
         if (MainActivity.DEVELOPER_MODE) Log.i("OMG!", "Article retrieval error in NotificationService");
-        ArticlesWidgetProvider.notifyUpdate(OMGUbuntuApplication.getContext(), 0);
+        ArticlesWidgetProvider.notifyUpdate(0);
         NotificationAlarmReceiver.releaseWakeLock();
     }
 

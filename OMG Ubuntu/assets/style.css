@@ -394,6 +394,7 @@ img.aligncenter {
     margin-right: auto;
 }
 .wp-caption {
+    max-width: 100%;
     text-align: center;
     margin-bottom: 1.5em;
 }
@@ -402,7 +403,14 @@ img.aligncenter {
     margin: 0;
     padding: 0;
 }
-.wp-caption p.wp-caption-text { margin: 0 }
+.wp-caption p.wp-caption-text {
+    margin: 0;
+    padding: 8px 4px;
+    font-size: 12px;
+    color: white;
+    font-weight: lighter;
+    background-color: #f15d22;
+}
 .wp-smiley {
     max-height: 1em;
     margin: 0 !important;
@@ -434,7 +442,7 @@ blockquote.right {
     max-width: 100%;
     text-align: center;
     height: auto;
-    margin-bottom: 1.5em;
+    margin-bottom: 0;
 }
 
 .related {

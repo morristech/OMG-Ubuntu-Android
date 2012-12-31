@@ -218,8 +218,10 @@ public class ImageHandler {
                 }
 
                 try {
+
                     Editor editor = mDiskCache.edit(mUrl);
                     BufferedOutputStream stream = new BufferedOutputStream(editor.newOutputStream(0));
+
                     if(isCancelled() || getAttachedImageView() == null || mExitTaskEarly || bitmap == null) {
                         return null;
                     }
@@ -236,6 +238,8 @@ public class ImageHandler {
 
                 } catch (IOException e) {
                     e.printStackTrace();
+                } catch (NullPointerException e) {
+                    Log.d("OMG!", "NullPointerException: " + e);
                 }
                 if (DEBUG_LOG) Log.d("OMG!", "Wrote image for "+ mUrl);
                 return bitmap;

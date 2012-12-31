@@ -1314,7 +1314,6 @@ containing a value of this type.
         public static final int Sherlock___Widget_Holo_ListView=0x7f0c0026;
         public static final int Sherlock___Widget_Holo_Spinner=0x7f0c0023;
         public static final int Sherlock___Widget_SearchAutoCompleteTextView=0x7f0c0033;
-        public static final int SidebarTheme_Styled=0x7f0c005a;
         public static final int TextAppearance_Sherlock_DialogWindowTitle=0x7f0c0048;
         public static final int TextAppearance_Sherlock_Light_DialogWindowTitle=0x7f0c0049;
         public static final int TextAppearance_Sherlock_Light_Small=0x7f0c004c;

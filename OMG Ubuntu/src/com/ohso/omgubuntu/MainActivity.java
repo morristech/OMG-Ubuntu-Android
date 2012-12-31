@@ -64,7 +64,6 @@ public class MainActivity extends BaseActivity {
         fragments.put("sidebar_about", aboutFragment);
 
         articleFragmentContainer = (RelativeLayout) findViewById(R.id.fragment_articles_container);
-
         setTitle(R.string.app_name);
         OMGUbuntuDatabaseHelper db = new OMGUbuntuDatabaseHelper(this);
         try {

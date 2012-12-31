@@ -119,7 +119,7 @@ public abstract class BaseFragment extends SherlockFragment implements OnTouchLi
 
         gridView = (GridView) layout.findViewById(R.id.fragment_base_gridview);
         gridView.setAdapter(adapter);
-        gridView.setBackgroundResource(R.drawable.list_bg);
+        //gridView.setBackgroundResource(R.drawable.list_bg);
         gridView.setNumColumns(columnNumber);
         gridView.setScrollContainer(false);
         gridView.setSelector(R.drawable.list_view_selector);
@@ -442,7 +442,7 @@ public abstract class BaseFragment extends SherlockFragment implements OnTouchLi
         dataSource.clearArticlesOverNumberOfEntries();
         dataSource.close();
         getData();
-        ArticlesWidgetProvider.notifyUpdate(getActivity(), 0);
+        ArticlesWidgetProvider.notifyUpdate(0);
     }
 
     @Override

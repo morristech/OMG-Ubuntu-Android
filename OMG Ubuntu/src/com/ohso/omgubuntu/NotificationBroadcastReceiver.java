@@ -45,7 +45,7 @@ public class NotificationBroadcastReceiver extends BroadcastReceiver {
         Articles articles = dataSource.getArticlesSince(lastPath, true, true, false);
         dataSource.close();
 
-        ArticlesWidgetProvider.notifyUpdate(context, articles.size());
+        ArticlesWidgetProvider.notifyUpdate(articles.size());
 
         if (articles.size() < 1) {
             NotificationAlarmReceiver.releaseWakeLock();

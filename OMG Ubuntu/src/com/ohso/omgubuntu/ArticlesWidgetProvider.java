@@ -98,20 +98,20 @@ public class ArticlesWidgetProvider extends AppWidgetProvider {
         super.onReceive(context, intent);
     }
 
-    public static void notifyUpdate(Context context, int newArticleCount) {
+    public static void notifyUpdate(int newArticleCount) {
         if (Build.VERSION.SDK_INT >= 11) {
-            honeycombUpdate(context, newArticleCount);
+            honeycombUpdate(newArticleCount);
         } else {
-            froyoUpdate(context);
+            froyoUpdate();
         }
     }
-    private static void froyoUpdate(Context context) {
-        AppWidgetManager manager = AppWidgetManager.getInstance(context);
+    private static void froyoUpdate() {
+        AppWidgetManager manager = AppWidgetManager.getInstance(OMGUbuntuApplication.getContext());
         int[] ids = manager.getAppWidgetIds
-                (new ComponentName(context, com.ohso.omgubuntu.ArticlesWidgetProvider.class));
+                (new ComponentName(OMGUbuntuApplication.getContext(), com.ohso.omgubuntu.ArticlesWidgetProvider.class));
 
-        if (remoteViews == null) remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget_froyo);
-        ArticleDataSource source = new ArticleDataSource(context);
+        if (remoteViews == null) remoteViews = new RemoteViews(OMGUbuntuApplication.getContext().getPackageName(), R.layout.widget_froyo);
+        ArticleDataSource source = new ArticleDataSource(OMGUbuntuApplication.getContext());
         source.open();
         Article latestArticle = source.getLatestArticle(false);
         source.close();
@@ -121,13 +121,13 @@ public class ArticlesWidgetProvider extends AppWidgetProvider {
     }
 
     @TargetApi(11)
-    private static void honeycombUpdate(Context context, int newArticleCount) {
-        AppWidgetManager manager = AppWidgetManager.getInstance(context);
+    private static void honeycombUpdate(int newArticleCount) {
+        AppWidgetManager manager = AppWidgetManager.getInstance(OMGUbuntuApplication.getContext());
         int[] ids = manager.getAppWidgetIds
-                (new ComponentName(context, com.ohso.omgubuntu.ArticlesWidgetProvider.class));
+                (new ComponentName(OMGUbuntuApplication.getContext(), com.ohso.omgubuntu.ArticlesWidgetProvider.class));
         manager.notifyAppWidgetViewDataChanged(ids, R.id.widget_articles_list);
 
-        if (remoteViews == null) remoteViews = getRemoteViews(context, manager, ids);
+        if (remoteViews == null) remoteViews = getRemoteViews(OMGUbuntuApplication.getContext(), manager, ids);
 
         remoteViews.removeAllViews(R.id.widget_articles_refresh_container);
         remoteViews.addView(R.id.widget_articles_refresh_container, refreshView);

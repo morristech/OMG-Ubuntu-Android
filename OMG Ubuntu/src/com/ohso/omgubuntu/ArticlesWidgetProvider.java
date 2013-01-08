@@ -88,6 +88,8 @@ public class ArticlesWidgetProvider extends AppWidgetProvider {
                     (new ComponentName(context, com.ohso.omgubuntu.ArticlesWidgetProvider.class));
 
             RemoteViews refreshView = new RemoteViews(context.getPackageName(), R.layout.refresh_menu_item);
+            if (remoteViews == null)
+                remoteViews = new RemoteViews(OMGUbuntuApplication.getContext().getPackageName(), R.layout.widget_froyo);
             remoteViews.removeAllViews(R.id.widget_articles_refresh_container);
             remoteViews.addView(R.id.widget_articles_refresh_container, refreshView);
             manager.updateAppWidget(ids, remoteViews);
@@ -110,7 +112,8 @@ public class ArticlesWidgetProvider extends AppWidgetProvider {
         int[] ids = manager.getAppWidgetIds
                 (new ComponentName(OMGUbuntuApplication.getContext(), com.ohso.omgubuntu.ArticlesWidgetProvider.class));
 
-        if (remoteViews == null) remoteViews = new RemoteViews(OMGUbuntuApplication.getContext().getPackageName(), R.layout.widget_froyo);
+        if (remoteViews == null)
+            remoteViews = new RemoteViews(OMGUbuntuApplication.getContext().getPackageName(), R.layout.widget_froyo);
         ArticleDataSource source = new ArticleDataSource(OMGUbuntuApplication.getContext());
         source.open();
         Article latestArticle = source.getLatestArticle(false);

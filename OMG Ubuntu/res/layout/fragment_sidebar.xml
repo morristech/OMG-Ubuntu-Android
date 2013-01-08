@@ -18,7 +18,8 @@ under the License.
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/sidebar_fragment_overlay"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
+    android:layout_height="fill_parent"
+    android:visibility="invisible">
     
 <ListView 
     android:id="@android:id/list"

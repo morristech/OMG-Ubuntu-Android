@@ -28,6 +28,7 @@ import android.os.StrictMode;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
@@ -113,6 +114,7 @@ public class MainActivity extends BaseActivity {
         }
 
         sidebarFragmentLayoutOffset = sidebarFragmentLayout.getChildAt(0).getWidth();
+        if (sidebarFragmentActive) sidebarFragmentLayout.setVisibility(View.VISIBLE);
         if(Build.VERSION.SDK_INT >= 11) {
             ObjectAnimator sidebarAnimation = ObjectAnimator.ofFloat(articleFragmentContainer, "translationX",
                     sidebarFragmentActive ? sidebarFragmentLayoutOffset : 0);
@@ -129,7 +131,7 @@ public class MainActivity extends BaseActivity {
             relParams.rightMargin = sidebarFragmentActive ? - sidebarFragmentLayoutOffset : 0;
             articleFragmentContainer.setLayoutParams(relParams);
             sidebarFragmentTransitionComplete = true;
-
+            if (!sidebarFragmentActive) sidebarFragmentLayout.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -137,6 +139,7 @@ public class MainActivity extends BaseActivity {
         @Override
         public void run() {
             sidebarFragmentTransitionComplete = true;
+            if (!sidebarFragmentActive) sidebarFragmentLayout.setVisibility(View.INVISIBLE);
         }
     };
 
@@ -155,7 +158,7 @@ public class MainActivity extends BaseActivity {
         sidebar.setActiveFragment(name);
 
         fragmentManager.beginTransaction()
-            .setCustomAnimations(R.anim.slide_in_from_right, R.anim.slide_out_to_right)
+            .setCustomAnimations(R.anim.slide_in_from_right, 0)
             .replace(R.id.fragment_articles_container, (Fragment) fragments.get(name))
             .commit();
     }
@@ -182,6 +185,4 @@ public class MainActivity extends BaseActivity {
             ((BaseFragment) fragments.get(sidebar.getActiveFragment())).refreshView();
         }
     }
-
-
 }

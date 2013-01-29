@@ -134,7 +134,6 @@ public abstract class BaseFragment extends SherlockFragment implements OnTouchLi
                 .getBoolean(SettingsFragment.STARTUP_CHECK_ENABLED, true))) {
             onStartRefresh = false;
             setRefreshing();
-            getNewData();
         }
 
         if (adapter.getCount() >= ArticleDataSource.MAX_ARTICLES_PER_PAGE && footerEnabled) {

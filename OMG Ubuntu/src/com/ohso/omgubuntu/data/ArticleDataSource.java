@@ -29,7 +29,7 @@ import com.ohso.omgubuntu.MainActivity;
 import com.ohso.omgubuntu.R;
 
 public class ArticleDataSource extends BaseDataSource {
-    public static final int MAX_ARTICLES_PER_PAGE = 20;
+    public static final int MAX_ARTICLES_PER_PAGE = 18;
     private Article articleSpec = new Article();
     private Context mContext;
     public ArticleDataSource(Context context) {

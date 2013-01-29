@@ -15,39 +15,29 @@ public final class R {
         public static final int slide_out_to_right=0x7f040003;
     }
     public static final class array {
-        public static final int app=0x7f0d0001;
-        public static final int breaking=0x7f0d0002;
-        public static final int category_list=0x7f0d0015;
-        /**  Empty? 
-         */
-        public static final int cloud=0x7f0d0003;
-        public static final int debian=0x7f0d0004;
-        public static final int dev=0x7f0d0005;
-        public static final int download=0x7f0d0006;
-        public static final int editorial=0x7f0d0007;
-        public static final int event=0x7f0d0008;
-        public static final int exclusive=0x7f0d0009;
-        public static final int gaming=0x7f0d000a;
-        public static final int hardware=0x7f0d000b;
-        public static final int how_to=0x7f0d000c;
-        public static final int idea=0x7f0d000d;
-        public static final int interview=0x7f0d000e;
-        public static final int list=0x7f0d000f;
+        public static final int category_list=0x7f0d000f;
+        public static final int dev=0x7f0d0001;
+        public static final int editorial=0x7f0d0002;
+        public static final int gaming=0x7f0d0003;
+        public static final int hardware=0x7f0d0004;
+        public static final int how_to=0x7f0d0005;
+        public static final int interview=0x7f0d0006;
+        public static final int list=0x7f0d0007;
+        public static final int merch=0x7f0d0008;
         public static final int news=0x7f0d0000;
-        /**  <string-array name="merch"><item>Merch</item></string-array> 
-         */
-        public static final int poll=0x7f0d0010;
-        public static final int pro_user=0x7f0d0011;
-        public static final int review=0x7f0d0012;
-        public static final int sidebar_about=0x7f0d001b;
-        public static final int sidebar_categories=0x7f0d0018;
-        public static final int sidebar_feedback=0x7f0d001a;
-        public static final int sidebar_home=0x7f0d0016;
-        public static final int sidebar_list=0x7f0d001c;
-        public static final int sidebar_settings=0x7f0d0019;
-        public static final int sidebar_starred=0x7f0d0017;
-        public static final int video=0x7f0d0013;
-        public static final int wallpaper=0x7f0d0014;
+        public static final int poll=0x7f0d0009;
+        public static final int pro_user=0x7f0d000a;
+        public static final int review=0x7f0d000b;
+        public static final int sidebar_about=0x7f0d0015;
+        public static final int sidebar_categories=0x7f0d0012;
+        public static final int sidebar_feedback=0x7f0d0014;
+        public static final int sidebar_home=0x7f0d0010;
+        public static final int sidebar_list=0x7f0d0016;
+        public static final int sidebar_settings=0x7f0d0013;
+        public static final int sidebar_starred=0x7f0d0011;
+        public static final int themes=0x7f0d000c;
+        public static final int ubuntu_phone=0x7f0d000d;
+        public static final int video=0x7f0d000e;
     }
     public static final class attr {
         /**  Custom divider drawable to use for elements in the action bar. 

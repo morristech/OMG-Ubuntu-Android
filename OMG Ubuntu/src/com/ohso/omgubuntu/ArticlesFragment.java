@@ -21,6 +21,7 @@ import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 
 import com.ohso.omgubuntu.data.Article;
+import com.ohso.omgubuntu.data.ArticleDataSource;
 import com.ohso.omgubuntu.data.Articles;
 
 public class ArticlesFragment extends BaseFragment {
@@ -41,7 +42,7 @@ public class ArticlesFragment extends BaseFragment {
         for (Article article : newData) {
             adapter.add(article);
         }
-        if (newData.size() >= 20) {
+        if (newData.size() >= ArticleDataSource.MAX_ARTICLES_PER_PAGE) {
             setFooterEnabled(true);
         } else {
             setFooterEnabled(false);

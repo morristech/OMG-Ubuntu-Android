@@ -206,7 +206,6 @@ public class Articles extends ArrayList<Article> {
         } finally {
             if (stream != null) stream.close();
         }
-
         return articles;
     }
 

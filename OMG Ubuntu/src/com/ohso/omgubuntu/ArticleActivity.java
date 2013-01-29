@@ -58,8 +58,8 @@ public class ArticleActivity extends SherlockFragmentActivity implements OnArtic
     private TextView dateView;
     private MenuItem refresh;
 
-    public static final String INTERNAL_ARTICLE_PATH_INTENT = "ohso.omgubuntu.ArticleActivity.ARTICLE_PATH";
-    public static final String LATEST_ARTICLE_INTENT = "ohso.omgubuntu.ArticleActivity.LATEST_ARTICLE";
+    public static final String INTERNAL_ARTICLE_PATH_INTENT = "com.ohso.omgubuntu.ArticleActivity.ARTICLE_PATH";
+    public static final String LATEST_ARTICLE_INTENT = "com.ohso.omgubuntu.ArticleActivity.LATEST_ARTICLE";
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
@@ -127,8 +127,12 @@ public class ArticleActivity extends SherlockFragmentActivity implements OnArtic
                 commentIntent.putExtra(CommentsActivity.COMMENTS_IDENTIFIER, currentArticle.getIdentifier());
                 startActivity(commentIntent);
             } else if (requestUrl.getHost().equals("www.omgubuntu.co.uk") && requestUrl.getPath().startsWith("/2")) {
+                String requestPath = requestUrl.getPath();
+                if (requestPath.substring(requestPath.length() - 1).equals("/")) {
+                    requestPath = requestPath.substring(0, requestPath.length() - 1);
+                }
                 Intent articleIntent = new Intent(mContext, ArticleActivity.class);
-                articleIntent.putExtra(ArticleActivity.INTERNAL_ARTICLE_PATH_INTENT, requestUrl.getPath());
+                articleIntent.putExtra(ArticleActivity.INTERNAL_ARTICLE_PATH_INTENT, requestPath);
                 startActivity(articleIntent);
             } else {
                 ExternalLinkFragment fragment = ExternalLinkFragment.newInstance(url);

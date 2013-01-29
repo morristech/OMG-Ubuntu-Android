@@ -50,7 +50,7 @@ public abstract class BaseActivity extends SherlockFragmentActivity implements S
         imageHandler = new ImageHandler(this);
 
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.add(R.id.fragment_sidebar_container, sidebar);
+        fragmentTransaction.replace(R.id.fragment_sidebar_container, sidebar);
         fragmentTransaction.commit();
 
         actionBar = getSupportActionBar();

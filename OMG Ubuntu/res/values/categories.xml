@@ -19,41 +19,13 @@ under the License.
         <item>News</item>
         <item>news</item>
     </string-array>
-    <string-array name="app">
-        <item>App</item>
-        <item>app</item>
-    </string-array>
-    <string-array name="breaking">
-        <item>Breaking</item>
-        <item>breaking</item>
-    </string-array>
-    <string-array name="cloud">
-        <item>Cloud</item>
-        <item>cloud-2</item> <!-- Empty? -->
-    </string-array>
-    <string-array name="debian">
-        <item>Debian</item>
-        <item>debian</item>
-    </string-array>
     <string-array name="dev">
         <item>Dev</item>
         <item>dev</item>
     </string-array>
-    <string-array name="download">
-        <item>Download</item>
-        <item>download</item>
-    </string-array>
     <string-array name="editorial">
         <item>Editorial</item>
         <item>editorial</item>
-    </string-array>
-    <string-array name="event">
-        <item>Event</item>
-        <item>event</item>
-    </string-array>
-    <string-array name="exclusive">
-        <item>Exclusive</item>
-        <item>exclusive</item>
     </string-array>
     <string-array name="gaming">
         <item>Gaming</item>
@@ -67,10 +39,6 @@ under the License.
         <item>How To</item>
         <item>how-to</item>
     </string-array>
-    <string-array name="idea">
-        <item>Idea</item>
-        <item>idea</item>
-    </string-array>
     <string-array name="interview">
         <item>Interview</item>
         <item>interview</item>
@@ -79,7 +47,10 @@ under the License.
         <item>List</item>
         <item>list</item>
     </string-array>
-    <!-- <string-array name="merch"><item>Merch</item></string-array> -->
+    <string-array name="merch">
+        <item>Merch</item>
+        <item>merch</item>
+        </string-array>
     <string-array name="poll">
         <item>Poll</item>
         <item>poll</item>
@@ -92,36 +63,34 @@ under the License.
         <item>Review</item>
         <item>review</item>
     </string-array>
+    <string-array name="themes">
+        <item>Themes</item>
+        <item>themes-2</item>
+    </string-array>
+    <string-array name="ubuntu_phone">
+        <item>Ubuntu Phone</item>
+        <item>ubuntu-phone-os</item>
+    </string-array>
     <string-array name="video">
         <item>Video</item>
         <item>video</item>
     </string-array>
-    <string-array name="wallpaper">
-        <item>Wallpaper</item>
-        <item>wallpaper</item>
-    </string-array>
     <array name="category_list">
         <item>@array/news</item>
-        <item>@array/app</item>
-        <item>@array/breaking</item>
-        <item>@array/cloud</item>
-        <item>@array/debian</item>
         <item>@array/dev</item>
-        <item>@array/download</item>
         <item>@array/editorial</item>
-        <item>@array/event</item>
-        <item>@array/exclusive</item>
         <item>@array/gaming</item>
         <item>@array/hardware</item>
         <item>@array/how_to</item>
-        <item>@array/idea</item>
         <item>@array/interview</item>
         <item>@array/list</item>
+        <item>@array/merch</item>
         <item>@array/poll</item>
         <item>@array/pro_user</item>
         <item>@array/review</item>
+        <item>@array/themes</item>
+        <item>@array/ubuntu_phone</item>
         <item>@array/video</item>
-        <item>@array/wallpaper</item>
     </array>
 
 </resources>

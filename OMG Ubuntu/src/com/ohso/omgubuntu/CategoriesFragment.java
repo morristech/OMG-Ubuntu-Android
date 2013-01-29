@@ -77,7 +77,6 @@ public class CategoriesFragment extends BaseFragment implements ActionBar.OnNavi
         if (articlesInCategory.isEmpty()) {
             adapter.clear();
             setRefreshing();
-            getNewData();
         } else {
             adapter.clear();
             for (Article article : articlesInCategory) {
@@ -86,7 +85,6 @@ public class CategoriesFragment extends BaseFragment implements ActionBar.OnNavi
             if (articlesInCategory.size() < ArticleDataSource.MAX_ARTICLES_PER_PAGE) {
                 setFooterEnabled(false);
                 setRefreshing();
-                getNewData();
             } else {
                 setFooterEnabled(true);
             }

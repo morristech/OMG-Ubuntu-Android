@@ -82,19 +82,25 @@ public class CommentsActivity extends SherlockFragmentActivity {
         mFragmentManager = getSupportFragmentManager();
 
         // Setting up the default Disqus WebView
-        commentView = new WebView(this);
 
-        WebViewFragment commentsView = new WebViewFragment();
-        commentsView.setWebView(commentView);
 
-        mFragmentManager.beginTransaction().replace(R.id.comments_fragment_container, commentsView).commit();
+        WebViewFragment commentsFragment;
 
+        if (instance != null) {
+            commentsFragment = (WebViewFragment) getSupportFragmentManager().findFragmentByTag("comments");
+            commentView = commentsFragment.getWebView();
+        } else {
+            commentsFragment = new WebViewFragment();
+            mFragmentManager.beginTransaction().replace(R.id.comments_fragment_container, commentsFragment, "comments").commit();
+            commentView = new WebView(this);
+            commentsFragment.setWebView(commentView);
+        }
+        if (commentView == null) commentView = new WebView(this);
         commentView.getSettings().setJavaScriptEnabled(true);
         commentView.getSettings().setSupportMultipleWindows(true);
         commentView.setWebChromeClient(new WebFragmentClient(this));
         commentView.setWebViewClient(new WebClient(this));
-
-        setContents(mArticlePath);
+        if (instance == null) setContents(mArticlePath);
     }
 
     @Override
@@ -138,6 +144,7 @@ public class CommentsActivity extends SherlockFragmentActivity {
         @SuppressLint("SetJavaScriptEnabled")
         @Override
         public boolean onCreateWindow(WebView view, boolean isDialog, boolean isUserGesture, Message resultMsg) {
+            super.onCreateWindow(view, isDialog, isUserGesture, resultMsg);
             WebViewFragment popupFragment = new WebViewFragment();
             popupView = new WebView(mContext);
             popupView.getSettings().setJavaScriptEnabled(true);
@@ -159,7 +166,8 @@ public class CommentsActivity extends SherlockFragmentActivity {
             FragmentTransaction trans = mFragmentManager.beginTransaction();
             trans.add(R.id.comments_fragment_container, popupFragment);
             trans.addToBackStack(null);
-            trans.commit();
+            trans.commitAllowingStateLoss();
+            //trans.commit();
             resultMsg.sendToTarget();
             return true;
         }
@@ -232,9 +240,20 @@ public class CommentsActivity extends SherlockFragmentActivity {
     public static class WebViewFragment extends SherlockFragment {
         private WebView mWebView;
 
+        public WebViewFragment() {
+            setRetainInstance(true);
+        }
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
             RelativeLayout v = (RelativeLayout) inflater.inflate(R.layout.fragment_comments_webview, container, false);
+            if (mWebView == null) {
+                Intent intent = getActivity().getIntent();
+                getActivity().finish();
+                startActivity(intent);
+                return v;
+            } else if (mWebView.getParent() != null) {
+                ((RelativeLayout) mWebView.getParent()).removeView(mWebView);
+            }
             v.addView(mWebView);
             return v;
         }

@@ -53,11 +53,16 @@ public class ArticlesWidgetProvider extends AppWidgetProvider {
                 source.open();
                 Article latestArticle = source.getLatestArticle(false);
                 source.close();
-                remoteViews.setTextViewText(R.id.widget_froyo_title, latestArticle.getTitle());
-                Intent mainIntent = new Intent(context, ArticleActivity.class)
-                    .putExtra(ArticleActivity.LATEST_ARTICLE_INTENT, true);
-                PendingIntent froyoMainIntent = PendingIntent.getActivity(context, 0, mainIntent, 0);
-                remoteViews.setOnClickPendingIntent(R.id.widget_froyo_container, froyoMainIntent);
+                if (latestArticle != null) {
+                    remoteViews.setTextViewText(R.id.widget_froyo_title, latestArticle.getTitle());
+                    Intent mainIntent = new Intent(context, ArticleActivity.class)
+                        .putExtra(ArticleActivity.LATEST_ARTICLE_INTENT, true);
+                    PendingIntent froyoMainIntent = PendingIntent.getActivity(context, 0, mainIntent, 0);
+                    remoteViews.setOnClickPendingIntent(R.id.widget_froyo_container, froyoMainIntent);
+                } else {
+                    remoteViews.setTextViewText(R.id.widget_froyo_title,
+                            OMGUbuntuApplication.getContext().getString(R.string.widget_articles_list_empty_title));
+                }
             }
         }
         super.onUpdate(context, appWidgetManager, appWidgetIds);

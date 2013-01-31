@@ -448,14 +448,17 @@ public abstract class BaseFragment extends SherlockFragment implements OnTouchLi
     public void articlesError() {
         onRefreshComplete();
         Log.e("OMG!", "FEED ERROR!");
-        Toast error = Toast.makeText(getActivity(),
-                getResources().getString(R.string.refresh_error), Toast.LENGTH_SHORT);
-        try {
-            ((TextView) ((LinearLayout) error.getView()).getChildAt(0)).setGravity(Gravity.CENTER);
-        } catch (ClassCastException e) {
-            e.printStackTrace();
+        // Need to make sure fragment still attached to activity, lest we get an IllegalStateException when toasting
+        if (this.isAdded()) {
+            Toast error = Toast.makeText(getActivity(),
+                    getResources().getString(R.string.refresh_error), Toast.LENGTH_SHORT);
+            try {
+                ((TextView) ((LinearLayout) error.getView()).getChildAt(0)).setGravity(Gravity.CENTER);
+            } catch (ClassCastException e) {
+                e.printStackTrace();
+            }
+            error.show();
         }
-        error.show();
     }
 
     public void setRefreshing() {
@@ -479,12 +482,16 @@ public abstract class BaseFragment extends SherlockFragment implements OnTouchLi
         super.onResume();
         imageHandler.setExitTasksEarly(false);
         if (lastActiveArticlePosition != -1) {
-            dataSource.open();
-            final Article lastActiveArticle = dataSource.getArticle(adapter.getItem(lastActiveArticlePosition).getPath(), false);
-            dataSource.close();
-            adapter.getItem(lastActiveArticlePosition).setUnread(lastActiveArticle.isUnread() ? 1 : 0);
-            adapter.getItem(lastActiveArticlePosition).setStarred(lastActiveArticle.isStarred() ? 1 : 0);
-            adapter.notifyDataSetChanged();
+            // Catch situation where adapter loses data set but activity wasn't destroyed and
+            // kept lastActiveArticlePosition filled, causing an IndexOutOfBoundsException
+            if (adapter.getCount() >= (lastActiveArticlePosition - 1)) {
+                dataSource.open();
+                final Article lastActiveArticle = dataSource.getArticle(adapter.getItem(lastActiveArticlePosition).getPath(), false);
+                dataSource.close();
+                adapter.getItem(lastActiveArticlePosition).setUnread(lastActiveArticle.isUnread() ? 1 : 0);
+                adapter.getItem(lastActiveArticlePosition).setStarred(lastActiveArticle.isStarred() ? 1 : 0);
+                adapter.notifyDataSetChanged();
+            }
             lastActiveArticlePosition = -1;
         }
     }

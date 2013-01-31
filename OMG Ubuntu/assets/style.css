@@ -661,6 +661,11 @@ a.ubuntu-software-center-link:hover {
     padding-left: 0;
   }
 }
+@media only screen and (max-width: 400px) {
+  .pull-quote { width: auto; }
+  .pull-quote-right { margin-left: 5px; }
+  .pull-quote-left { margin-right: 5px; }
+}
 
 /*==============================
   Plugins
@@ -671,8 +676,8 @@ a.ubuntu-software-center-link:hover {
 /* App-specific stylings */
 h2.internal-comments-link a {
     margin-bottom: 36px;
-    font-size: 36px;
-    color: #1c6f97;
+    font-size: 24px;
+    color: #f15d22;
 }
 
 .arconix-box-alert {

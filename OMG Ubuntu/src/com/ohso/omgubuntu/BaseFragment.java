@@ -484,7 +484,7 @@ public abstract class BaseFragment extends SherlockFragment implements OnTouchLi
         if (lastActiveArticlePosition != -1) {
             // Catch situation where adapter loses data set but activity wasn't destroyed and
             // kept lastActiveArticlePosition filled, causing an IndexOutOfBoundsException
-            if (adapter.getCount() >= (lastActiveArticlePosition - 1)) {
+            if (adapter.getRealCount() >= (lastActiveArticlePosition - 1)) {
                 dataSource.open();
                 final Article lastActiveArticle = dataSource.getArticle(adapter.getItem(lastActiveArticlePosition).getPath(), false);
                 dataSource.close();

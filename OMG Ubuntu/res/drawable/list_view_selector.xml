@@ -15,7 +15,13 @@ specific language governing permissions and limitations
 under the License.
 -->
 <selector xmlns:android="http://schemas.android.com/apk/res/android" >
-    <item android:state_pressed="true" android:drawable="@color/Ubuntu.Transparent" />
-    <item android:state_focused="true" android:drawable="@color/Ubuntu.Transparent" />
-    <item android:state_selected="true" android:drawable="@color/Ubuntu.Transparent" />
+    <item android:state_pressed="true">
+        <shape><solid android:color="@color/Ubuntu.Transparent" /></shape>
+    </item>
+    <item android:state_focused="true">
+        <shape><solid android:color="@color/Ubuntu.Transparent" /></shape>
+    </item>
+    <item android:state_selected="true">
+        <shape><solid android:color="@color/Ubuntu.Transparent" /></shape>    
+    </item>
 </selector>

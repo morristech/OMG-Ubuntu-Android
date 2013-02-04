@@ -119,10 +119,8 @@ public abstract class BaseFragment extends SherlockFragment implements OnTouchLi
 
         gridView = (GridView) layout.findViewById(R.id.fragment_base_gridview);
         gridView.setAdapter(adapter);
-        //gridView.setBackgroundResource(R.drawable.list_bg);
         gridView.setNumColumns(columnNumber);
         gridView.setScrollContainer(false);
-        gridView.setSelector(R.drawable.list_view_selector);
         gridView.setOnTouchListener(this);
         gridView.setOnScrollListener(this);
         gridView.setOnItemClickListener(this);

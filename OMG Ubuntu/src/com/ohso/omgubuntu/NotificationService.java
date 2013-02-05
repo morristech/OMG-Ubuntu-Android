@@ -50,13 +50,6 @@ public class NotificationService extends IntentService implements OnArticlesLoad
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        if(!getSharedPreferences(OMGUbuntuApplication.PREFS_FILE, 0)
-                .getBoolean(SettingsFragment.NOTIFICATIONS_ENABLED,
-                getResources().getBoolean(R.bool.pref_notifications_enabled_default))) {
-            if (MainActivity.DEVELOPER_MODE) Log.i("OMG!", "Cancelling alarms since it's no longer enabled!");
-            NotificationAlarmGenerator.cancelAlarm(getApplicationContext());
-            return;
-        }
         Articles articles = new Articles();
         articles.getLatest(this);
     }

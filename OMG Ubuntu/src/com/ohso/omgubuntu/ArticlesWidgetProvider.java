@@ -93,8 +93,10 @@ public class ArticlesWidgetProvider extends AppWidgetProvider {
                     (new ComponentName(context, com.ohso.omgubuntu.ArticlesWidgetProvider.class));
 
             RemoteViews refreshView = new RemoteViews(context.getPackageName(), R.layout.refresh_menu_item);
-            if (remoteViews == null)
-                remoteViews = new RemoteViews(OMGUbuntuApplication.getContext().getPackageName(), R.layout.widget_froyo);
+            if (remoteViews == null) {
+                remoteViews = new RemoteViews(OMGUbuntuApplication.getContext().getPackageName(),
+                        Build.VERSION.SDK_INT >= 11 ? R.layout.widget_articles : R.layout.widget_froyo);
+            }
             remoteViews.removeAllViews(R.id.widget_articles_refresh_container);
             remoteViews.addView(R.id.widget_articles_refresh_container, refreshView);
             manager.updateAppWidget(ids, remoteViews);
@@ -138,7 +140,7 @@ public class ArticlesWidgetProvider extends AppWidgetProvider {
         if (remoteViews == null) remoteViews = getRemoteViews(OMGUbuntuApplication.getContext(), manager, ids);
 
         remoteViews.removeAllViews(R.id.widget_articles_refresh_container);
-        remoteViews.addView(R.id.widget_articles_refresh_container, refreshView);
+        remoteViews.addView(R.id.widget_articles_refresh_container, getRefreshView());
         remoteViews.setTextViewText(R.id.widget_articles_count, newArticleCount < 1
                 ? null : String.valueOf(newArticleCount));
 
@@ -154,12 +156,7 @@ public class ArticlesWidgetProvider extends AppWidgetProvider {
         remoteViews.setOnClickPendingIntent(R.id.widget_articles_logo, mainActivityIntent);
         remoteViews.setOnClickPendingIntent(R.id.widget_articles_texts, mainActivityIntent);
 
-        refreshView = new RemoteViews(context.getPackageName(), R.layout.widget_articles_refresh);
-        Intent refreshIntent = new Intent(context, ArticlesWidgetProvider.class);
-        refreshIntent.setAction(ACTION_REFRESH);
-        PendingIntent refreshPendingIntent = PendingIntent.getBroadcast(context, 0, refreshIntent, 0);
-        refreshView.setOnClickPendingIntent(R.id.widget_articles_refresh, refreshPendingIntent);
-        remoteViews.addView(R.id.widget_articles_refresh_container, refreshView);
+        remoteViews.addView(R.id.widget_articles_refresh_container, getRefreshView());
 
         Intent templateIntent = new Intent(context, ArticlesWidgetProvider.class);
         templateIntent.setAction(ACTION_OPEN_ARTICLE);
@@ -169,5 +166,16 @@ public class ArticlesWidgetProvider extends AppWidgetProvider {
         remoteViews.setEmptyView(R.id.widget_articles_list, R.id.widget_articles_list_empty);
 
         return remoteViews;
+    }
+
+    private static RemoteViews getRefreshView() {
+        if (refreshView == null) {
+            refreshView = new RemoteViews(OMGUbuntuApplication.getContext().getPackageName(), R.layout.widget_articles_refresh);
+            Intent refreshIntent = new Intent(OMGUbuntuApplication.getContext(), ArticlesWidgetProvider.class);
+            refreshIntent.setAction(ACTION_REFRESH);
+            PendingIntent refreshPendingIntent = PendingIntent.getBroadcast(OMGUbuntuApplication.getContext(), 0, refreshIntent, 0);
+            refreshView.setOnClickPendingIntent(R.id.widget_articles_refresh, refreshPendingIntent);
+        }
+        return refreshView;
     }
 }

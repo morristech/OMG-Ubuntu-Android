@@ -202,7 +202,7 @@ public class CommentsActivity extends SherlockFragmentActivity {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             Uri requestUrl = Uri.parse(url);
-            if (requestUrl != null ) {
+            if (requestUrl != null && requestUrl.getHost() != null) {
                 if (requestUrl.getHost().equals("disqus.com")) {
                     // Check for /logout and let it go through in a new popup,
                     // then onPageFinish should popbackstack and reload page

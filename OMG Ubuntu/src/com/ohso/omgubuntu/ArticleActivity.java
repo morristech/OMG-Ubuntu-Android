@@ -28,7 +28,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.graphics.Typeface;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -73,11 +73,11 @@ public class ArticleActivity extends SherlockFragmentActivity implements OnArtic
         webview.getSettings().setJavaScriptEnabled(true);
         webview.setWebViewClient(new ArticleWebViewClient(this));
 
-        titleView = (TextView) findViewById(R.id.activity_article_title);
-        dateView = (TextView) findViewById(R.id.activity_article_date);
-        Typeface robotoLight = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Light.ttf");
-        titleView.setTypeface(robotoLight);
-        byline = (TextView) findViewById(R.id.activity_article_byline);
+//        titleView = (TextView) findViewById(R.id.activity_article_title);
+//        dateView = (TextView) findViewById(R.id.activity_article_date);
+//        Typeface robotoLight = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Light.ttf");
+//        titleView.setTypeface(robotoLight);
+//        byline = (TextView) findViewById(R.id.activity_article_byline);
         articleSource = new ArticleDataSource(this);
 
         URL article_uri = null;
@@ -107,9 +107,6 @@ public class ArticleActivity extends SherlockFragmentActivity implements OnArtic
         } else { // We're opening from an external application
             activeArticle = article_uri.getPath();
         }
-
-
-
         openArticle();
     }
 
@@ -242,15 +239,24 @@ public class ArticleActivity extends SherlockFragmentActivity implements OnArtic
         invalidateOptionsMenu();
     }
 
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+    }
+
     private void setContents(Article article) {
-        titleView.setText(article.getTitle());
-        byline.setText(article.getAuthor());
+        //titleView.setText(article.getTitle());
+        //byline.setText(article.getAuthor());
         CharSequence date = DateUtils.getRelativeTimeSpanString(article.getDate(), new Date().getTime(),
                 DateUtils.MINUTE_IN_MILLIS, DateUtils.FORMAT_ABBREV_RELATIVE);
-        dateView.setText(date);
+        //dateView.setText(date);
         StringBuilder content = new StringBuilder();
-        content.append("<!DOCTYPE html><head><link rel='stylesheet' type='text/css' href='style.css'></head>");
-        content.append("<body><div class='post'>");
+        content.append("<!DOCTYPE html><head><link rel='stylesheet' type='text/css' href='style.css'></head><body>");
+        content.append("<h1 id='article-title'>" + article.getTitle() + "</h1>");
+        content.append("<div class='metadata'>");
+        content.append("<span class='author'>"+ article.getAuthor() +"</span>");
+        content.append("<span class='date'>" + date + "</span></div>");
+        content.append("<div class='post'>");
         content.append(article.getContent());
         content.append("<h2 class='internal-comments-link'><a href='internal://app-comments'>"+
                 getResources().getString(R.string.activity_article_comment_text) +"</a></h2></div></body></html>");

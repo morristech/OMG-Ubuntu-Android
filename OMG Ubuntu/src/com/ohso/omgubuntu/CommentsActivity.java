@@ -117,14 +117,16 @@ public class CommentsActivity extends SherlockFragmentActivity {
     private void setContents(String articlePath) {
         StringBuilder content = new StringBuilder();
         content.append("<!DOCTYPE html><head>");
-        content.append("<script type=\"text/javascript\">var disqus_shortname='omgubuntu'; ");
+        content.append("<script type=\"text/javascript\">var disqus_shortname='" +
+                getResources().getString(R.string.disqus_id) + "'; ");
         content.append("var disqus_url='" + getResources().getString(R.string.base_url) + articlePath + "'; ");
         content.append("var disqus_identifier='" + mIdentifier + " " +
                 getResources().getString(R.string.base_url) + "/?p=" + mIdentifier + "';");
         content.append("</script> ");
         content.append("</head>");
         content.append("<body><div id='disqus_thread'>Loading...</div>");
-        content.append("<script type=\"text/javascript\" src=\"http://omgubuntu.disqus.com/embed.js\"></script>");
+        content.append("<script type=\"text/javascript\" src=\"http://" +
+                getResources().getString(R.string.disqus_id) + ".disqus.com/embed.js\"></script>");
         content.append("</body></html>");
         commentView.loadDataWithBaseURL(getResources().getString(R.string.base_url) + articlePath,
                 content.toString(), "text/html", "UTF-8", getResources().getString(R.string.base_url) + articlePath);

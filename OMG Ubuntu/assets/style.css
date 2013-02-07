@@ -25,6 +25,12 @@ under the License.
   font-weight: 700;
   src: url('fonts/Raleway-Bold.ttf');
 }
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 500;
+  src: url('fonts/Roboto-Light.ttf');
+}
 
 html, body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
@@ -161,13 +167,30 @@ iframe, object { max-width: 100% }
   Primary Content
 ================================*/
 body {
-  padding: 0 10px;
+  padding: 10px;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
   background: white;
   border-left: 1px solid #ddd;
   font-family: "Raleway","Ubuntu","Helvetica Neue","Helvetica","Arial",sans-serif;
+}
+#article-title {
+  font-family: "Roboto", "Raleway","Ubuntu","Helvetica Neue","Helvetica","Arial",sans-serif;
+  color: #f15d22;
+  font-size: 36px;
+}
+.metadata {
+  padding-bottom: 10px;
+}
+.metadata .author {
+  color: #999;
+  display: inline-block;
+}
+.metadata .date {
+  color: #999;
+  display: inline-block;
+  float: right;
 }
 
 img {

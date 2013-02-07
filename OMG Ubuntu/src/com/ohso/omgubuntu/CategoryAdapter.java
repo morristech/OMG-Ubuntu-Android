@@ -57,7 +57,7 @@ public class CategoryAdapter extends ArrayAdapter<Category> {
     @Override
     public View getDropDownView(int position, View convertView, ViewGroup parent) {
         if (convertView == null) {
-            convertView = mInflater.inflate(R.layout.spinner_dropdown_item, null);
+            convertView = mInflater.inflate(R.layout.sherlock_spinner_dropdown_item, null);
         }
 
         TextView text = (TextView) convertView.findViewById(android.R.id.text1);

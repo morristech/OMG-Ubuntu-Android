@@ -56,6 +56,7 @@ public class CategoriesFragment extends BaseFragment implements ActionBar.OnNavi
         actionBar.setTitle("");
         CategoryAdapter list = new CategoryAdapter(actionBar.getThemedContext(),
                 R.layout.sherlock_spinner_item, categories);
+        list.setDropDownViewResource(R.layout.sherlock_spinner_dropdown_item);
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
         actionBar.setListNavigationCallbacks(list, this);
         actionBar.setSelectedNavigationItem(lastActiveCategory);

@@ -35,6 +35,12 @@ public class NotificationAlarmGenerator extends BroadcastReceiver {
     public static void generateAlarm(Context context) {
         if (MainActivity.DEVELOPER_MODE) Log.d("OMG!", "Alarm isn't active, so setting up alarm now");
         Intent notificationIntent = new Intent(NotificationAlarmReceiver.NOTIFICATION_ACTION);
+        boolean isActive = (PendingIntent.getBroadcast(context, 0,
+                notificationIntent, PendingIntent.FLAG_NO_CREATE) != null);
+        if (isActive) {
+            Log.i("OMG!", "Alarm already exists, not recreating");
+            return;
+        }
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0,
                 notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
@@ -52,7 +58,7 @@ public class NotificationAlarmGenerator extends BroadcastReceiver {
         if (MainActivity.DEVELOPER_MODE) Log.d("OMG!", "Attempting to cancel alarms");
         Intent notificationIntent = new Intent(NotificationAlarmReceiver.NOTIFICATION_ACTION);
         AlarmManager alarm = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0,
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context.getApplicationContext(), 0,
                 notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         try {
             alarm.cancel(pendingIntent);

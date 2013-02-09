@@ -78,11 +78,16 @@ public class MainActivity extends BaseActivity {
         fragmentTransaction.replace(R.id.fragment_articles_container, articlesFragment);
         fragmentTransaction.commit();
 
-        if (!NotificationService.isNotificationAlarmActive()) {
+
+        if (getSharedPreferences(OMGUbuntuApplication.PREFS_FILE, 0)
+            .getBoolean(SettingsFragment.NOTIFICATIONS_ENABLED, true)) {
             NotificationAlarmGenerator.generateAlarm(this);
         }
 
         // Debug lines to force notifications for testing
+        // if (!NotificationService.isNotificationAlarmActive()) {
+        //     NotificationAlarmGenerator.generateAlarm(getApplicationContext());
+        // }
         // Intent testIntent = new Intent(this, NotificationService.class);
         // startService(testIntent);
     }

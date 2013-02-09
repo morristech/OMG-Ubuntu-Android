@@ -47,7 +47,11 @@ public class NotificationBroadcastReceiver extends BroadcastReceiver {
 
         ArticlesWidgetProvider.notifyUpdate(articles.size());
 
-        if (articles.size() < 1) {
+        // If we have no new articles or if notifications are disabled, don't notify
+        if (articles.size() < 1 ||
+                !context.getSharedPreferences(OMGUbuntuApplication.PREFS_FILE, 0)
+                .getBoolean(SettingsFragment.NOTIFICATIONS_ENABLED,
+                context.getResources().getBoolean(R.bool.pref_notifications_enabled_default))) {
             NotificationAlarmReceiver.releaseWakeLock();
             return;
         }

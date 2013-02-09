@@ -36,6 +36,7 @@ public class NotificationService extends IntentService implements OnArticlesLoad
     public static final String LAST_NOTIFIED_PATH = "NotificationServiceLastNotifiedPath";
     public static final String NOTIFICATION_ACTION =
             "com.ohso.omgubuntu.NotificationService.NEW_ARTICLES";
+    public static final String ORIGINATING_CLASS = "com.ohso.omgubuntu.NotificationService.ORIGINATING_CLASS";
 
     public static boolean isNotificationAlarmActive() {
         boolean isUp = (PendingIntent.getBroadcast(OMGUbuntuApplication.getContext(), 0,
@@ -50,6 +51,17 @@ public class NotificationService extends IntentService implements OnArticlesLoad
 
     @Override
     protected void onHandleIntent(Intent intent) {
+        if(!getSharedPreferences(OMGUbuntuApplication.PREFS_FILE, 0)
+                .getBoolean(SettingsFragment.NOTIFICATIONS_ENABLED,
+                getResources().getBoolean(R.bool.pref_notifications_enabled_default))) {
+            String originatingClass = intent.getStringExtra(ORIGINATING_CLASS);
+            // If we're refreshing from the widget, let it go through
+            if (originatingClass == null || !originatingClass.equals(ArticlesWidgetProvider.ORIGINATING_NAME)) {
+                if (MainActivity.DEVELOPER_MODE) Log.i("OMG!", "Cancelling alarms since it's no longer enabled!");
+                NotificationAlarmGenerator.cancelAlarm(getApplicationContext());
+                return;
+            }
+        }
         Articles articles = new Articles();
         articles.getLatest(this);
     }

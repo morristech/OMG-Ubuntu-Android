@@ -35,6 +35,7 @@ public class ArticlesWidgetProvider extends AppWidgetProvider {
     public static final String ACTION_OPEN_ARTICLE = "com.ohso.omgubuntu.OPEN_ARTICLE";
     public static final String ACTION_REFRESH = "com.ohso.omgubuntu.REFRESH";
     public static final String INTENT_EXTRA_APP_WIDGET_IDS = "com.ohso.omgubuntu.AppWidgetIds";
+    public static final String ORIGINATING_NAME = "com.ohso.omgubuntu.ArticlesWidgetProvider";
     public static RemoteViews remoteViews;
     public static RemoteViews refreshView;
 
@@ -102,6 +103,7 @@ public class ArticlesWidgetProvider extends AppWidgetProvider {
             manager.updateAppWidget(ids, remoteViews);
 
             Intent refreshIntent = new Intent(context, NotificationService.class);
+            refreshIntent.putExtra(NotificationService.ORIGINATING_CLASS, ORIGINATING_NAME);
             context.startService(refreshIntent);
         }
         super.onReceive(context, intent);

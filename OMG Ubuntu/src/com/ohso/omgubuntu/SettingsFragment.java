@@ -33,6 +33,7 @@ import com.actionbarsherlock.app.SherlockListFragment;
 public class SettingsFragment extends SherlockListFragment {
     public static final String NOTIFICATIONS_ENABLED = "com.ohso.omgubuntu.SettingsFragment.NOTIFICATIONS_ENABLED";
     public static final String STARTUP_CHECK_ENABLED = "com.ohso.omgubuntu.SettingsFragment.STARTUP_CHECK_ENABLED";
+    public static final String WIFI_ONLY = "com.ohso.omgubuntu.SettingsFragment.WIFI_ONLY";
     private SharedPreferences mSharedPrefs;
 
     @Override
@@ -51,9 +52,14 @@ public class SettingsFragment extends SherlockListFragment {
         final List<PreferenceItem> preferenceItems = new ArrayList<PreferenceItem>();
         preferenceItems.add(new PreferenceItem("checkbox", getString(R.string.pref_notifications_enabled_title),
                 getString(R.string.pref_notifications_enabled_description),
-                NOTIFICATIONS_ENABLED, R.bool.pref_notifications_enabled_default));
+                NOTIFICATIONS_ENABLED, R.bool.pref_notifications_enabled_default, -1));
+
+        preferenceItems.add(new PreferenceItem("checkbox", getString(R.string.pref_notifications_wifi_only_title),
+                getString(R.string.pref_notifications_wifi_only_description),
+                WIFI_ONLY, R.bool.pref_notifications_wifi_only_default, 0));
+
         preferenceItems.add(new PreferenceItem("checkbox", getString(R.string.pref_startup_title),
-                getString(R.string.pref_startup_description), STARTUP_CHECK_ENABLED, R.bool.pref_startup_default));
+                getString(R.string.pref_startup_description), STARTUP_CHECK_ENABLED, R.bool.pref_startup_default, -1));
         setListAdapter(new SettingsAdapter(getActivity(), R.id.fragment_settings_row_title, preferenceItems));
 
         return v;
@@ -65,6 +71,8 @@ public class SettingsFragment extends SherlockListFragment {
         PreferenceItem item = (PreferenceItem) l.getItemAtPosition((int) id);
         if (item.type.equals("checkbox")) {
             Editor editor = mSharedPrefs.edit();
+            // Clicks always negate stored value. If pref has yet to be saved, it'd be negated anyway
+            // as the default value is used in the view if it doesn't exist in the pref file yet
             editor.putBoolean(item.preference_key,
                     !mSharedPrefs.getBoolean(item.preference_key,
                             getResources().getBoolean(item.default_value_resource)));
@@ -94,13 +102,16 @@ public class SettingsFragment extends SherlockListFragment {
         public final String description;
         public final String preference_key;
         public final int default_value_resource;
+        // Position in this list of a dependency
+        public final int dependency;
         public PreferenceItem(String type, String title, String description,
-                String preference_key, int default_value_resource) {
+                String preference_key, int default_value_resource, int dependency) {
             this.type = type;
             this.title = title;
             this.description = description;
             this.preference_key = preference_key;
             this.default_value_resource = default_value_resource;
+            this.dependency = dependency;
         }
     }
 

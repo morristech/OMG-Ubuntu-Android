@@ -41,4 +41,10 @@ public class OMGUbuntuApplication extends Application {
         return activeNetworkInfo != null;
     }
 
+    public static boolean isWifiAvailable() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo wifiNetwork = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        return wifiNetwork.isConnected();
+    }
+
 }

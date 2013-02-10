@@ -51,10 +51,10 @@ public class NotificationService extends IntentService implements OnArticlesLoad
 
     @Override
     protected void onHandleIntent(Intent intent) {
+        String originatingClass = intent.getStringExtra(ORIGINATING_CLASS);
         if(!getSharedPreferences(OMGUbuntuApplication.PREFS_FILE, 0)
                 .getBoolean(SettingsFragment.NOTIFICATIONS_ENABLED,
                 getResources().getBoolean(R.bool.pref_notifications_enabled_default))) {
-            String originatingClass = intent.getStringExtra(ORIGINATING_CLASS);
             // If we're refreshing from the widget, let it go through
             if (originatingClass == null || !originatingClass.equals(ArticlesWidgetProvider.ORIGINATING_NAME)) {
                 if (MainActivity.DEVELOPER_MODE) Log.i("OMG!", "Cancelling alarms since it's no longer enabled!");
@@ -62,6 +62,15 @@ public class NotificationService extends IntentService implements OnArticlesLoad
                 return;
             }
         }
+
+        // Checking for wifi preference and wifi state
+        if (getSharedPreferences(OMGUbuntuApplication.PREFS_FILE, 0)
+                .getBoolean(SettingsFragment.WIFI_ONLY,
+                        getResources().getBoolean(R.bool.pref_notifications_wifi_only_default)) &&
+                (originatingClass == null || !originatingClass.equals(ArticlesWidgetProvider.ORIGINATING_NAME))) {
+            if (!OMGUbuntuApplication.isWifiAvailable()) return;
+        }
+
         Articles articles = new Articles();
         articles.getLatest(this);
     }

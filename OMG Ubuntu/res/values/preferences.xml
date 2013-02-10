@@ -27,4 +27,8 @@ under the License.
     <string name="pref_startup_title">Update on Startup</string>
     <string name="pref_startup_description">Check for updates when the app starts</string>
     <bool name="pref_startup_default">true</bool>
+    
+    <string name="pref_notifications_wifi_only_title">Notify on Wi-Fi Only</string>
+    <string name="pref_notifications_wifi_only_description">Only check for new articles if connected to a wifi network</string>
+    <bool name="pref_notifications_wifi_only_default">false</bool>
 </resources>

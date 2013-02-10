@@ -46,7 +46,9 @@ public class SettingsAdapter extends ArrayAdapter<PreferenceItem> {
         }
 
         TextView title = (TextView) convertView.findViewById(R.id.fragment_settings_row_title);
+        title.setTextColor(convertView.getResources().getColor(android.R.color.primary_text_light));
         TextView description = (TextView) convertView.findViewById(R.id.fragment_settings_row_description);
+        description.setTextColor(convertView.getResources().getColor(android.R.color.primary_text_light));
         LinearLayout widgetContainer = (LinearLayout) convertView.findViewById(R.id.fragment_settings_widget_container);
 
         title.setText(getItem(position).title);
@@ -57,10 +59,39 @@ public class SettingsAdapter extends ArrayAdapter<PreferenceItem> {
             boolean value = mSharedPrefs.getBoolean(getItem(position).preference_key,
                     convertView.getResources().getBoolean(getItem(position).default_value_resource));
             box.setChecked(value);
+
+            if(getItem(position).dependency != -1) {
+                final PreferenceItem dependency = getItem(getItem(position).dependency);
+                boolean dependencyValue = mSharedPrefs.getBoolean(dependency.preference_key,
+                        convertView.getResources().getBoolean(dependency.default_value_resource));
+                if (!dependencyValue) {
+                    title.setTextColor(convertView.getResources().getColor(R.color.Grey_9));
+                    description.setTextColor(convertView.getResources().getColor(R.color.Grey_9));
+                    box.setEnabled(false);
+                }
+            }
+
             // TODO Figure out what's going on here
             widgetContainer.removeAllViews();
             widgetContainer.addView(box);
         }
         return convertView;
+    }
+
+    @Override
+    public boolean isEnabled(int position) {
+        if (getItem(position).dependency != -1) {
+            final PreferenceItem dependency = getItem(getItem(position).dependency);
+            boolean dependencyValue = mSharedPrefs.getBoolean(dependency.preference_key,
+                    getContext().getResources().getBoolean(dependency.default_value_resource));
+            if (dependencyValue) {
+                return super.isEnabled(position);
+            } else {
+                return false;
+            }
+
+        } else {
+            return super.isEnabled(position);
+        }
     }
 }

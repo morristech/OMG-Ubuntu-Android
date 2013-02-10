@@ -30,6 +30,7 @@ under the License.
     android:dividerHeight="2px"
     android:background="@color/Grey.Sidebar"
     android:headerDividersEnabled="false"
+    android:cacheColorHint="@android:color/transparent"
     tools:context=".SidebarFragment" >
 </ListView>
 </LinearLayout>

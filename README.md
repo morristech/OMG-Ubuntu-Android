@@ -15,7 +15,7 @@ Ubuntu is a registered trademark of [Canonical Ltd](http://canonical.com/).
 
 OMG! Ubuntu! is a member of the Ohso Ltd Network.
 
-Copyright (C) 2012 [Ohso Ltd](http://ohso.co/)
+Copyright (C) 2012 - 2013 [Ohso Ltd](http://ohso.co/)
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

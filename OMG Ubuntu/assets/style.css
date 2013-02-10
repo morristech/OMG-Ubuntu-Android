@@ -157,8 +157,10 @@ a:hover {
   color: #333;
 }
 pre, code {
-  margin: 0 0 16px 16px;
+  margin: 0 0 8px 16px;
   font-family: monospace;
+  padding-bottom: 8px;
+  overflow: auto;
   color: #888;
 }
 iframe, object { max-width: 100% }

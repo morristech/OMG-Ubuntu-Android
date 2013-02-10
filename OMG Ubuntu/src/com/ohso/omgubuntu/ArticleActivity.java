@@ -36,7 +36,6 @@ import android.text.format.DateUtils;
 import android.view.WindowManager;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.TextView;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
@@ -53,9 +52,6 @@ public class ArticleActivity extends SherlockFragmentActivity implements OnArtic
     private String activeArticle;
     private Article currentArticle;
     private WebView webview;
-    private TextView titleView;
-    private TextView byline;
-    private TextView dateView;
     private MenuItem refresh;
 
     public static final String INTERNAL_ARTICLE_PATH_INTENT = "com.ohso.omgubuntu.ArticleActivity.ARTICLE_PATH";
@@ -73,11 +69,6 @@ public class ArticleActivity extends SherlockFragmentActivity implements OnArtic
         webview.getSettings().setJavaScriptEnabled(true);
         webview.setWebViewClient(new ArticleWebViewClient(this));
 
-//        titleView = (TextView) findViewById(R.id.activity_article_title);
-//        dateView = (TextView) findViewById(R.id.activity_article_date);
-//        Typeface robotoLight = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Light.ttf");
-//        titleView.setTypeface(robotoLight);
-//        byline = (TextView) findViewById(R.id.activity_article_byline);
         articleSource = new ArticleDataSource(this);
 
         URL article_uri = null;

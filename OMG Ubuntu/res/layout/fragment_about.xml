@@ -50,8 +50,8 @@ under the License.
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:adjustViewBounds="true"
-            android:maxHeight="150dp"
             android:contentDescription="@string/ohso_logo_description"
+            android:maxHeight="150dp"
             android:src="@drawable/ohso" />
 
         <TextView

@@ -78,11 +78,12 @@ under the License.
     <string name="fragment_feedback_tips_copy">Have a tip? Use our tip form linked below.</string>
 
     <string name="activity_about_omg_ubuntu"><![CDATA[
-<p>We\'re the world\'s largest Linux-orientated site on the web, bringing the latest news, reviews and tutorials to over 2 million unique readers a month.</p>
-<p>But we\'re more than just a website &ndash; we\'re also a vibrant community, boasting over 200,000 subscribers across <a href="http://twitter.com/omgubuntu">Twitter</a>, <a href="http://facebook.com/omgubuntu">Facebook</a>, <a href="http://youtube.com/omgubuntu">Youtube</a> and more.</p> 
-<p>And by using this app, you\'re part of that, too!</p>
+<p>Hello! We\'re OMG! Ubuntu! &ndash; the most read, most active and most up-to-date Linux-orientated news site on the web.</p>
+<p>We bring the latest Ubuntu news, app reviews, and tutorials to millions of readers every month.</p>
+<p>But we\'re more than just a website we\'re also a community, boasting some 200,000 subscribers over <a href="http://twitter.com/omgubuntu">Twitter</a>, <a href="http://facebook.com/omgubuntu">Facebook</a>, <a href="http://youtube.com/omgubuntu">Youtube</a>, <a href="feeds.feedburner.com/d0od">RSS</a>, and <a href="http://plus.google.com/+omgubuntu">Google+</a>.</p>
+<p>And by using this app you\'re now part of that community, too.</p>
 ]]></string>
     <string name="activity_about_ohso"><![CDATA[
-<p>OMG! Ubuntu! is part of <strong><a href="http://ohso.co">Ohso Ltd</a></strong>, a New-Zealand based media and software publishing company founded in 2010.</p>        
+<p>OMG! Ubuntu! is part of the <strong><a href="http://ohso.co">Ohso Ltd</a></strong> network, a UK-based media and software publishing company founded in 2010.</p>        
 ]]></string>
 </resources>

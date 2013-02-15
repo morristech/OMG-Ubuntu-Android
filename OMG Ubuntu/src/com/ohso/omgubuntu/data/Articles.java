@@ -50,7 +50,6 @@ public class Articles extends ArrayList<Article> {
 
     public void getNextPage(OnNextPageLoaded caller, int page) {
         mNextPageCallback = caller;
-        if (!OMGUbuntuApplication.isNetworkAvailable()) mNextPageCallback.nextPageError();
         ArticleDataSource dataSource = new ArticleDataSource(context);
         dataSource.open();
         Articles articles = dataSource.getArticlesOnPage(page);
@@ -58,6 +57,10 @@ public class Articles extends ArrayList<Article> {
         if (articles.size() == ArticleDataSource.MAX_ARTICLES_PER_PAGE) {
             mNextPageCallback.nextPageLoaded(articles);
         } else {
+            if (!OMGUbuntuApplication.isNetworkAvailable()) {
+                mNextPageCallback.nextPageError();
+                return;
+            }
             new getNextPageAsync().execute(page);
         }
 
@@ -65,7 +68,6 @@ public class Articles extends ArrayList<Article> {
 
     public void getNextCategoryPage(OnNextPageLoaded caller, String urlFragment, int page) {
         mNextPageCallback = caller;
-        if (!OMGUbuntuApplication.isNetworkAvailable()) mNextPageCallback.nextPageError();
         ArticleDataSource dataSource = new ArticleDataSource(context);
         dataSource.open();
         Articles articles = dataSource.getArticlesWithCategoryOnPage(urlFragment, page);
@@ -73,6 +75,10 @@ public class Articles extends ArrayList<Article> {
         if (articles.size() == ArticleDataSource.MAX_ARTICLES_PER_PAGE) {
             mNextPageCallback.nextPageLoaded(articles);
         } else {
+            if (!OMGUbuntuApplication.isNetworkAvailable()) {
+                mNextPageCallback.nextPageError();
+                return;
+            }
             new getNextCategoryPageAsync(urlFragment, page).execute();
         }
     }
@@ -130,7 +136,10 @@ public class Articles extends ArrayList<Article> {
 
         @Override
         protected void onPostExecute(Articles result) {
-            if(result == null) mNextPageCallback.nextPageError();
+            if(result == null) {
+                mNextPageCallback.nextPageError();
+                return;
+            }
             else mNextPageCallback.nextPageLoaded(result);
             ArticleDataSource dataSource = new ArticleDataSource(context);
             dataSource.open();

@@ -62,7 +62,7 @@ public class SidebarFragment extends SherlockListFragment {
 
     public void setActiveFragment(String name) {
         sActiveFragment = name;
-        ((SidebarAdapter) getListAdapter()).notifyDataSetChanged();
+        if (getListAdapter() != null) ((SidebarAdapter) getListAdapter()).notifyDataSetChanged();
     }
 
     public String getActiveFragment() {

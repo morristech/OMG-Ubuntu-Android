@@ -16,8 +16,8 @@ under the License.
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.ohso.omgubuntu"
-    android:versionCode="20"
-    android:versionName="2.0.10">
+    android:versionCode="21"
+    android:versionName="2.0.11">
 
     <uses-sdk
         android:minSdkVersion="8"

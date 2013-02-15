@@ -75,6 +75,7 @@ public class MainActivity extends BaseActivity {
         }
 
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        sidebar.setActiveFragment("sidebar_home");
         fragmentTransaction.replace(R.id.fragment_articles_container, articlesFragment);
         fragmentTransaction.commit();
 

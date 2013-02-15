@@ -222,12 +222,12 @@ public class CommentsActivity extends SherlockFragmentActivity {
                     startActivity(intent);
                     return true;
                 } else if (requestUrl.getHost().equals("www.omgubuntu.co.uk")
-                        && requestUrl.getPath().startsWith("/2")) {
+                        && (requestUrl.getPath() != null) && requestUrl.getPath().startsWith("/2")) {
                     Intent intent = new Intent(mContext, ArticleActivity.class)
                         .putExtra(ArticleActivity.INTERNAL_ARTICLE_PATH_INTENT, requestUrl.getPath());
                     startActivity(intent);
                     return true;
-                } else if (requestUrl.getPath().endsWith(".rss")) {
+                } else if ((requestUrl.getPath() != null) && requestUrl.getPath().endsWith(".rss")) {
                     // Send to external with warning
                     // Affects: http://omgubuntu.disqus.com/.../latest.rss
                     ExternalLinkFragment.newInstance(requestUrl.toString()).show(mFragmentManager, "external_link");

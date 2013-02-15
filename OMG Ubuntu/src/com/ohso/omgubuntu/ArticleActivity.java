@@ -109,12 +109,14 @@ public class ArticleActivity extends SherlockFragmentActivity implements OnArtic
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             Uri requestUrl = Uri.parse(url);
-            if(requestUrl.getScheme().equals("internal") && requestUrl.getHost().equals("app-comments")) {
+            if((requestUrl.getScheme() != null) && requestUrl.getScheme().equals("internal")
+                    && (requestUrl.getHost() != null) && requestUrl.getHost().equals("app-comments")) {
                 Intent commentIntent = new Intent(mContext, CommentsActivity.class);
                 commentIntent.putExtra(CommentsActivity.COMMENTS_URL, currentArticle.getPath());
                 commentIntent.putExtra(CommentsActivity.COMMENTS_IDENTIFIER, currentArticle.getIdentifier());
                 startActivity(commentIntent);
-            } else if (requestUrl.getHost().equals("www.omgubuntu.co.uk") && requestUrl.getPath().startsWith("/2")) {
+            } else if ((requestUrl.getHost() != null) && requestUrl.getHost().equals("www.omgubuntu.co.uk") &&
+                    (requestUrl.getPath() != null) && requestUrl.getPath().startsWith("/2")) {
                 String requestPath = requestUrl.getPath();
                 if (requestPath.substring(requestPath.length() - 1).equals("/")) {
                     requestPath = requestPath.substring(0, requestPath.length() - 1);

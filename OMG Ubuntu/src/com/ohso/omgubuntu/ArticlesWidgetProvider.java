@@ -112,7 +112,7 @@ public class ArticlesWidgetProvider extends AppWidgetProvider {
     public static void notifyUpdate(int newArticleCount) {
         if (Build.VERSION.SDK_INT >= 11) {
             honeycombUpdate(newArticleCount);
-        } else {
+        } else if (newArticleCount > 0) {
             froyoUpdate();
         }
     }
@@ -127,6 +127,7 @@ public class ArticlesWidgetProvider extends AppWidgetProvider {
         source.open();
         Article latestArticle = source.getLatestArticle(false);
         source.close();
+        if (latestArticle == null) return;
         remoteViews.setTextViewText(R.id.widget_froyo_title, latestArticle.getTitle());
 
         manager.updateAppWidget(ids, remoteViews);

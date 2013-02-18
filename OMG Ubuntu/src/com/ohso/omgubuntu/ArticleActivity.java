@@ -238,11 +238,8 @@ public class ArticleActivity extends SherlockFragmentActivity implements OnArtic
     }
 
     private void setContents(Article article) {
-        //titleView.setText(article.getTitle());
-        //byline.setText(article.getAuthor());
         CharSequence date = DateUtils.getRelativeTimeSpanString(article.getDate(), new Date().getTime(),
                 DateUtils.MINUTE_IN_MILLIS, DateUtils.FORMAT_ABBREV_RELATIVE);
-        //dateView.setText(date);
         StringBuilder content = new StringBuilder();
         content.append("<!DOCTYPE html><head><link rel='stylesheet' type='text/css' href='style.css'></head><body>");
         content.append("<h1 id='article-title'>" + article.getTitle() + "</h1>");
@@ -258,8 +255,13 @@ public class ArticleActivity extends SherlockFragmentActivity implements OnArtic
     }
 
     private void refreshArticle() {
-        refresh.setActionView(R.layout.refresh_menu_item);
-        currentArticle.getLatest(this, activeArticle);
+        if (currentArticle == null || activeArticle == null) {
+            DialogFragment fragment = new RareBugFragment();
+            fragment.show(getSupportFragmentManager(), "article_activity_bug");
+        } else {
+            refresh.setActionView(R.layout.refresh_menu_item);
+            currentArticle.getLatest(this, activeArticle);
+        }
     }
 
     @Override
@@ -310,6 +312,37 @@ public class ArticleActivity extends SherlockFragmentActivity implements OnArtic
                     Intent chooser = Intent.createChooser
                             (external, getResources().getString(R.string.article_fetch_error_dialog));
                     startActivity(chooser);
+                    getActivity().finish();
+                }
+            });
+            builder.setNegativeButton(getResources().getString(R.string.dialog_fragment_cancel),
+                    new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    getActivity().finish();
+                }
+            });
+            return builder.create();
+        }
+    }
+
+    public static class RareBugFragment extends DialogFragment {
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setMessage("You've hit a rare refresh bug! Please email us with the post" +
+            		" this happened on and the steps leading up to it. Thanks!");
+            builder.setPositiveButton("Email",
+                    new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
+                    StringBuilder uriText = new StringBuilder();
+                    uriText.append("mailto:contact@omgubuntu.co.uk");
+                    uriText.append("?subject=[APP-UBUNTU-BUG] ArticleActivity Refresh Bug");
+                    emailIntent.setData(Uri.parse(uriText.toString()));
+                    startActivity(Intent.createChooser(emailIntent,
+                            getResources().getString(R.string.fragment_feedback_email_text)));
                     getActivity().finish();
                 }
             });
